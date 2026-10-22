@@ -1,0 +1,20 @@
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Local Claude Code state
+.claude/settings.local.json
+.claude/agent-memory-local/
+
+# Never commit secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.kdbx

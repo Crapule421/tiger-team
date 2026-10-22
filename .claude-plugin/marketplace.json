@@ -1,0 +1,45 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "tiger-team",
+  "owner": {
+    "name": "Crapule421",
+    "url": "https://github.com/Crapule421"
+  },
+  "metadata": {
+    "description": "Tiger Team: a squad of senior expert agents for technical and application integration projects (project management, enterprise architecture, DevSecOps, DBA, job scheduling, APIs and data flows, ERP, network and systems, IBM i)."
+  },
+  "plugins": [
+    {
+      "name": "tiger-team",
+      "source": "./plugins/tiger-team",
+      "description": "9 senior expert agents that work together on integration projects in regulated sectors (banking, healthcare, defense), with a one-command orchestrator (/tiger-team:mission), 11 expert commands and a confidentiality guard.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Crapule421",
+        "url": "https://github.com/Crapule421"
+      },
+      "homepage": "https://github.com/Crapule421/tiger-team",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "integration",
+        "devsecops",
+        "dba",
+        "job-scheduling",
+        "vtom",
+        "dollar-universe",
+        "control-m",
+        "api",
+        "mft",
+        "erp",
+        "sap",
+        "ibm-i",
+        "as400",
+        "enterprise-architecture",
+        "project-management",
+        "dora",
+        "hds"
+      ]
+    }
+  ]
+}

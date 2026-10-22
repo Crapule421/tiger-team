@@ -1,0 +1,28 @@
+{
+  "name": "tiger-team",
+  "version": "1.0.0",
+  "description": "9 senior expert agents that work together on technical and application integration projects in regulated sectors (banking, healthcare, defense): project manager, enterprise architect, DevSecOps, DBA, job scheduling (VTOM, Dollar Universe, Control-M), APIs and data flows, ERP, network and systems, IBM i.",
+  "author": {
+    "name": "Crapule421",
+    "url": "https://github.com/Crapule421"
+  },
+  "homepage": "https://github.com/Crapule421/tiger-team",
+  "repository": "https://github.com/Crapule421/tiger-team",
+  "license": "MIT",
+  "keywords": [
+    "integration",
+    "devsecops",
+    "dba",
+    "job-scheduling",
+    "vtom",
+    "dollar-universe",
+    "control-m",
+    "api",
+    "erp",
+    "sap",
+    "ibm-i",
+    "as400",
+    "enterprise-architecture",
+    "project-management"
+  ]
+}

@@ -1,0 +1,302 @@
+---
+name: ibmi-reference
+description: IBM i (AS/400, iSeries) knowledge base - RPG IV/ILE and fully free RPG, CL, COBOL, DB2 for i (SQL, DDS files, journaling, commitment control), libraries and library lists, subsystems, job queues, jobs, spool, IFS, security (profiles, special/object authorities, adopted authority, exit programs), integration (data queues, MQ, JDBC/ODBC, IWS/REST, FTP/SFTP, CFT), HA, scheduling, EBCDIC/CCSID pitfalls and a code review checklist. Load it when analysing, reviewing, integrating, operating or securing IBM i applications.
+user-invocable: false
+---
+
+# IBM i reference
+
+Baseline: IBM i 7.4 / 7.5 / 7.6 (check the support status of the customer's release). Many features arrive by Technology Refresh (TR) or PTF group: items flagged "verify against your release" must be checked (command prompt F4, `DSPCMD`, `DSPSYSVAL`, IBM Documentation). Never invent CL commands, keywords, system values or API parameters.
+
+## 1. Object model and source
+| Object type | What it is |
+|---|---|
+| `*LIB` | Library (flat, no nesting; QSYS is the root) |
+| `*FILE` | Physical file (PF, SQL table), logical file (LF, SQL index/view), source PF, display (DSPF), printer (PRTF), save file (SAVF), DDM file |
+| `*MODULE`, `*PGM`, `*SRVPGM`, `*BNDDIR` | ILE module, program, service program, binding directory |
+| `*CMD`, `*MSGF` | Command, message file |
+| `*DTAARA`, `*DTAQ`, `*USRSPC` | Data area, data queue, user space |
+| `*JOBD`, `*JOBQ`, `*OUTQ`, `*MSGQ`, `*SBSD`, `*CLS` | Work management objects |
+| `*USRPRF`, `*AUTL` | User profile, authorization list |
+| `*JRN`, `*JRNRCV` | Journal, journal receiver |
+
+Names are 10 characters (SQL long names map to system names). Source lives in source PFs (`QRPGLESRC`, `QCLLESRC`, `QCBLLESRC`, `QDDSSRC`; member types `RPGLE`, `SQLRPGLE`, `CLLE`, `CBLLE`, `SQLCBLLE`, `PF`, `LF`, `DSPF`, `PRTF`) or in IFS stream files (Git-friendly; `SRCSTMF` support per compile command - verify against your release).
+
+## 2. RPG IV / ILE RPG
+### 2.1 Free-form evolution
+| Level | Capability |
+|---|---|
+| V5R1+ | `/FREE ... /END-FREE` calculations; H/F/D/P specs still fixed |
+| 7.1 TR7 / 7.2 | Free-form declarations: `CTL-OPT`, `DCL-F`, `DCL-S`, `DCL-C`, `DCL-DS`, `DCL-PR`, `DCL-PI`, `DCL-PROC` |
+| 7.1 TR11 / 7.2 TR3 | `**FREE`: fully free source, no column limits |
+| Later TRs | New opcodes/BIFs (e.g. `DATA-INTO`, `DATA-GEN`) - verify against your release |
+
+### 2.2 Batch program skeleton (fictitious)
+```rpgle
+**FREE
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*srcstmt: *nodebugio)
+        datfmt(*iso) timfmt(*iso);
+
+dcl-pi *n;
+  pProcDate char(8);   // processing date YYYYMMDD from the scheduler
+  pRc       char(2);   // '00' = OK, otherwise error (CL wrapper turns it into an escape message)
+end-pi;
+
+dcl-s wDate date;
+dcl-s wRows int(10);
+
+exec sql set option commit = *chg, naming = *sys, datfmt = *iso, closqlcsr = *endmod;
+
+*inlr = *on;
+pRc = '99';
+monitor;
+  wDate = %date(pProcDate: *iso0);
+on-error;
+  return;                                   // invalid parameter -> error code
+endmon;
+
+exec sql update ECRITURE set STATUT = 'V'
+          where DATE_TRT = :wDate and STATUT = 'A';
+if %subst(sqlstate: 1: 2) <> '00' and %subst(sqlstate: 1: 2) <> '01'
+   and sqlstate <> '02000';
+  exec sql rollback;
+  return;
+endif;
+exec sql get diagnostics :wRows = ROW_COUNT;   // log the count for reconciliation
+exec sql commit;
+pRc = '00';
+return;
+```
+`SET OPTION` must be the first SQL statement in the source. Alternative to a return code: send an `*ESCAPE` message to the caller with the `QMHSNDPM` API.
+
+### 2.3 ILE concepts
+- `CRTRPGMOD` -> `*MODULE`; `CRTPGM` binds modules (+ `BNDSRVPGM`, `BNDDIR`); `CRTBNDRPG` = one-step program; `CRTSQLRPGI OBJTYPE(*PGM|*MODULE|*SRVPGM)` for embedded SQL (default `COMMIT(*CHG)` - set it explicitly).
+- Service programs: exports controlled by binder source (`STRPGMEXP PGMLVL(*CURRENT) SIGNATURE(...)` / `EXPORT SYMBOL(...)` / `ENDPGMEXP`); append new exports at the end and keep `*PRV` blocks, otherwise callers fail with a signature violation at activation. `UPDPGM`/`UPDSRVPGM` to replace modules.
+- Activation groups: `DFTACTGRP(*YES)` = OPM-compatible (no ILE features); `*NEW` = fresh AG per call (costly, cleans up at end); `*CALLER`; named AG = files, overrides, commitment definition and globals persist until `RCLACTGRP` or job end. Global variables in service programs persist across calls in the AG.
+
+### 2.4 Error handling
+| Mechanism | Scope / note |
+|---|---|
+| `MONITOR` / `ON-ERROR` / `ENDMON` | Block-level; ON-ERROR by status code, `*FILE`, `*PROGRAM`, `*ALL` |
+| `(E)` extender + `%ERROR`, `%STATUS` | Single operation |
+| `*PSSR`, `INFSR` | Legacy program/file exception subroutines |
+| PSDS / INFDS | Program/file status (job name/user/number, status, last record) |
+| `SQLSTATE` / `SQLCODE` / `GET DIAGNOSTICS` | After every `EXEC SQL`; class `00` OK, `01` warning, `02` no data |
+| Unhandled exception | Inquiry message (RNQxxxx) -> batch job waits in MSGW unless a reply is configured |
+
+### 2.5 RPG pitfalls
+- Decimal data errors (`MCH1202`) from invalid packed/zoned content (bad loads, `CPYF FMTOPT(*NOCHK)`, overlaid data structures).
+- Silent truncation/overflow in assignments; `EVAL(H)` for rounding; check field sizes against the DB definition.
+- Record locks: update-capable files lock the record read by `READ`/`CHAIN` until `UPDATE`/`UNLOCK`/next read; use `(N)` for read-only access; lock wait = file `WAITRCD` (record-in-use errors, e.g. `CPF5027` / `RNX1218`).
+- Level check `CPF4131` after a file format change without recompiling; `LVLCHK(*NO)` is a dangerous workaround.
+- Dates: 2-digit year formats (`*YMD`, `*MDY`, `*DMY`) only cover 1940-2039; legacy numeric dates (8,0) and CYYMMDD (7,0, C = 0 for 19xx, 1 for 20xx); sentinels 0001-01-01 / 9999-12-31.
+- Row-by-row SQL in loops instead of set-based statements or multi-row `FETCH`; cursors left open (`CLOSQLCSR`); dynamic SQL built by concatenation (SQL injection - use parameter markers).
+- Indicator-driven logic (`*INxx`), `GOTO`/`TAG`, cycle programs with implicit reads: document before changing.
+- Hard-coded library names; `*LIBL` dependency without a controlled job description.
+
+## 3. CL
+### 3.1 Batch wrapper skeleton (fictitious)
+```
+PGM        PARM(&PDATE)
+  DCL      VAR(&PDATE)   TYPE(*CHAR) LEN(8)
+  DCL      VAR(&RC)      TYPE(*CHAR) LEN(2)
+  DCL      VAR(&MSGID)   TYPE(*CHAR) LEN(7)
+  DCL      VAR(&MSGDTA)  TYPE(*CHAR) LEN(256)
+  DCL      VAR(&MSGF)    TYPE(*CHAR) LEN(10)
+  DCL      VAR(&MSGFLIB) TYPE(*CHAR) LEN(10)
+  MONMSG   MSGID(CPF0000 MCH0000) EXEC(GOTO CMDLBL(ERROR))
+
+  CALL     PGM(CPTVAL01) PARM(&PDATE &RC)
+  IF       COND(&RC *NE '00') THEN(SNDPGMMSG MSGID(CPF9898) MSGF(QCPFMSG) +
+             MSGDTA('CPTVAL01 failed, RC=' *CAT &RC) MSGTYPE(*ESCAPE))
+  RETURN
+
+ERROR:
+  RCVMSG   MSGTYPE(*EXCP) MSGDTA(&MSGDTA) MSGID(&MSGID) MSGF(&MSGF) SNDMSGFLIB(&MSGFLIB)
+  MONMSG   MSGID(CPF0000)
+  SNDPGMMSG MSGID(&MSGID) MSGF(&MSGFLIB/&MSGF) MSGDTA(&MSGDTA) MSGTYPE(*ESCAPE)
+  MONMSG   MSGID(CPF0000)
+ENDPGM
+```
+The escape message makes the job end abnormally, so the scheduler sees a failure.
+
+### 3.2 CL pitfalls
+- Global `MONMSG CPF0000` that only continues: errors are swallowed, the job ends normally, the scheduler reports success.
+- `SBMJOB` inside a scheduled CL: the scheduler only monitors the submitter; the real work escapes monitoring and dependencies.
+- `DLYJOB` polling loops waiting for files or other jobs instead of scheduler dependencies.
+- `QCMDEXC` with concatenated external input = command injection.
+- `ADDLIBLE`/`CHGLIBL` without restoring; `OVRDBF` scope (`OVRSCOPE`) and missing `DLTOVR`; `OPNQRYF` (legacy, prefer SQL).
+- Batch diagnostics: job description `LOG(4 00 *SECLVL)` and `LOGCLPGM(*YES)`; `LOG(4 0 *NOLIST)` keeps a job log only when the job ends abnormally.
+- Modern CL (7.x): `DOWHILE`/`DOUNTIL`/`DOFOR`, `SELECT`/`WHEN`, `SUBR`/`CALLSUBR`, `INCLUDE`; `RUNSQL`/`RUNSQLSTM` for SQL in CL.
+
+## 4. COBOL on IBM i
+- ILE COBOL: `CRTCBLMOD`, `CRTBNDCBL`; embedded SQL: `CRTSQLCBLI`; OPM COBOL (`CRTCBLPGM`) is legacy.
+- Bring DDS record formats with `COPY DDS-ALL-FORMATS OF <file>`; check `FILE STATUS` after every I/O (`00` OK, `10` end of file, `22` duplicate key, `23` not found; IBM i-specific `9x` codes - verify meaning, e.g. record lock).
+- `COMP-3` = packed, `PIC S9(n)` DISPLAY = zoned; `REDEFINES` mixing text and numeric breaks on character conversion.
+- `STOP RUN` ends the run unit (activation group) and closes files of other programs in it: use `GOBACK` in called programs.
+- Commitment control via `COMMITMENT CONTROL` clause and `COMMIT`/`ROLLBACK`; files must be journaled.
+
+## 5. DB2 for i
+### 5.1 Naming and access
+- System naming (`*SYS`): `LIB/FILE`, unqualified objects resolved through the library list. SQL naming (`*SQL`): `SCHEMA.TABLE`, unqualified objects resolved to the default schema (by default the authorization ID = user profile name). JDBC/ODBC default to SQL naming: same SQL, different tables.
+- Set naming explicitly: `SET OPTION NAMING`, JDBC property `naming`, ACS "Run SQL Scripts" settings.
+
+### 5.2 DDS vs SQL DDL
+| Aspect | DDS PF/LF | SQL table/index/view |
+|---|---|---|
+| Data validation | On read (bad data surfaces later as decimal data errors) | On write |
+| Deleted record reuse | `REUSEDLT(*NO)` default | Reuse by default (arrival-order assumptions break) |
+| Constraints, identity, generated timestamps, RCAC, temporal | Limited (`ADDPFCST` for constraints) | Native |
+| Select/omit | Logical files | Views; indexes with `WHERE` (verify against your release) |
+| Long names | No | Yes, with `FOR SYSTEM NAME` / `RCDFMT` |
+| Record format level id | Changes on format change -> `CPF4131` for programs compiled against the old format | Same mechanism for RLA programs over SQL tables |
+
+DDS-to-DDL modernization: keep record format names (`RCDFMT`) and field names so RPG RLA programs keep working; recompile dependants; surrogate logical files technique for staged migration.
+
+### 5.3 Journaling and commitment control
+- Objects: `CRTJRNRCV`, `CRTJRN`, `STRJRNPF` (use `IMAGES(*BOTH)` for HA/CDC/before images), `STRJRNOBJ` (data areas, data queues), `STRJRN` (IFS), `STRJRNLIB` (new objects in a library inherit journaling). Tables created by SQL in a schema created with `CREATE SCHEMA` are journaled automatically (journal `QSQJRN`).
+- Receivers: `CHGJRN JRNRCV(*GEN)`, system-managed receivers; never delete receivers needed by HA/CDC/audit; save before delete.
+- Read: `DSPJRN`, SQL table function `QSYS2.DISPLAY_JOURNAL`; record entries `PT` (insert), `UB`/`UP` (update before/after), `DL` (delete); commitment entries `SC`, `CM`, `RB`.
+- Commitment control: `STRCMTCTL LCKLVL(...) CMTSCOPE(*ACTGRP|*JOB)` for native I/O; RPG `COMMIT` file keyword and `COMMIT`/`ROLBK` opcodes; SQL `COMMIT`/`ROLLBACK`.
+
+| SQL isolation | IBM i level | Note |
+|---|---|---|
+| NC (No Commit) | `*NONE` | No commitment control; no journaling required |
+| UR | `*CHG` | Default for `CRTSQLxxxI`; requires journaling |
+| CS | `*CS` | |
+| RS | `*ALL` | |
+| RR | `*RR` | Table-level locking effect |
+
+Pitfalls: `SQL7008` (object not valid for operation - typically not journaled under commitment control); long batch transactions holding locks during online hours; uncommitted work at end of activation group/job (verify commit vs rollback behaviour for your case); commit every N rows with a restart key for restartable batch.
+
+### 5.4 SQL services for operations and reviews (availability by release/TR - verify)
+| Service | Use |
+|---|---|
+| `QSYS2.ACTIVE_JOB_INFO`, `QSYS2.JOB_INFO` | Active jobs / jobs on queues (e.g. find `MSGW`) |
+| `QSYS2.JOBLOG_INFO`, `QSYS2.HISTORY_LOG_INFO` | Job log, QHST history |
+| `QSYS2.SYSTABLES`, `SYSCOLUMNS`, `SYSINDEXES`, `SYSVIEWS` | Catalog |
+| `QSYS2.OBJECT_STATISTICS`, `QSYS2.IFS_OBJECT_STATISTICS` | Objects in libraries / IFS |
+| `QSYS2.USER_INFO`, `QSYS2.OBJECT_PRIVILEGES`, `QSYS2.FUNCTION_USAGE` | Security review |
+| `QSYS2.SYSTEM_VALUE_INFO` | System values |
+| `QSYS2.SCHEDULED_JOB_INFO` | `WRKJOBSCDE` entries |
+| `QSYS2.OUTPUT_QUEUE_ENTRIES` | Spooled files |
+| `QSYS2.NETSTAT_INFO` | TCP/IP connections |
+| `QSYS2.SYSIXADV` | Index advice |
+
+Security/privacy features: Row and Column Access Control (`CREATE PERMISSION`, `CREATE MASK`, 7.2+; administered with the `QIBM_DB_SECADM` function usage), field procedures for encryption, temporal tables (7.3+) for audit history.
+Performance: SQE optimizer, Visual Explain and index advisor in ACS, plan cache; prefer set-based SQL and views/procedures over row-level access from remote clients.
+
+## 6. Work management
+- Job identity: `number/user/name` (e.g. `123456/BATCHCPT/CPTJ01`).
+- Batch path: `SBMJOB` -> job queue -> subsystem (job queue entry with `MAXACT` and sequence) -> class (`RUNPTY`, time slice) -> job runs under the user of `SBMJOB USER()` or the job description.
+- Job description (`*JOBD`): `USER`, `JOBQ`, `INLLIBL`, `LOG`, `LOGCLPGM`, `INQMSGRPY`, `ENDSEV`, `OUTQ`, `HOLD`. One JOBD per application/environment.
+- Library list: system part (`QSYSLIBL`), product libraries, current library, user part (`QUSRLIBL` or JOBD `INLLIBL`). Commands `DSPLIBL`, `CHGLIBL`, `ADDLIBLE`, `RMVLIBLE`, `CHGCURLIB`. The library list differs between interactive tests, batch (JOBD), scheduler agent jobs and host-server jobs (ODBC/JDBC: connection property or user profile) - a classic "works in test, wrong data in prod" cause.
+- Subsystems: `QCTL` (controlling), `QBATCH`, `QINTER`, `QSPL`, `QCMN`, `QSERVER`, `QSYSWRK`, `QUSRWRK` (host server jobs such as `QZDASOINIT`), `QHTTPSVR`. Isolate applications in their own subsystem/job queue with `MAXACT` sized to their concurrency.
+- Commands: `WRKACTJOB`, `WRKSBS`, `WRKSBSD`, `WRKJOBQ`, `WRKSBMJOB`, `WRKUSRJOB`, `WRKJOB`, `DSPJOBLOG`, `CHGJOB`, `ENDJOB OPTION(*CNTRLD)`, `HLDJOBQ`/`RLSJOBQ`, `STRSBS`/`ENDSBS`, `WRKSYSSTS`, `WRKDSKSTS`, `DSPMSG QSYSOPR`.
+- Inquiry messages: a batch job hitting an inquiry waits in `MSGW` (the scheduler sees "running"). Control with `INQMSGRPY(*RQD|*DFT|*SYSRPYL)` and the system reply list (`WRKRPYLE`, `ADDRPYLE`); `*DFT` is dangerous (default reply may cancel or ignore). Monitor `MSGW` jobs and `QSYSOPR`.
+- `ENDSEV`: the job ends when a message of severity >= ENDSEV is not handled (default 30).
+- Job completion: message `CPF1164` carries an end code (0 = normal; other values = abnormal end - verify the code list in its second-level text). Job log output governed by `QLOGOUTPUT` (`*JOBEND`, `*JOBLOGSVR`, `*PND`).
+
+## 7. Spool and output queues
+- `*OUTQ`, spooled files owned by jobs, writers (`STRPRTWTR`, `STRRMTWTR` for remote LPR queues). Commands `WRKOUTQ`, `WRKSPLF`, `CPYSPLF`, `CHGSPLFA`, `DLTSPLF`, `CLROUTQ`.
+- Spooled files keep job structures alive: thousands of old spooled files bloat the system; set expiration and cleanup (verify `DLTEXPSPLF`/expiration attributes for your release); a maximum number of spooled files per job applies (`QMAXSPLF`).
+- Integration: prefer data outputs (DB, CSV/JSON in IFS) over parsing spool; to export spool use `CPYSPLF` (to a DB file or stream file - verify options) or transform services.
+
+## 8. IFS
+- File systems: `/` (root), `/QSYS.LIB`, `/QOpenSys` (case-sensitive), `/QDLS` (legacy), `/QNTC` (SMB shares), `/QFileSvr.400`.
+- Commands: `WRKLNK`, `CPY`, `MOV`, `RMVLNK`, `MKDIR`, `RMVDIR`, `CHGAUT`, `WRKAUT`, `CHGOWN`, `CHGATR`, `CPYTOSTMF`/`CPYFRMSTMF`, `CPYTOIMPF`/`CPYFRMIMPF` (CSV with `STMFCCSID`, `RCDDLM`), `QSH`, PASE shells.
+- Pitfalls: stream file CCSID tag not matching content (tag UTF-8 files 1208); CRLF vs LF; `*PUBLIC *RWX` directories; NetServer shares mapped by PCs (ransomware exposure - restrict, scan with the integrated file scanning exit points); case sensitivity in `/QOpenSys`.
+
+## 9. Security
+- System values: `QSECURITY` 40 minimum (50 preferred); `QPWDLVL`, `QPWDRULES`; `QMAXSIGN`/`QMAXSGNACN`; `QINACTITV`; `QCRTAUT` (default `*CHANGE` - restrict at library `CRTAUT`); `QALWOBJRST`/`QVFYOBJRST`; `QLMTSECOFR`; `QRMTSIGN`; `QAUDCTL`/`QAUDLVL` with `QAUDJRN`; `QSSLPCL`/`QSSLCSL` (TLS protocols/ciphers).
+- Special authorities (8): `*ALLOBJ`, `*SECADM`, `*JOBCTL`, `*SPLCTL`, `*SAVSYS`, `*SERVICE`, `*AUDIT`, `*IOSYSCFG`. Application and batch profiles need none of them as a rule.
+- Object authorities: `*ALL`, `*CHANGE`, `*USE`, `*EXCLUDE`, `*AUTL`; detailed object (`*OBJOPR`, `*OBJMGT`, `*OBJEXIST`, `*OBJALTER`, `*OBJREF`) and data (`*READ`, `*ADD`, `*UPD`, `*DLT`, `*EXECUTE`) authorities; `*PUBLIC` default, private authorities, group profiles and supplemental groups, authorization lists.
+- Batch/service profiles: `PASSWORD(*NONE)` (no sign-on), owned by security, used via `SBMJOB USER()`/JOBD (the submitter needs `*USE` on the profile); `LMTCPB(*YES)` for interactive users.
+- Adopted authority: program `USRPRF(*OWNER)` runs with the owner's authority, propagated down the call stack unless `USEADPAUT(*NO)`; risky when the owner is powerful and the program offers a command line, `QCMDEXC` with user input, or calls user-replaceable programs via `*LIBL`. Audit with `PRTADPOBJ`; for dynamic SQL see `DYNUSRPRF`.
+- Exit points (`WRKREGINF`): without exit programs, users with object authority can read/update data through ODBC/JDBC, FTP, remote command or file server regardless of application menus. Key exit points: `QIBM_QZDA_INIT`, `QIBM_QZDA_SQL1`/`SQL2` (database host server), `QIBM_QTMF_SERVER_REQ` and `QIBM_QTMF_SVR_LOGON` (FTP server), `QIBM_QZRC_RMT` (remote command/program call), `QIBM_QPWFS_FILE_SERV` (file server), `QIBM_QZHQ_DATA_QUEUE` (data queue server). Function usage IDs (`WRKFCNUSG`, e.g. `QIBM_DB_ZDA`, `QIBM_DB_DDMDRDA`) restrict host-server access - verify against your release.
+- Audit journal entry types: `AF` authority failure, `PW` invalid sign-on/password, `CP` profile change, `CA` authority change, `SV` system value change, `CO`/`DO` create/delete, `ZC`/`ZR` object change/read, `CD` command string, `PA` adopt attribute change.
+- Tools: `ANZDFTPWD` (default passwords), `ANZPRFACT`, `PRTUSRPRF`, `PRTPUBAUT`, `PRTPVTAUT`, `PRTADPOBJ`, `PRTSYSSECA`. IBM profiles (`QSECOFR`, `QSYSOPR`, `QPGMR`, `QUSER`, `QSRV`, `QSRVBAS`) must not keep default passwords.
+- TLS: certificates managed in Digital Certificate Manager (DCM) and assigned to host servers, Telnet, FTP, HTTP; disable plaintext services where possible.
+
+## 10. Integration
+| Mechanism | Use | Key points / pitfalls |
+|---|---|---|
+| JDBC (IBM Toolbox for Java / JTOpen `jt400.jar`) | Java apps, ETL, middleware | URL `jdbc:as400://<host>`; properties `naming`, `libraries`, `secure=true` (TLS), `prompt=false`, `errors=full`, `date format`, `translate binary`, `transaction isolation`; on-box native driver `jdbc:db2:*local`. Server jobs `QZDASOINIT` (TLS `QZDASSINIT`). |
+| ODBC (IBM i Access ODBC driver, from ACS application packages) | Windows/Linux tools, BI | Same host server; set naming, default libraries, commit mode explicitly; protect with exit programs. |
+| DRDA / DDM | IBM i to IBM i or other Db2 | RDB directory `WRKRDBDIRE`; port 446; three-part names. |
+| Data queues (`CRTDTAQ`; APIs `QSNDDTAQ`, `QRCVDTAQ`, `QCLRDTAQ`) | Low-latency signalling, request/response inside IBM i or via host server (JTOpen `DataQueue`/`KeyedDataQueue`) | FIFO/LIFO/keyed; not transactional, not guaranteed delivery (journal with `STRJRNOBJ`, `FORCE` attribute - verify); SQL services to send/receive exist in recent releases - verify. |
+| IBM MQ for IBM i | Guaranteed, transactional messaging with the rest of the IS | Queue manager CL commands (`CRTMQM`, `STRMQM`, `WRKMQM`, ...); MQI from RPG/COBOL; TLS channels; DLQ and poison-message handling; coordinate with commitment control (verify). |
+| IWS (Integrated Web Services server) | Expose RPG/COBOL programs and service programs as REST or SOAP services (PCML-based) | Admin via HTTP admin GUI; versioning, authentication, TLS; parameter size limits; keep business logic in service programs. |
+| HTTP from SQL | Consume REST/JSON from DB2 for i | `QSYS2.HTTP_GET`/`HTTP_POST`... (recent TRs; older Java-based `SYSTOOLS.HTTP*` functions are deprecated) with `JSON_TABLE`; certificate store, timeouts. |
+| Open source in PASE | Node.js, Python, Java, OpenSSH, Git via RPM/yum | Call RPG via XMLSERVICE/itoolkit or ODBC; manage packages with ACS Open Source Package Management. |
+| FTP | Legacy transfers | Plaintext credentials; `NAMEFMT` 0 (`LIB/FILE.MBR`) vs 1 (paths); ASCII vs binary mode drives EBCDIC conversion; guard with FTP exit points; prefer SFTP/MFT. |
+| SFTP/SSH (PASE OpenSSH) | Secure file transfer | Key-based auth for a dedicated profile; `known_hosts` managed; batch mode (`sftp -b`); file CCSID handling explicit. |
+| Transfer CFT (Axway) | MFT standard in many French banks; IBM i edition exists | Partners/flows defined with CFTUTIL; transcoding EBCDIC <-> ASCII configured per flow (verify parameters); acknowledgments; scheduler waits on transfer end/ack, not on the send command. |
+| Journal-based CDC | Feed data platforms without touching programs | `IMAGES(*BOTH)`, receiver retention coordinated with HA/backup; commit boundaries respected. |
+
+Host server ports (TLS in brackets): port mapper 449, central 8470 (9470), database 8471 (9471), data queue 8472 (9472), file 8473 (9473), network print 8474 (9474), remote command 8475 (9475), sign-on 8476 (9476); DRDA/DDM 446; Telnet 23 (992).
+
+## 11. High availability, DR, backup
+| Approach | Mechanism | Watch points |
+|---|---|---|
+| PowerHA SystemMirror for IBM i | Clustering with IASP: geographic mirroring, storage replication (Metro/Global Mirror, FlashCopy, HyperSwap on supported storage) | Application data in the IASP; SYSBAS objects (profiles, system values, JOBDs, subsystems...) synchronized by the cluster administrative domain. |
+| Db2 Mirror for i | Synchronous active-active between two nodes (7.4+) | Distance limits, licensing, application suitability. |
+| Logical replication (journal-based) | Remote journal (`ADDRMTJRN`) + apply on target; commercial products (e.g. MIMIX, iTERA, Maxava, Quick-EDD - verify current names) | Non-journaled objects, IFS, spool, user profiles/passwords, identity/sequence values at switchover, triggers/constraints on target, apply lag monitoring, regular role-swap tests. |
+| Backup | `SAVSYS`, `SAVLIB`, `SAVOBJ`, `SAVCHGOBJ`, `SAV` (IFS), `GO SAVE` options 21/22/23, BRMS; save-while-active `SAVACT` | Restricted state for full saves; save window vs batch window; restore tests. |
+
+## 12. Scheduling on IBM i
+- Native `WRKJOBSCDE` (`ADDJOBSCDE`, `CHGJOBSCDE`, `RMVJOBSCDE`, `HLDJOBSCDE`, `RLSJOBSCDE`): time-based only (`FRQ(*ONCE|*WEEKLY|*MONTHLY)`, `SCDDATE`, `SCDDAY`, `SCDTIME`, `RELDAYMONTH`, `OMITDATE`, `RCYACN`); no dependencies; inventory with `QSYS2.SCHEDULED_JOB_INFO`.
+- Advanced Job Scheduler (licensed program 5770-JS1): dependencies, calendars, notifications. Third-party native schedulers exist (e.g. Robot Schedule).
+- Enterprise schedulers (Control-M, Dollar Universe, VTOM) run IBM i jobs through their IBM i agents. Agent contract to verify for each tool/version:
+  - submission: `SBMJOB` with which JOBD, JOBQ and user profile; library list source;
+  - status: how success/failure is computed (job end code, escape message, return code) - a CL that swallows errors reports success;
+  - `MSGW` detection and timeout; job log retrieval (spool `QPJOBLOG`) and its CCSID conversion;
+  - restart: rerun = new job; checkpoint/restart must be in the program;
+  - time: `QTIMZON` drives local time and DST; align with the scheduler's time zone.
+
+## 13. EBCDIC / CCSID pitfalls
+| CCSID | Meaning |
+|---|---|
+| 37 / 1140 | EBCDIC US / with euro |
+| 297 / 1147 | EBCDIC France / with euro |
+| 500 / 1148 | EBCDIC International / with euro |
+| 819 / 923 / 1252 | ISO-8859-1 / ISO-8859-15 / Windows-1252 |
+| 1208 / 1200 / 13488 | UTF-8 / UTF-16 / UCS-2 |
+| 65535 | `*HEX`: no conversion |
+
+- `QCCSID` 65535 and fields tagged 65535: no conversion, clients receive raw EBCDIC or binary (JDBC `translate binary`). Job CCSID vs default job CCSID (`DFTCCSID`) - set a real CCSID (e.g. 1147 or 297 for French).
+- Variant characters (`# @ $ [ ] { } \ | ! ^ ~ £ §` and accented letters) sit at different code points in 37, 297 and 500: object names using `#@$`, SQL using `[ ]` or `|`, and source moved between systems with different CCSIDs get corrupted.
+- Euro sign exists only in the euro CCSIDs (1140/1147/1148...); 297 data converted to 1252 loses it.
+- Packed (`COMP-3`) and binary fields must never go through character conversion; zoned signed numbers show letters/`{`/`}` in the last position when converted to ASCII. Convert to display/text format before transfer, or transfer in binary and decode on the other side.
+- Collation: EBCDIC sorts lowercase < uppercase < digits; ASCII sorts digits < uppercase < lowercase. Merges, range keys and "sorted file" assumptions break across platforms.
+- Fixed-length records with trailing blanks, no line delimiters in DB files; `CHAR` vs `VARCHAR`; null-capable fields need `ALWNULL(*USRCTL)` handling in RPG.
+- Reconciliation: counts and control totals on decoded values on both sides, plus round-trip tests with accented characters, euro sign, negative packed values.
+
+## 14. Common messages and SQLCODEs
+| ID | Meaning |
+|---|---|
+| `CPF9801` / `CPF9802` / `CPF9810` | Object not found / not authorized / library not found |
+| `CPF2103` | Library already in library list (monitor on `ADDLIBLE`) |
+| `CPF4131` | Level check on file |
+| `CPF1164` | Job ended (end code in message data) |
+| `CPF9898` | Generic message used for custom escape messages |
+| `MCH1202` / `MCH3601` | Decimal data error / pointer not set |
+| `RNQxxxx` / `RNXxxxx` | RPG runtime inquiry / escape messages |
+| `SQL7008` | Object not valid for operation (often: not journaled) |
+| SQLCODE 100 / -803 / -811 / -913 / -204 / -551 | No row / duplicate key / more than one row on `SELECT INTO` / row or object in use / object not found / not authorized |
+Check second-level text with `DSPMSGD` (message file `QCPFMSG`, `QRNXMSG`, `QSQLMSG`).
+
+## 15. Code review checklist
+| Area | Check |
+|---|---|
+| Structure | Free-form or plan to convert; procedures in service programs; no dead code; copybooks for prototypes; binder source with signatures managed. |
+| Error handling | Every SQL statement checked (`SQLSTATE`); `MONITOR` around risky operations; no unhandled exceptions in batch (no MSGW); CL resends escape messages; return codes propagated to the scheduler. |
+| Data integrity | Commitment control where several updates must be atomic; files journaled; commit frequency and restart key for long batches; idempotent reruns. |
+| Locking | Read-only access with `(N)`/`FOR READ ONLY`; short lock duration; `WAITRCD` and lock errors handled. |
+| SQL | Set-based; parameter markers (no concatenated dynamic SQL); explicit naming and commit options; indexes for predicates; no `SELECT *` in programs. |
+| Dates/numerics | Formats explicit; 2-digit years absent; overflow/truncation checked; packed data validated at boundaries. |
+| Libraries | No hard-coded libraries; JOBD/library list controlled per environment; same behaviour in batch and remote access. |
+| Security | No hard-coded credentials; adopted authority justified and limited; no `QCMDEXC` with external input; objects owned by an application owner profile, `*PUBLIC *EXCLUDE` on data. |
+| Integration | CCSID handled explicitly; transfers acknowledged; data queues not used where guaranteed delivery is required; exit programs cover remote access. |
+| Operations | Job log level adequate; messages meaningful; run book: restart procedure, dependencies, JOBD/JOBQ, expected duration. |
+| Change | Source in Git (IFS) or controlled change management; recompile dependants after file changes; object ownership and authorities set at deployment. |
