@@ -11,7 +11,7 @@ A squad of expert agents for technical and application integration projects, bui
 [![CI](https://github.com/Crapule421/tiger-team/actions/workflows/ci.yml/badge.svg)](https://github.com/Crapule421/tiger-team/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-2EA043)](LICENSE)
 
-[Quick start](#-quick-start) · [The team](#-the-team) · [How they work together](#-how-they-work-together) · [Commands](#-commands) · [Confidentiality](#-confidentiality) · [🇫🇷 Français](#-tiger-team-en-français)
+[Quick start](#-quick-start) · [The team](#-the-team) · [How they work together](#-how-they-work-together) · [Commands](#-commands) · [Examples](examples/) · [Confidentiality](#-confidentiality) · [Roadmap](#%EF%B8%8F-roadmap-and-contributions-wanted) · [🇫🇷 Français](#-tiger-team-en-français)
 
 </div>
 
@@ -24,7 +24,11 @@ A *tiger team* is a group of senior specialists brought together to crack a hard
 IBM i extraction → CFT transfer → SAP IDocs. Banking context (DORA). release
 ```
 
-> 17 minutes later: architect framing, six experts, two handoff rounds, a go/no-go verdict, a 9-decision arbitration log and a timed release sheet with rollback. Real run, fictitious data.
+> 17 minutes later: architect framing, five experts, a handoff round, a coherence review, a go/no-go verdict, a 9-decision arbitration log and a timed release sheet with rollback. Real run, fictitious data — [read the full output](examples/mission-release-vtom-to-control-m.md).
+
+<p align="center">
+  <img src="docs/assets/mission-terminal.svg" alt="A Tiger Team mission in Claude Code: the lead picks six experts, routes their handoffs and returns a consolidated NO-GO verdict with risks, arbitrations and a release sheet" width="900">
+</p>
 
 ## 🚀 Quick start
 
@@ -133,7 +137,8 @@ Each command takes a description or a file path. Except `discover`, a command ru
 
 ## 📚 What is inside
 
-- **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Facts are checked against official documentation where it is public; anything that could not be confirmed is marked *verify against your version* rather than guessed.
+- **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Every reference file ends with the official sources it was checked against. Where no public official source settles a point (a vendor's behaviour that varies by version, a law not yet promulgated), the text says *verify against your version* instead of guessing: you will meet that phrase, and it is deliberate.
+- **Real example outputs** in [`examples/`](examples/): a full mission, a quick mission and a direct command, unedited, with their measured cost.
 - **Sector compliance** references: DORA, NIS2, EBA, ACPR, PCI DSS, AML/CFT and banking secrecy; HDS, GDPR article 9, PGSSI-S, INS and CI-SIS; IGI 1300, II 901, homologation and ANSSI qualifications. Informational, not legal advice.
 - **9 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet.
 - **Discovery protocol**: what each expert must know about your environment, how to obtain it (commands, console paths, documents), and the factual discipline every answer follows.
@@ -198,6 +203,23 @@ CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1 claude
 Then ask: *"Create an agent team with tiger-team:integration-expert, tiger-team:scheduling-expert and tiger-team:infra-expert to …"*. Expect a much higher token cost, and note that skills are not preloaded into teammates. On Windows only the in-process display mode works. Keep the default orchestration (`/tiger-team:mission`) for everyday work.
 
 </details>
+
+## 🗺️ Roadmap and contributions wanted
+
+The team is built by one integrator, from official documentation and field practice. It gets better with every practitioner who corrects a fact or adds a tool they run every day. Where help is most welcome:
+
+| Area | Wanted | Why |
+|---|---|---|
+| **Scheduling** | Practitioners of VTOM and Dollar Universe to review `scheduling-reference/references/vtom.md` and `dollar-universe.md`; coverage of Broadcom AutoSys and IBM Workload Scheduler (IWS/TWS) | Their public documentation is thinner than Control-M's, so more facts are still flagged *verify* |
+| **IBM i** | Review of `ibmi-reference` by RPG and operations people; IBM i scheduler agent specifics per tool | Legacy knowledge lives with practitioners, not online |
+| **ERP** | Cegid and Sage X3 specifics; Oracle Fusion and Dynamics 365 integration patterns from real projects | Vendor docs cover the mechanisms, not the project traps |
+| **Healthcare** | HL7 v2 / FHIR FR Core / INS flows from hospital integrators; HDS v2.1 once published | Interoperability specs move fast in France |
+| **Mainframe** | A `zos-expert` (JCL, CICS, Db2 for z/OS, Control-M for z/OS) | Many banking batch chains still land there |
+| **Templates** | DPIA (AIPD) skeleton, homologation dossier outline, interface test-plan template | Requested on regulated projects |
+| **Quality** | An evaluation suite that replays the `examples/` prompts and checks the output structure; cheaper expert runs (per-agent `model` option) | Keep behaviour stable across Claude Code releases and cut the cost of a mission |
+| **Languages** | Prompts stay in English; a French-first variant of the README and templates would help non-English teams | — |
+
+Open a [fact correction](https://github.com/Crapule421/tiger-team/issues/new?template=fact_correction.yml) when a command, parameter or legal reference is wrong, a [feature request](https://github.com/Crapule421/tiger-team/issues/new?template=feature_request.yml) for a new expert or tool, or a [bug report](https://github.com/Crapule421/tiger-team/issues/new?template=bug_report.yml) when an agent misbehaves. Fictitious data only, always.
 
 ## 🛠️ Customizing and contributing
 

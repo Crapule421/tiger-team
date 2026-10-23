@@ -1,0 +1,57 @@
+name: Bug report
+description: An agent, command, the orchestrator or the confidentiality guard does not behave as documented.
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please use fictitious names and data in your example. Never paste real hostnames, customer data, secrets or anything from a classified or Diffusion Restreinte context.
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - /tiger-team:mission (orchestration)
+        - A direct command (/tiger-team:<command>)
+        - An agent called directly
+        - Confidentiality guard (hook)
+        - Installation / marketplace
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What you did
+      description: The exact command or prompt, with fictitious data.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What happened
+      description: Paste the relevant part of the output or the error message.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Output of `claude --version` and the plugin version (`claude plugin list`).
+      placeholder: Claude Code 2.1.x, tiger-team 1.2.0, Windows 11 / macOS 15 / Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model used by the session
+      placeholder: e.g. Opus, Sonnet

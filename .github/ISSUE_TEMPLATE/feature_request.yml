@@ -1,0 +1,45 @@
+name: Feature request
+description: A new expert, tool, command, template or sector you would like the team to cover.
+title: "[feature] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind
+      options:
+        - New expert agent
+        - New tool or product in an existing knowledge base (e.g. another scheduler, database, ERP)
+        - New command
+        - New deliverable template
+        - New sector or regulation
+        - Orchestration behaviour
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: need
+    attributes:
+      label: The situation you are in
+      description: What integration work would this help with? A short, fictitious example is perfect.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you propose
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Official sources we could build on
+      description: Vendor documentation, standards or legal texts. Knowledge bases are written from official sources only.
+  - type: dropdown
+    id: help
+    attributes:
+      label: Could you contribute to it?
+      options:
+        - Yes, I can write or review the content
+        - I can test it on a real (anonymized) case
+        - No, just suggesting

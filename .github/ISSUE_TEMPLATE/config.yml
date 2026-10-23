@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security issue
+    url: https://github.com/Crapule421/tiger-team/security/policy
+    about: A way to bypass the confidentiality guard or a prompt that could leak data — report it privately, not as an issue.
+  - name: Claude Code plugin documentation
+    url: https://code.claude.com/docs/en/plugins
+    about: How plugins, agents, skills and hooks work in Claude Code.

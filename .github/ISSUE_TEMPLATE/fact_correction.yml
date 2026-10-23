@@ -1,0 +1,50 @@
+name: Fact correction
+description: A product, command, parameter or regulatory fact in a knowledge base is wrong or outdated.
+title: "[fact] "
+labels: ["fact-check"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you. Corrections from practitioners are the most valuable contributions. Please cite the official documentation or legal text: we only change a fact with a source.
+        Do not paste confidential material, real hostnames, customer names or anything from a classified or Diffusion Restreinte context.
+  - type: input
+    id: file
+    attributes:
+      label: File and section
+      description: Path under `plugins/tiger-team/skills/` and the section or line.
+      placeholder: skills/scheduling-reference/references/control-m.md, section 5
+    validations:
+      required: true
+  - type: textarea
+    id: wrong
+    attributes:
+      label: What the file says
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: right
+    attributes:
+      label: What is correct
+      description: Include the product version or the version of the text it applies to.
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Official source
+      description: URL of the vendor documentation, standard or legal text (EUR-Lex, Légifrance, vendor docs…).
+      placeholder: https://
+    validations:
+      required: true
+  - type: dropdown
+    id: confidence
+    attributes:
+      label: How sure are you?
+      options:
+        - I read it in the official source linked above
+        - I know it from practice but could not find it in the documentation
+        - I am not sure, please check
+    validations:
+      required: true

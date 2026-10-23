@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Documentation
+- `examples/`: three real, unedited outputs with their command, experts, version and measured cost (full `release` mission, `quick` mission, `scheduler-convert`).
+- README: terminal illustration of a mission, roadmap and contributions-wanted section, explanation of the *verify against your version* convention, measured costs.
+- GitHub issue templates (bug report, fact correction with mandatory official source, feature request) and pull request template.
+
 ## [1.2.0] - 2026-10-23
 
 ### Added

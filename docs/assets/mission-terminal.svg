@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="560" viewBox="0 0 960 560" role="img" aria-label="Tiger Team mission in Claude Code: the lead picks six experts, routes their handoffs and returns a consolidated verdict">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1b1f2a"/>
+      <stop offset="1" stop-color="#11141c"/>
+    </linearGradient>
+    <style>
+      .t { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 14px; fill: #d6dae3; }
+      .dim { fill: #8b93a7; }
+      .p { fill: #f2a444; }
+      .k { fill: #7ec8ff; }
+      .ok { fill: #6fd38a; }
+      .warn { fill: #ffb454; }
+      .crit { fill: #ff6b6b; }
+      .b { font-weight: 700; fill: #ffffff; }
+      .title { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 13px; fill: #8b93a7; }
+    </style>
+  </defs>
+  <rect x="0.5" y="0.5" width="959" height="559" rx="14" fill="url(#bg)" stroke="#2c3242"/>
+  <rect x="0.5" y="0.5" width="959" height="38" rx="14" fill="#232836"/>
+  <rect x="0.5" y="24" width="959" height="15" fill="#232836"/>
+  <circle cx="22" cy="19.5" r="6" fill="#ff5f57"/>
+  <circle cx="42" cy="19.5" r="6" fill="#febc2e"/>
+  <circle cx="62" cy="19.5" r="6" fill="#28c840"/>
+  <text x="480" y="24" text-anchor="middle" class="title">claude — tiger-team</text>
+
+  <g class="t">
+    <text x="24" y="72"><tspan class="p">❯</tspan> <tspan class="k">/tiger-team:mission</tspan> Migrate the nightly accounting chain from VTOM to Control-M:</text>
+    <text x="24" y="92">  IBM i extraction → CFT transfer → SAP IDocs. New firewall flows. Banking (DORA). <tspan class="k">release</tspan></text>
+
+    <text x="24" y="128" class="dim">Mission framed. Sector: banking (DORA). Mode: release. Collecting environment facts…</text>
+    <text x="24" y="148" class="dim">Team: enterprise-architect (framing + review) and 5 experts in parallel — about 30 agent calls.</text>
+
+    <text x="24" y="184"><tspan class="b">Expert</tspan>                 <tspan class="b">Main contribution</tspan></text>
+    <text x="24" y="204"><tspan class="k">enterprise-architect</tspan>   shadow run then atomic cut-over, 6 principles, end-to-end NFRs, 12 coherence findings</text>
+    <text x="24" y="224"><tspan class="k">scheduling-expert</tspan>      13-job smart folder, restart matrix, LOCK_GL lock, SLA alerts, no trigger in the DST hour</text>
+    <text x="24" y="244"><tspan class="k">ibmi-expert</tspan>            read-only extraction, .ctl control file, UTF-8 conversion, lock data area, IBM i agent</text>
+    <text x="24" y="264"><tspan class="k">integration-expert</tspan>     CFT in mutual TLS, RUN_ID propagation, reconciliation points R0–R4, replay, contract</text>
+    <text x="24" y="284"><tspan class="k">erp-expert</tspan>             IDoc background processing, OBJ_KEY duplicate check, jobs S0–S4, reversal by BAPI</text>
+    <text x="24" y="304"><tspan class="k">infra-expert</tspan>           flow matrix (~15 flows), PKI, sizing and hardening, firewall calendar and DR</text>
+
+    <text x="24" y="340"><tspan class="dim">Handoffs routed:</tspan> dba→scheduling (lock in the window) · integration→infra (CFT ack flow) · ibmi→erp (CCSID)</text>
+
+    <text x="24" y="376"><tspan class="b">Verdict:</tspan> <tspan class="crit">NO-GO</tspan> today — 11 blocking criteria, 3 with no result yet.</text>
+    <text x="24" y="396"><tspan class="warn">▲</tspan> Risk #1: double posting. Blocked four ways: shared lock, CFT transfer register, exact IDoc count, OBJ_KEY check.</text>
+    <text x="24" y="416"><tspan class="warn">▲</tspan> The OBJ_KEY duplicate check is <tspan class="b">not proven</tspan>: replay test required in pre-production before 2026-11-20.</text>
+    <text x="24" y="436"><tspan class="ok">●</tspan> Recommended cut-over: night of 2027-02-09, after the year-end close. Business decision — yours (§ 8).</text>
+    <text x="24" y="456"><tspan class="ok">●</tspan> Urgent: firewall request to file by <tspan class="b">2026-10-27</tspan>.</text>
+
+    <text x="24" y="492" class="dim">Deliverables: risk matrix (14) · 9 arbitrations · action plan · release sheet with rollback · 5 open questions</text>
+    <text x="24" y="512" class="dim">Measured: 17 min, USD 4.87. Full output: examples/mission-release-vtom-to-control-m.md</text>
+    <text x="24" y="540"><tspan class="p">❯</tspan> <tspan class="dim">▍</tspan></text>
+  </g>
+</svg>
