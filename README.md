@@ -110,7 +110,7 @@ The `Handoffs` section is what makes nine agents behave like a team. The DBA fla
 | `release` | a go-live being prepared | release sheet, go/no-go criteria, rollback plan |
 | `quick` | a cross-domain question | one expert round, short consolidated answer |
 
-> **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage. For a single-domain question, a direct command costs a fraction of that.
+> **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage (measured: about 5 USD for the example above). A `quick` mission with three experts measured about 3.5 USD; a direct command about 1 USD. Figures depend on your model and on the other plugins loaded in your session.
 
 ## ⚡ Commands
 
