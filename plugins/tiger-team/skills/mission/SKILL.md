@@ -34,7 +34,8 @@ A full mission is expensive: typically 20 to 40 agent calls, 10 to 20 minutes an
 ## 2. Frame the mission
 
 - Restate the objective, scope, constraints (regulatory sector, calendar, freeze periods, volumes) and what "done" means.
-- If information that would change the answer is missing, ask the user **at most five short questions** now and wait. If the user said to proceed, continue with explicit assumptions instead.
+- **Collect the environment facts once**, so that experts do not each ask the same questions: read `docs/tiger-team/environment.md` (or the environment sheet path given) when it exists, then the files named in the request. List the decisive facts still missing, using the `discovery` skill's question lists for the experts you will involve.
+- If information that would change the answer is missing, ask the user **at most five short questions** now, each with why it matters and how to obtain the answer, and wait. If the user said to proceed, continue with explicit assumptions instead. When many facts had to be asked, suggest `/tiger-team:discover` at the end of the mission.
 - **Pick the team.** Only the experts the topic needs. Show the user a short table (expert → why), say how many agent calls to expect, then continue. If one expert is enough, say so and suggest the matching direct command instead (for example `/tiger-team:batch-review`).
 
 | Expert (`subagent_type`) | Involve when the topic touches |
@@ -59,6 +60,7 @@ Send **one Agent call per selected expert, all in the same message**, so they ru
 ```
 Mission: <one-line objective>        Mode: <mode>        Sector: <banking|healthcare|defense|other>
 Context: <systems, volumes, calendar, constraints — fictitious names only>
+Environment facts: <versions, topology, tools, conventions known for this expert's domain, each with its source; "unknown" where it is>
 Architecture constraints: <from the architect, if any>
 Files to read: <absolute paths, if any>
 Your questions: <3 to 6 precise questions for this expert>

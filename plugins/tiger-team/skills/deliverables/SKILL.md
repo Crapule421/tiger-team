@@ -20,6 +20,7 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 | Clarify who does what | `raci.md` | project-manager | all | Framing, reviewed per phase |
 | Track risks, assumptions, issues, dependencies | `raid.md` | project-manager | all | Whole project, reviewed weekly |
 | Record acceptance of a delivery | `uat-signoff.md` | project-manager | business owner, testers | End of each acceptance campaign |
+| Record the organization's environment facts once, for every expert to read | `environment-sheet.md` | project-manager (via `/tiger-team:discover`) | all | Start of the engagement, kept current |
 
 ## How to instantiate a template
 
@@ -52,3 +53,4 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 - `templates/raci.md` — RACI matrix (Matrice RACI) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raci.md`
 - `templates/raid.md` — RAID log (Registre des risques, hypothèses, problèmes et dépendances) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raid.md`
 - `templates/uat-signoff.md` — UAT sign-off (Procès-verbal de recette): scope, campaign summary, defects, reservations, decision, signatures — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/uat-signoff.md`
+- `templates/environment-sheet.md` — Environment sheet (Fiche d'environnement): facts about the organization's environment per domain, with sources and open points; lives in `docs/tiger-team/environment.md` — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/environment-sheet.md`

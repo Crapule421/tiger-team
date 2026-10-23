@@ -79,6 +79,8 @@ Requires Claude Code (tested with 2.1.292). The confidentiality guard needs `bas
 
 Every expert is a Claude Code subagent (`tiger-team:<name>`) with a preloaded knowledge base, the confidentiality rules of the regulated sectors, and the same answer format: **Summary · Analysis · Recommendations · Risks · Handoffs · Open questions · Assumptions**. They answer in your language.
 
+**They ask before they guess.** Each expert knows which facts about *your* environment would change its answer (scheduler version and New Day time, database edition and HA topology, firewall change process, ERP release, IBM i PTF level…) and where to find them. In a conversation it asks you up to five precise questions, each with why it matters and how to obtain the answer; when it runs from a command it states explicit assumptions and lists the checks to run instead. What it says is labelled **Fact** (with its source), **Inference** or **Assumption**, and every product statement is version-qualified. Record your environment once with `/tiger-team:discover`: it writes `docs/tiger-team/environment.md`, which every expert reads before answering.
+
 ## 🤝 How they work together
 
 ```mermaid
@@ -114,6 +116,7 @@ The `Handoffs` section is what makes nine agents behave like a team. The DBA fla
 
 | Command | Expert | Produces |
 |---|---|---|
+| `/tiger-team:discover` | 🎯 project-manager (interactive) | the environment sheet `docs/tiger-team/environment.md`, built from an interview about your organization's environment |
 | `/tiger-team:scoping` | 🎯 project-manager | scoping note, RACI, RAID, experts to involve |
 | `/tiger-team:release-plan` | 🎯 project-manager | release sheet, go/no-go criteria, rollback plan |
 | `/tiger-team:adr` | 🏛️ enterprise-architect | architecture decision record or target-architecture note |
@@ -126,13 +129,14 @@ The `Handoffs` section is what makes nine agents behave like a team. The DBA fla
 | `/tiger-team:flow-matrix` | 🌐 infra-expert | network flow matrix and firewall requests |
 | `/tiger-team:ibmi-review` | 🟢 ibmi-expert | analysis of an RPG/CL/COBOL program, job or IBM i interface |
 
-Each command takes a description or a file path. It runs in the expert's own context and never asks you questions: when something is missing, it states its assumptions.
+Each command takes a description or a file path. Except `discover`, a command runs in the expert's own context and never asks you questions: when something is missing, it states its assumptions and lists, under *Open questions*, the exact checks that would close them.
 
 ## 📚 What is inside
 
 - **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Facts are checked against official documentation where it is public; anything that could not be confirmed is marked *verify against your version* rather than guessed.
 - **Sector compliance** references: DORA, NIS2, EBA, ACPR, PCI DSS, AML/CFT and banking secrecy; HDS, GDPR article 9, PGSSI-S, INS and CI-SIS; IGI 1300, II 901, homologation and ANSSI qualifications. Informational, not legal advice.
-- **8 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette).
+- **9 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet.
+- **Discovery protocol**: what each expert must know about your environment, how to obtain it (commands, console paths, documents), and the factual discipline every answer follows.
 - **A confidentiality guard** (below).
 
 ## 🔒 Confidentiality
@@ -239,6 +243,7 @@ claude plugin install tiger-team@tiger-team
 
 - **Toute l'équipe** : `/tiger-team:mission <sujet> [scoping|review|incident|release|quick]`. Le chef de projet cadre le sujet et choisit les experts utiles. Les experts travaillent en parallèle et s'échangent leurs points d'attention, puis l'architecte vérifie la cohérence de l'ensemble. Tu obtiens une synthèse, une matrice des risques, un plan d'action et le livrable : note de cadrage, rapport de revue, plan de reprise ou fiche MEP. Le mode `quick` répond à une question transverse en un seul tour, sans livrable.
 - **Un seul expert** : les 11 commandes du tableau ci-dessus, par exemple `/tiger-team:scheduler-convert` pour convertir une chaîne VTOM en Control-M, ou `/tiger-team:flow-matrix` pour une matrice de flux.
+- **Ton environnement, une fois pour toutes** : `/tiger-team:discover` t'interroge sur ton infrastructure (ordonnanceur et version, bases, middleware, ERP, réseau, IBM i, chaîne de livraison) et écrit `docs/tiger-team/environment.md`. Chaque expert le lit avant de répondre. Les experts demandent avant de supposer : en conversation, au plus cinq questions précises avec la raison et la façon d'obtenir la réponse ; en commande, des hypothèses explicites et la liste des vérifications à faire. Ce qu'ils affirment est étiqueté **Fait** avec sa source, **Déduction** ou **Hypothèse**.
 - **Session pilotée par le chef de projet** : `claude --agent tiger-team:project-manager`.
 
 Une mission complète représente 20 à 40 appels d'agents, soit 10 à 20 minutes et quelques dollars d'API. Pour une question qui ne concerne qu'un domaine, une commande directe coûte beaucoup moins.

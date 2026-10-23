@@ -2,6 +2,16 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-10-23
+
+### Added
+- **Environment discovery.** New `discovery` skill, preloaded by all nine agents: the protocol to learn the customer's environment before answering (decisive facts, where to find them, when to ask, when to assume), per-domain question lists with *why it matters* and *how to obtain* (commands, console paths, documents), and the factual discipline (Fact / Inference / Assumption labels, version-qualified statements, no invented identifiers, "here is how to check" instead of guesses).
+- `/tiger-team:discover`: interactive interview that records the organization's environment in `docs/tiger-team/environment.md` (new `environment-sheet.md` template). Every expert and the mission orchestrator read that sheet first when it exists.
+
+### Changed
+- Agents: new section "Know the environment before you answer" (ask up to five precise questions in conversation; explicit assumptions and checks to run when forked).
+- Mission: environment facts are collected once by the lead and passed in every brief.
+
 ## [1.1.0] - 2026-10-23
 
 ### Changed

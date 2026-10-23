@@ -12,8 +12,8 @@
     {
       "name": "tiger-team",
       "source": "./plugins/tiger-team",
-      "description": "9 senior expert agents that work together on integration projects in regulated sectors (banking, healthcare, defense), with a one-command orchestrator (/tiger-team:mission), 11 expert commands and a confidentiality guard.",
-      "version": "1.1.0",
+      "description": "9 senior expert agents that work together on integration projects in regulated sectors (banking, healthcare, defense), with a one-command orchestrator (/tiger-team:mission), 12 expert commands, an environment discovery interview and a confidentiality guard.",
+      "version": "1.2.0",
       "author": {
         "name": "Crapule421",
         "url": "https://github.com/Crapule421"
