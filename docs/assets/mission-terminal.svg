@@ -31,7 +31,7 @@
     <text x="24" y="128" class="dim">Mission framed. Sector: banking (DORA). Mode: release. Collecting environment facts…</text>
     <text x="24" y="148" class="dim">Team: enterprise-architect (framing + review) and 5 experts in parallel — about 30 agent calls.</text>
 
-    <text x="24" y="184"><tspan class="b">Expert</tspan>                 <tspan class="b">Main contribution</tspan></text>
+    <text x="24" y="184"><tspan class="b">Expert</tspan><tspan class="b" x="222">Main contribution</tspan></text>
     <text x="24" y="204"><tspan class="k">enterprise-architect</tspan>   shadow run then atomic cut-over, 6 principles, end-to-end NFRs, 12 coherence findings</text>
     <text x="24" y="224"><tspan class="k">scheduling-expert</tspan>      13-job smart folder, restart matrix, LOCK_GL lock, SLA alerts, no trigger in the DST hour</text>
     <text x="24" y="244"><tspan class="k">ibmi-expert</tspan>            read-only extraction, .ctl control file, UTF-8 conversion, lock data area, IBM i agent</text>
@@ -39,7 +39,7 @@
     <text x="24" y="284"><tspan class="k">erp-expert</tspan>             IDoc background processing, OBJ_KEY duplicate check, jobs S0–S4, reversal by BAPI</text>
     <text x="24" y="304"><tspan class="k">infra-expert</tspan>           flow matrix (~15 flows), PKI, sizing and hardening, firewall calendar and DR</text>
 
-    <text x="24" y="340"><tspan class="dim">Handoffs routed:</tspan> dba→scheduling (lock in the window) · integration→infra (CFT ack flow) · ibmi→erp (CCSID)</text>
+    <text x="24" y="340"><tspan class="dim">Handoffs routed:</tspan> ibmi→scheduling (journal lock in the window) · integration→infra (CFT ack flow) · ibmi→erp (CCSID)</text>
 
     <text x="24" y="376"><tspan class="b">Verdict:</tspan> <tspan class="crit">NO-GO</tspan> today — 11 blocking criteria, 3 with no result yet.</text>
     <text x="24" y="396"><tspan class="warn">▲</tspan> Risk #1: double posting. Blocked four ways: shared lock, CFT transfer register, exact IDoc count, OBJ_KEY check.</text>
