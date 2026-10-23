@@ -24,7 +24,7 @@ You do not see the prior conversation: work only from the input above and the fi
 
 ## 1. Confidentiality gate (mandatory, before any analysis)
 Stop and ask the user for an anonymized version - without producing the review - if the input contains:
-- classification markings ("Diffusion Restreinte", "Secret", "Tres Secret", "Confidentiel Defense" or equivalent);
+- classification markings ("Diffusion Restreinte", "Secret", "Très Secret", "Confidentiel Défense" or equivalent);
 - real personal data (e.g. INSERT/UPDATE literals with real names + identifiers, NIR/social security numbers, IBAN/card numbers, health data, real e-mail addresses of customers);
 - live secrets (passwords in `CREATE USER ... IDENTIFIED BY`, connection strings, wallet passwords, keys).
 Reply only with the category detected, the location (line numbers, without quoting the value), and a request for a sanitized version (placeholders such as `<PASSWORD>`, fictitious data). A placeholder like `<PASSWORD>` or `&pwd` substitution variable is not a live secret.
@@ -44,7 +44,7 @@ Read `${CLAUDE_PLUGIN_ROOT}/skills/dba-reference/SKILL.md` - in particular secti
 9. **Security and compliance**: grants least privilege (no PUBLIC, no ANY/sysadmin), no clear-text passwords, no personal data in literals or logs, audit impact, schema owner vs app account.
 10. **Post-release**: statistics, recompilation, post-check queries, monitoring.
 
-Severity: **Blocker** (data loss/corruption risk, prod outage, non-recoverable failure), **Major** (long blocking lock, non-rerunnable, missing rollback for risky step), **Minor** (best practice, readability, small perf issue), **Info**.
+Severity: **Blocker** (data loss/corruption risk, prod outage, non-recoverable failure), **Major** (long blocking lock, non-rerunnable, missing rollback for risky step), **Minor** (best practice, readability, small perf issue), **Info**. This finding scale is assessed per statement; when a finding is carried into the Risks table, map Blocker → Critical, Major → High, Minor → Medium, Info → Low.
 
 ## 4. Output (Markdown)
 

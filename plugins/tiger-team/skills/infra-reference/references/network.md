@@ -111,7 +111,7 @@ Flow matrix minimum columns: ID, source (host/zone/IP), destination (host/zone/I
 
 F5 BIG-IP vocabulary: virtual server (VIP:port) -> pool -> pool members (node:port); monitors; profiles (TCP, HTTP, client SSL = client side TLS, server SSL = backend TLS); persistence profiles; SNAT (automap or SNAT pool); iRules (TCL) / Local Traffic Policies; partitions/route domains for multi-tenancy.
 
-HAProxy vocabulary: `frontend` (bind address/port, ACLs), `backend` (servers, `balance`), `listen` (both), `server <name> <ip>:<port> check`, `option httpchk` for HTTP health checks, `stick-table` for persistence/rate limiting, runtime API/stats socket for draining (`set server <backend>/<server> state drain` - verify syntax for your version).
+HAProxy vocabulary: `frontend` (bind address/port, ACLs), `backend` (servers, `balance`), `listen` (both), `server <name> <ip>:<port> check`, `option httpchk` for HTTP health checks, `stick-table` for persistence/rate limiting, runtime API/stats socket for draining (`set server <backend>/<server> state drain|maint|ready`, `disable server` / `enable server <backend>/<server>`, `show servers state`).
 
 ## 8. Reverse proxies
 - Roles: TLS termination, routing, header normalization, auth offload, caching, WAF.
@@ -139,7 +139,7 @@ Rules:
 - Names must be in subjectAltName (CN alone is ignored by modern clients). Wildcard `*.example.org` matches one label only (`a.example.org`, not `a.b.example.org`, not `example.org`).
 - Key usage / extended key usage must fit: serverAuth for servers, clientAuth for mTLS clients.
 - mTLS: server requests a client cert, validates chain against a configured CA bundle, then authorizes the identity (subject/SAN) - chain validation alone is not authorization.
-- Public certificate maximum validity is decreasing under CA/Browser Forum rules (stepping down from 398 days through 2026-2029 - verify current maximum): automate renewal (ACME, enterprise PKI connectors) and monitor expiry (alerts at 30/14/7 days).
+- Public TLS certificate maximum validity is stepping down under the CA/Browser Forum Baseline Requirements (ballot SC-081): 398 days today, 200 days for certificates issued from 15 March 2026, 100 days from 15 March 2027, 47 days from 15 March 2029: automate renewal (ACME, enterprise PKI connectors) and monitor expiry (alerts at 30/14/7 days).
 - Inventory all certificates (LB, proxies, app keystores, MQ channels, LDAPS, SAML signing, partners' mTLS) with owner and renewal procedure; expired internal certs are a top cause of integration outages.
 - Private keys: generated where used or in HSM; never sent by e-mail; protected keystores; separate keys per environment.
 - Revocation: CRL distribution points / OCSP must be reachable from clients (flow matrix!).
@@ -183,7 +183,7 @@ Method (bottom-up, stop at the first failing layer):
 | Listening sockets | `ss -tlnp` (TCP listen + process), `ss -ulnp`, `ss -tan state established`, `ss -s` | `Get-NetTCPConnection -State Listen`, `netstat -ano` (+ `Get-Process -Id <pid>`) |
 | HTTP | `curl -v https://app.example.org/health`; `curl -vk --resolve app.example.org:443:10.0.0.10 https://app.example.org/` (bypass DNS, test one backend); `curl -x http://proxy:3128 ...` | `Invoke-WebRequest -Uri ... -UseBasicParsing` (Windows PowerShell 5.1), or `curl.exe -v` (shipped with recent Windows) |
 | TLS | `openssl s_client` (above) | `Test-NetConnection` + `certutil`; `openssl` if installed |
-| Capture | `tcpdump -i any -nn host 10.0.0.10 and port 443`; `tcpdump -i eth0 -nn -w /tmp/cap.pcap 'tcp port 1521'` (analyse in Wireshark) | `pktmon` (built-in, recent versions), `netsh trace start capture=yes tracefile=C:\temp\cap.etl` ... `netsh trace stop` (ETL - convert for Wireshark, verify tooling) |
+| Capture | `tcpdump -i any -nn host 10.0.0.10 and port 443`; `tcpdump -i eth0 -nn -w /tmp/cap.pcap 'tcp port 1521'` (analyse in Wireshark) | `pktmon` (built-in on recent versions; `pktmon etl2pcap <log.etl> --out cap.pcapng` converts its ETL for Wireshark); `netsh trace start capture=yes tracefile=C:\temp\cap.etl` ... `netsh trace stop`, then convert with Microsoft's `etl2pcapng cap.etl cap.pcapng` |
 | Interfaces/routes | `ip -br addr`, `ip route`, `ip neigh` | `Get-NetIPConfiguration`, `Get-NetRoute`, `arp -a` |
 
 Reading a capture: SYN repeated with no SYN/ACK = drop before/at destination; SYN/ACK seen on server but not on client = return path/asymmetric routing; RST right after SYN = closed port or firewall reject; TLS ClientHello then reset = TLS inspection/IPS or protocol mismatch; many retransmissions = loss/MTU.
@@ -215,5 +215,15 @@ Rule: test from the real source, at the real time, with the real name; reproduce
 | IBM MQ | 1414/tcp (listener default) | TLS on channels |
 | Kafka | 9092/tcp common (configurable) | TLS/SASL listener, port per config |
 | AMQP / AMQPS | 5672 / 5671 tcp | |
-| IBM i host servers | 446 (DRDA), 449 (port mapper), 8470-8476, TLS 9470-9476, Telnet 23 / TLS 992 | Prefer TLS ports |
+| IBM i host servers | 446 (DDM/DRDA; 448 over TLS), 449 (server mapper), 8470-8476 (`as-central` to `as-signon`), TLS 9470-9476, Telnet 23 / TLS 992 | Prefer TLS ports; actual values in `WRKSRVTBLE` |
 | Vault | 8200/tcp | TLS |
+
+## Sources
+
+- https://raw.githubusercontent.com/cabforum/servercert/main/docs/BR.md - Baseline Requirements 6.3.2 validity schedule
+- https://cabforum.org/2025/04/11/ballot-sc081v3-introduce-schedule-of-reducing-validity-and-data-reuse-periods/ - ballot SC-081v3 summary
+- https://docs.haproxy.org/3.0/management.html - HAProxy runtime API server commands
+- https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/pktmon-etl2pcap - pktmon ETL to pcapng conversion
+- https://github.com/microsoft/etl2pcapng - Microsoft etl2pcapng for netsh ETL files
+- https://www.iana.org/assignments/service-names-port-numbers/service-names-port-numbers.xhtml - IANA ports (ntske 4460, syslog-tls 6514, vxlan, amqp, ddm-rdb, ibm-mqseries)
+- https://www.ibm.com/support/pages/tcpip-ports-required-ibm-i-access-and-related-functions - IBM i host server port table

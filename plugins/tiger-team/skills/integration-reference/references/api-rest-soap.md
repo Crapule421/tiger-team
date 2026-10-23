@@ -76,7 +76,7 @@ Client retry policy: retry network errors, 408, 429, 502, 503, 504 on idempotent
 | `Location` | URI of created resource or async status |
 | `Retry-After` | With 429/503/202 polling |
 | `traceparent`, `tracestate` | W3C Trace Context |
-| `Idempotency-Key` | Idempotent POST (IETF draft — verify status) |
+| `Idempotency-Key` | Idempotent POST (IETF HTTPAPI draft `draft-ietf-httpapi-idempotency-key-header`, not an RFC as of October 2026) |
 | `Deprecation` (RFC 9745), `Sunset` (RFC 8594), `Link` (RFC 8288) | Lifecycle and navigation |
 
 ## 4. Pagination, filtering, bulk
@@ -111,7 +111,7 @@ Rules: machine-readable `type`/`code` that clients can branch on; one error form
 - **Spike arrest / rate limit** (per second/minute) protects backends; **quota** (per day/month) enforces commercial or fair-use limits; **concurrency limit** protects slow backends.
 - Algorithms: token bucket (allows bursts), leaky bucket (smooths), fixed window (edge bursts at window boundaries), sliding window.
 - Key by consumer (client ID / API key / subscription), not only by IP.
-- Response: 429 + `Retry-After`. Standard `RateLimit` / `RateLimit-Policy` headers are an IETF draft (verify); many gateways emit vendor `X-RateLimit-*` headers — document which.
+- Response: 429 + `Retry-After`. The `RateLimit` / `RateLimit-Policy` header fields are still an IETF HTTPAPI draft (`draft-ietf-httpapi-ratelimit-headers`, not an RFC as of October 2026); many gateways emit vendor `X-RateLimit-*` headers — document which.
 - Batch consumers must self-throttle and spread load; publish limits in the contract.
 
 ## 7. Long-running operations and webhooks
@@ -121,12 +121,13 @@ Rules: machine-readable `type`/`code` that clients can branch on; one error form
 
 ## 8. OpenAPI 3.x and AsyncAPI
 - **3.0.x**: schema object is an extended subset of an early JSON Schema draft (Wright draft 00); `nullable: true`.
-- **3.1.x**: full JSON Schema 2020-12 alignment (`type: ["string","null"]` replaces `nullable`), top-level `webhooks`, `mutualTLS` security scheme type. Newer minor versions exist — verify generator, gateway and linter support before adopting.
+- **3.1.x**: full JSON Schema 2020-12 alignment (`type: ["string","null"]` replaces `nullable`), top-level `webhooks`, `mutualTLS` security scheme type.
+- **3.2.x**: 3.2.0 published 19 September 2025 (3.2.1 patch, September 2026): `$self` document URI, `querystring` parameter location, `additionalOperations` and the QUERY method, sequential/streaming media types. Check generator, gateway and linter support before adopting 3.2.
 - Design-first: the OpenAPI document is the contract, reviewed and versioned in Git; lint with a team ruleset (e.g. Spectral); detect breaking changes in CI with an OpenAPI diff tool; generate mocks and contract tests.
 - Mandatory content per operation: unique `operationId`, summary, all responses incl. error responses referencing a shared problem schema, examples, security requirement, pagination parameters for collections.
 - `securitySchemes`: `oauth2` (flow `clientCredentials` with `tokenUrl` and scopes), `http` bearer, `apiKey` (in header), `mutualTLS` (3.1), `openIdConnect`.
 - `info.version` = contract version (not implementation build). Use `servers` per environment without secrets.
-- Event-driven contracts: AsyncAPI (2.x, 3.0) describes channels, messages, bindings (Kafka, AMQP, MQTT, IBM MQ…) — verify tooling support for 3.0.
+- Event-driven contracts: AsyncAPI (2.x, 3.0.0; 3.1.0 released January 2026 with no breaking changes) describes channels, operations, messages and bindings (Kafka, AMQP, MQTT, IBM MQ…); check that your parser/generator supports 3.x before adopting it.
 
 ## 9. SOAP, WSDL, WS-Security
 | Aspect | SOAP 1.1 | SOAP 1.2 |
@@ -171,9 +172,9 @@ Concepts: connectors/adapters, mediation (routing, transformation, enrichment), 
 | Product | Concepts (verify current packaging and naming) |
 |---|---|
 | MuleSoft Anypoint Platform | Mule runtime applications and flows, DataWeave transformation language, Anypoint Exchange (reusable assets), API Manager, CloudHub or customer-hosted runtimes; "API-led connectivity" layering: system, process, experience APIs |
-| Talend (now part of Qlik) | Talend Studio jobs (graphical design generating Java), data integration/quality focus, scheduled or service execution — verify product line in scope |
+| Talend (acquired by Qlik, May 2023; now "Qlik Talend") | Talend Studio jobs (graphical design generating Java), data integration/quality focus, scheduled or service execution — confirm which product line is in scope |
 | Boomi | Low-code processes built from shapes and connectors, runtimes called Atoms/Molecules (clustered) or Atom Clouds, central platform for design and monitoring |
-| webMethods | Integration Server (services, adapters), messaging (Universal Messaging / Broker in older estates), Trading Networks for B2B — vendor ownership changed in 2024; verify roadmap |
+| webMethods (acquired by IBM from Software AG, July 2024) | Integration Server (services, adapters), messaging (Universal Messaging / Broker in older estates), Trading Networks for B2B — check IBM's current roadmap and packaging |
 | TIBCO | BusinessWorks (process-based integration), Enterprise Message Service (EMS, JMS broker) — verify current product set |
 
 Selection criteria: connector coverage for the ERPs/SaaS in scope; on-premise/hybrid runtime and data residency; B2B/EDI capability; transformation power and testability; CI/CD and config-as-code; monitoring and resubmission for operations teams; licensing model (cores, flows, messages, connectors) at target volume; skills market in the region; exit plan.
@@ -192,3 +193,17 @@ Anti-patterns: business rules buried in the bus; one giant canonical model; sync
 - [ ] Payload size limits, schema validation and threat protection at the gateway.
 - [ ] Observability: correlation/trace IDs in and out, metrics per operation and consumer.
 - [ ] Contract tests and performance tests at expected peak.
+
+## Sources
+- https://www.rfc-editor.org/info/rfc9457 — RFC 9457 Problem Details, obsoletes RFC 7807
+- https://www.rfc-editor.org/info/rfc9745 — RFC 9745 Deprecation header field (2025)
+- https://www.rfc-editor.org/info/rfc8594 — RFC 8594 Sunset header (Informational)
+- https://www.rfc-editor.org/info/rfc9562 — RFC 9562 UUIDs, version 7 time-ordered
+- https://www.rfc-editor.org/info/rfc9421 — RFC 9421 HTTP Message Signatures
+- https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/ — Idempotency-Key header, active Internet-Draft
+- https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/ — RateLimit header fields, active Internet-Draft
+- https://spec.openapis.org/oas/v3.2.0.html — OpenAPI 3.2.0 specification, September 2025
+- https://spec.openapis.org/oas/latest.html — OpenAPI latest version (3.2.1)
+- https://www.asyncapi.com/blog/release-notes-3.1.0 — AsyncAPI 3.1.0 release notes
+- https://newsroom.ibm.com/2024-07-01-IBM-Completes-Acquisition-of-StreamSets-and-webMethods,-Bolstering-its-Automation,-Data-and-AI-Portfolios — IBM completes webMethods acquisition
+- https://www.qlik.com/us/news/company/press-room/press-releases/qlik-acquires-talend — Qlik closes Talend acquisition

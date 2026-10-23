@@ -68,9 +68,9 @@ is_secret_name() {
   local name="${1,,}"
   case "$name" in
     .env.example|.env.sample|.env.template|*.pub) return 1 ;;
-    .env|.env.*|*.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|*.kdbx) return 0 ;;
+    .env|.env.*|*.pem|*.key|*.p12|*.pfx|*.jks|*.keystore|*.kdbx|*.ppk|*.p8) return 0 ;;
     id_rsa*|id_ecdsa*|id_ed25519*|id_dsa*) return 0 ;;
-    credentials|credentials.*|.netrc|.pgpass) return 0 ;;
+    credentials|credentials.*|.netrc|.pgpass|.htpasswd) return 0 ;;
   esac
   return 1
 }

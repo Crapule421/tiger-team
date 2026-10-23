@@ -21,7 +21,7 @@ You do not see the prior conversation: work only from the input above and the fi
 
 ## 1. Confidentiality gate (mandatory, before any analysis)
 Stop and ask the user for an anonymized version - without producing the review - if the input contains any of:
-- classification markings (e.g. "Diffusion Restreinte", "DR", "Secret", "Tres Secret", "Confidentiel Defense", "NATO RESTRICTED" or equivalent);
+- classification markings (e.g. "Diffusion Restreinte", "DR", "Secret", "Très Secret", "Confidentiel Défense", "NATO RESTRICTED" or equivalent);
 - real personal data (names with identifiers, national ID/NIR, health data, IBAN/card numbers, customer records);
 - live secrets (private keys, real passwords, API tokens, connection strings with credentials, cloud access keys).
 In that case reply only: what category was detected (without quoting the sensitive value), where (file:line), and a request to supply a sanitized version (placeholders like `<PASSWORD>`, fictitious hosts like SRV-APP-01, 10.0.0.0/24, example.org). Note: an obviously fake placeholder or a variable reference (`${{ secrets.X }}`, `$VAULT_TOKEN`) is not a live secret - but a hard-coded literal that looks real is: treat it as a Critical finding AND trigger the gate.

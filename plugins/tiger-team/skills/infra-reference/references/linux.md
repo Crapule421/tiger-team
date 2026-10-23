@@ -18,9 +18,9 @@
 | Topic | RHEL family (RHEL, Rocky, Alma) | Debian / Ubuntu | SUSE (SLES) |
 |---|---|---|---|
 | Packages | `dnf` (`yum` on older), `rpm` | `apt`, `dpkg` | `zypper`, `rpm` |
-| MAC | SELinux (enforcing by default) | AppArmor (Ubuntu default; Debian enabled by default in recent releases) | AppArmor on SLES 15; newer releases move to SELinux - verify |
+| MAC | SELinux (enforcing by default) | AppArmor (Ubuntu default; Debian enabled by default in recent releases) | AppArmor on SLES 15; SELinux enforcing by default on SUSE Linux Enterprise 16 (AppArmor removed) |
 | Firewall | firewalld (`firewall-cmd`) | nftables / ufw (Ubuntu) | firewalld |
-| Network config | NetworkManager (`nmcli`) | netplan (Ubuntu), ifupdown or NetworkManager (Debian) | wicked (SLES 15) / NetworkManager - verify |
+| Network config | NetworkManager (`nmcli`) | netplan (Ubuntu), ifupdown or NetworkManager (Debian) | wicked on SLES 15; NetworkManager only on SLE 16 (wicked removed) |
 | Subscription / repos | `subscription-manager`, Satellite | apt sources, mirrors | SUSEConnect, SUSE Manager / RMT |
 | Compliance content | SCAP Security Guide (`scap-security-guide`) | SSG content (packaging varies) | SSG content |
 | Snapshots/rollback | LVM snapshots, `dnf history` | LVM snapshots | Btrfs + snapper (root fs default) |
@@ -75,7 +75,7 @@ journalctl --disk-usage; journalctl --vacuum-time=30d
 ## 4. Users, sudo, SSH
 - Identity: central (SSSD with AD or IdM/FreeIPA) for humans; local accounts only for services. `getent passwd <user>`, `id <user>`, `chage -l <user>`.
 - Service accounts: no interactive shell (`/sbin/nologin` or `/usr/sbin/nologin`), no password, owned directories only.
-- sudo: edit with `visudo` / files in `/etc/sudoers.d/` (validate with `visudo -cf <file>`); grant specific commands to groups; avoid `NOPASSWD: ALL` and shell escapes (editors, `less`, `find -exec`, scripts writable by the user); log sudo (journal/`Defaults logfile=`; `Defaults log_output` for session I/O logging - verify sizing). Check: `sudo -l -U <user>`.
+- sudo: edit with `visudo` / files in `/etc/sudoers.d/` (validate with `visudo -cf <file>`); grant specific commands to groups; avoid `NOPASSWD: ALL` and shell escapes (editors, `less`, `find -exec`, scripts writable by the user); log sudo (journal/`Defaults logfile=`; `Defaults log_output` for session I/O logging - plan the storage). Check: `sudo -l -U <user>`.
 - SSH server: `PermitRootLogin no`, `PasswordAuthentication no` (keys or certificates), `AllowGroups <admins>`, `X11Forwarding no`, modern ciphers/KEX per ANSSI/CIS; admin access only from bastion. Validate with `sshd -t` before restart and keep an open session while testing.
 - SSH keys: managed (rotation, owner), no shared keys, `authorized_keys` audited; consider SSH certificates from a CA or PAM-injected credentials.
 
@@ -134,7 +134,7 @@ USE method: for each resource (CPU, memory, disk, network) check Utilization, Sa
 | `ulimit -n`, `cat /proc/<pid>/limits` | "Too many open files" diagnosis |
 | `perf top`, `strace -p <pid> -f -tt` | CPU hotspots / syscalls (strace slows the process - short use only in prod) |
 
-Common findings: swap storm (memory sizing or leak), I/O latency on shared storage (check `await` vs SAN metrics), CPU steal on oversubscribed hypervisors, file descriptor limits for app servers, THP (transparent huge pages) recommendations for some databases (follow the DB vendor guidance - verify), NUMA effects on large DB hosts.
+Common findings: swap storm (memory sizing or leak), I/O latency on shared storage (check `await` vs SAN metrics), CPU steal on oversubscribed hypervisors, file descriptor limits for app servers, THP (transparent huge pages) recommendations for some databases (follow the DB vendor guidance), NUMA effects on large DB hosts.
 
 ## 8. cron, systemd timers and scheduler agents
 
@@ -147,29 +147,29 @@ Common findings: swap storm (memory sizing or leak), I/O latency on shared stora
 Rules: business batch chains belong to the enterprise scheduler (audit, dependencies, restart procedures); cron only for local housekeeping. Prevent overlap (`flock -n /run/lock/job.lock <cmd>`); explicit exit codes (0 = success) so the scheduler can react; log with job ID and timestamps; never put credentials in crontabs or command lines (visible in `ps`). Agent flows (agent port <-> scheduler server) go in the flow matrix. Coordinate with scheduling-expert.
 
 ## 9. Hardening
-- Baselines: ANSSI BP-028 "Recommandations de configuration d'un systeme GNU/Linux" (levels Minimal, Intermediate, Enhanced, High) and CIS Benchmarks (Level 1/2). Measure with OpenSCAP:
+- Baselines: ANSSI BP-028 "Recommandations de configuration d'un systeme GNU/Linux" (v2.0, October 2022; cumulative levels minimal, intermediary, enhanced, high) and CIS Benchmarks (Level 1/2). Measure with OpenSCAP:
 ```
 oscap info /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml          # list profiles (path varies)
 oscap xccdf eval --profile <profile_id> --results results.xml --report report.html \
   /usr/share/xml/scap/ssg/content/ssg-rhel9-ds.xml
 ```
-  ANSSI profiles are named like `..._profile_anssi_bp28_<level>`, CIS like `..._profile_cis_server_l1` - take the exact ID from `oscap info` (availability varies per distro/version).
+  ANSSI profiles: `xccdf_org.ssgproject.content_profile_anssi_bp28_minimal|intermediary|enhanced|high` (aligned to BP-028 v2.0; shipped for RHEL 8/9 among others), CIS: `..._profile_cis_server_l1` etc. - take the exact ID from `oscap info` on your distro's datastream.
 - Minimal install; remove/disable unused services and packages; no compilers on prod hosts.
 - Partitioning and mount options (section 6); `umask 027` for service accounts.
 - Kernel/sysctl (examples, validate per role): `net.ipv4.ip_forward = 0` (unless router), `net.ipv4.conf.all.accept_redirects = 0`, `net.ipv4.conf.all.send_redirects = 0`, `kernel.kptr_restrict`, `kernel.dmesg_restrict = 1`, `fs.suid_dumpable = 0`.
 - Authentication: PAM password quality (`pam_pwquality`) and lockout (`pam_faillock`), central identity, MFA for admin via bastion.
 - Integrity: AIDE (file integrity), auditd rules (privileged commands, identity files, sudoers, time changes, module loading), immutable audit config in high levels.
 - Network: host firewall default deny inbound; only required ports; IPv6 disabled only if not used and policy requires it.
-- Crypto policies (RHEL): `update-crypto-policies --show` / `--set DEFAULT|FUTURE` (FIPS mode for some regulated contexts - verify requirements).
+- Crypto policies (RHEL): `update-crypto-policies --show` / `--set DEFAULT|FUTURE` (FIPS mode where the applicable regulation requires it).
 - Automate with Ansible roles mapped to baseline IDs; drift measured continuously; exceptions documented.
 
 ## 10. Patching
 
 | Distro | List / apply security updates | Reboot needed? |
 |---|---|---|
-| RHEL | `dnf updateinfo list --security`; `dnf upgrade --security`; `dnf history` / `dnf history undo <id>` | `needs-restarting -r` (dnf-utils/yum-utils); live kernel patching with kpatch (subscription - verify) |
+| RHEL | `dnf updateinfo list --security`; `dnf upgrade --security`; `dnf history` / `dnf history undo <id>` | `needs-restarting -r` (dnf-utils/yum-utils); live kernel patching with kpatch (`kpatch-patch` RPMs, `kpatch-dnf` plugin; included in the subscription, but without EUS the live patches for a minor release stop when the next minor release ships) |
 | Debian/Ubuntu | `apt update && apt list --upgradable`; `apt upgrade`; `unattended-upgrades` for security pocket | `/var/run/reboot-required` exists; `needrestart` |
-| SUSE | `zypper lp` (list patches), `zypper patch --category security` | `zypper ps -s` (processes using deleted files); `zypper needs-rebooting` - verify on your version |
+| SUSE | `zypper lp` (list patches), `zypper patch --category security` | `zypper ps -s` (processes using deleted files); `zypper needs-rebooting` (exit code 102 = reboot suggested, 0 otherwise) |
 
 Process: patch rings (non-prod -> pilot prod -> prod), maintenance windows aligned with scheduler and HA (fail over cluster services before rebooting a node), pre-checks (backups/snapshots, free space in `/boot`, service health), post-checks (services up, application smoke test, kernel version, `systemctl --failed`), evidence for audit (patch level reports). Critical vulnerabilities (CISA KEV / CERT-FR alerts) follow an expedited path.
 
@@ -184,3 +184,12 @@ chronyc tracking                               # time sync
 last -n 20; journalctl _COMM=sudo --since today   # who did what recently
 ```
 Then layer by layer (network.md section 11): DNS -> routing -> port -> TLS -> application.
+
+## Sources
+
+- https://messervices.cyber.gouv.fr/documents-guides/linux_configuration-en-v2.pdf - ANSSI-BP-028-EN v2.0, hardening levels
+- https://static.open-scap.org/ssg-guides/ssg-cs9-guide-anssi_bp28_high.html - SSG `anssi_bp28_high` profile ID, BP-028 v2.0
+- https://documentation.suse.com/sles/16.0/html/SLE-comparison/index.html - SLE 16: SELinux default, wicked removed
+- https://documentation.suse.com/sles/15-SP7/html/SLES-all/cha-sw-cl.html - SLES zypper patch and `zypper ps` usage
+- https://raw.githubusercontent.com/openSUSE/zypper/master/doc/zypper.8.txt - zypper `needs-rebooting`, exit code 102
+- https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/managing_monitoring_and_updating_the_kernel/applying-patches-with-kernel-live-patching_assembly_managing-kernel-command-line-parameters-with-uki - RHEL 9 kernel live patching access

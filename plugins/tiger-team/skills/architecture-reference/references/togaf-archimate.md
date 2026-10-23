@@ -1,6 +1,6 @@
 # TOGAF & ArchiMate — Pragmatic Reference
 
-Version note: content reflects the TOGAF Standard, 10th Edition (The Open Group, 2022) and ArchiMate 3.1/3.2. Most ADM concepts are unchanged since TOGAF 9.x. Exact artifact names, element lists and notation details vary between versions — verify against the version your organisation and modelling tool use.
+Version note: content reflects the TOGAF Standard, 10th Edition (The Open Group, first published 2022; its Fundamental Content and Series Guides are updated independently, latest product update May 2025) and the ArchiMate 3.2 Specification (October 2022). ADM concepts are stable since TOGAF 9.x; notation details still differ between repository tools, so check what your tool implements.
 
 ## Contents
 1. TOGAF in a nutshell
@@ -18,7 +18,7 @@ Version note: content reflects the TOGAF Standard, 10th Edition (The Open Group,
 
 ## 1. TOGAF in a nutshell
 - Open Group framework for enterprise architecture. Core: the **Architecture Development Method (ADM)**, a content framework (what to produce), the Enterprise Continuum and Architecture Repository (where to store and classify), and architecture capability/governance guidance.
-- 10th Edition splits the standard into **Fundamental Content** (stable core: ADM, content, governance) and **Series Guides** (topic guidance: e.g., business architecture, security, agile, digital — verify current list).
+- 10th Edition splits the standard into the **Fundamental Content** — six documents: Introduction and Core Concepts; Architecture Development Method; ADM Techniques; Applying the ADM; Architecture Content; Enterprise Architecture Capability and Governance — and the **TOGAF Series Guides** (topic guidance, e.g., Business Capabilities, Value Streams, Information Mapping, Integrating Risk and Security, Enabling Enterprise Agility, Applying the ADM using Agile Sprints, Using the TOGAF Standard in the Digital Enterprise, Microservices Architecture, Architecture Project Management).
 - Four architecture domains: **Business**, **Data**, **Application**, **Technology** (data + application = Information Systems Architectures).
 - TOGAF is a toolbox: it explicitly expects tailoring.
 
@@ -36,7 +36,7 @@ Version note: content reflects the TOGAF Standard, 10th Edition (The Open Group,
 | H. Architecture Change Management | Manage changes to the architecture, decide when a new cycle is needed | Change requests, updated architecture | ADR log, debt register, periodic review |
 | Requirements Management (centre) | Continuously manage requirements across all phases | Architecture Requirements Specification, requirements repository | NFR catalogue with traceability |
 
-Main named deliverables (verify exact titles per version): Request for Architecture Work, Statement of Architecture Work, Architecture Vision, Architecture Definition Document, Architecture Requirements Specification, Architecture Roadmap, Transition Architecture, Implementation and Migration Plan, Implementation Governance Model, Architecture Contract, Compliance Assessment, Change Request, Architecture Principles, Architecture Repository.
+Main named deliverables (Architecture Content document; names unchanged since TOGAF 9.2): Request for Architecture Work, Statement of Architecture Work, Architecture Vision, Architecture Definition Document, Architecture Requirements Specification, Architecture Roadmap, Transition Architecture, Implementation and Migration Plan, Implementation Governance Model, Architecture Contract, Compliance Assessment, Change Request, Architecture Principles, Architecture Repository.
 
 ## 3. Requirements management and ADM iterations
 - Requirements are captured in any phase and managed centrally; changes are impact-assessed against the current architecture.
@@ -49,7 +49,7 @@ Main named deliverables (verify exact titles per version): Request for Architect
 - **Artifact**: a work product describing one viewpoint — **catalogs** (lists), **matrices** (relationships), **diagrams** (views).
 - **Building blocks**: **ABB** (Architecture Building Block: required capability, vendor-neutral) realised by **SBB** (Solution Building Block: product or component).
 
-Useful artifacts (TOGAF 9.2 / 10 content framework names — verify):
+Useful artifacts (Architecture Content names):
 | Domain | Catalogs | Matrices | Diagrams |
 |---|---|---|---|
 | Preliminary / Vision | Principles catalog | Stakeholder map matrix | Value chain, solution concept |
@@ -59,12 +59,12 @@ Useful artifacts (TOGAF 9.2 / 10 content framework names — verify):
 | Technology | Technology standards, technology portfolio | Application / technology | Environments and locations, platform decomposition, network computing |
 | Opportunities | — | — | Project context, benefits |
 
-**Enterprise Continuum**: classification from generic to specific: Foundation → Common Systems → Industry → Organisation-specific architectures/solutions. **Architecture Repository**: metamodel, capability, landscape (baseline/target/transition), standards information base, reference library, governance log, requirements repository, solutions landscape (verify exact structure per version).
+**Enterprise Continuum**: classification from generic to specific: Foundation → Common Systems → Industry → Organisation-specific architectures/solutions. **Architecture Repository**: metamodel, capability, landscape (baseline/target/transition), standards information base, reference library, governance log, requirements repository, solutions landscape.
 
 ## 5. Architecture governance and compliance
 - **Architecture Board**: cross-organisation body owning standards, compliance reviews and dispensations; consistent decisions; escalation path.
 - **Architecture Contract**: agreement between architecture function and delivery (project/vendor) on what will be delivered and how conformance is checked.
-- **Compliance review** checkpoints during implementation; TOGAF defines graded conformance levels: Irrelevant, Consistent, Compliant, Conformant, Fully Conformant, Non-conformant (verify definitions before quoting).
+- **Compliance review** checkpoints during implementation; TOGAF defines graded conformance levels: Irrelevant, Consistent, Compliant, Conformant, Fully Conformant, Non-conformant (the definitions sit in the Architecture Compliance chapter of the EA Capability and Governance document, behind The Open Group login — quote from it, not from memory).
 - **Dispensation**: time-limited, conditional waiver granted when a solution cannot comply; must carry expiry, conditions and owner.
 - Practical mapping: Architecture Board ↔ design authority / comité d'architecture; Architecture Contract ↔ DAT validation + ADR log + dispensation register.
 
@@ -82,7 +82,7 @@ Skip or lighten:
 Signals of right-sizing: every artifact has a reader and a decision it supports; models are updated after go-live (otherwise do fewer of them).
 
 ## 7. ArchiMate framework (layers and aspects)
-Open Group modelling language aligned with TOGAF (current: 3.2, 2022 — verify).
+Open Group modelling language aligned with TOGAF. Current version 3.2 (19 October 2022) supersedes 3.1: refined definitions (outcome, constraint, business function, product), Physical elements folded into the Technology Layer chapter, device / system software / facility / equipment re-typed as technology internal active structure elements.
 
 **Layers**: Strategy; Business; Application; Technology (incl. Physical elements); Implementation & Migration. Plus the **Motivation** aspect/elements that apply across layers.
 **Aspects** (columns of the core framework): **Active structure** (who/what acts), **Behaviour** (what is done), **Passive structure** (what is acted on).
@@ -92,11 +92,11 @@ Open Group modelling language aligned with TOGAF (current: 3.2, 2022 — verify)
 | Business | Business actor, role, collaboration, interface | Business process, function, interaction, event, service | Business object, contract, representation (+ product as composite) |
 | Application | Application component, collaboration, interface | Application function, process, interaction, event, service | Data object |
 | Technology | Node, device, system software, technology collaboration, technology interface, path, communication network | Technology function, process, interaction, event, service | Artifact |
-| Physical | Equipment, facility, distribution network | (technology behaviour) | Material |
+| Physical (within the Technology Layer since 3.2) | Equipment, facility, distribution network | (technology behaviour) | Material |
 
 ## 8. ArchiMate core elements (selection)
 **Strategy**: Resource, Capability, Value stream, Course of action.
-**Motivation**: Stakeholder, Driver, Assessment, Goal, Outcome, Principle, Requirement, Constraint, Meaning, Value (verify element set for your spec version).
+**Motivation**: Stakeholder, Driver, Assessment, Goal, Outcome, Principle, Requirement, Constraint, Meaning, Value.
 **Implementation & Migration**: Work package, Deliverable, Implementation event, Plateau, Gap.
 **Composite / other**: Grouping, Location, Junction (and/or).
 
@@ -130,7 +130,7 @@ Derivation rules allow inferring indirect relationships across chains (e.g., ser
 **Modelling integration**: represent each flow as a **Flow** relationship (or as application interface + serving for API exposure), carrying properties aligned with the flow matrix (protocol, frequency, volume, criticality). Middleware is an application component (or system software for the platform) that flows pass through; avoid drawing it as a mere line.
 
 ## 10. Useful viewpoints and modelling conventions
-Viewpoints most used in integration projects (names per ArchiMate 3.x examples — verify):
+Viewpoints most used in integration projects (names per the example-viewpoints appendix of ArchiMate 3.x):
 | Viewpoint | Shows | Typical reader |
 |---|---|---|
 | Capability map | Capabilities and their maturity/heat | Sponsor, COPIL |
@@ -165,3 +165,9 @@ Conventions: one viewpoint per question; ≤ 20-30 elements per view; consistent
 - Using TOGAF vocabulary with stakeholders who do not know it: translate to their terms (COPIL wants options, costs, risks, dates).
 - Ignoring the gap analysis's "removed" column: decommissioning is where savings and risk reduction materialise.
 - Treating certification knowledge as delivery experience: validate every artifact against a real decision it must support.
+
+## Sources
+- The Open Group, TOGAF Standard, 10th Edition — product page listing the six Fundamental Content documents and the Series Guides: https://publications.opengroup.org/c220
+- The Open Group, ArchiMate 3.2 Specification — product page with publication date and changes from 3.1: https://publications.opengroup.org/c226
+- The Open Group, TOGAF overview (Fundamental Content vs Series Guides): https://www.opengroup.org/togaf
+- The full standard texts (pubs.opengroup.org) require a free Open Group account; definitions quoted in deliverables must be checked there.

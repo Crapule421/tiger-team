@@ -21,13 +21,13 @@ Transaction codes and object names below are standard ones; availability can dif
 | Accounting data model | FI (BKPF/BSEG) and CO tables separate; new GL optional | Universal Journal `ACDOCA` unifies FI, CO, asset and material ledger line items; BKPF/BSEG still exist for documents |
 | Customer/vendor master | Separate customer (KNA1…) and vendor (LFA1…) masters | Business Partner (BP) mandatory; customer/vendor integration (CVI) keeps KNA1/LFA1 synchronised; XD01/XK01-type transactions redirect to BP |
 | Inventory documents | MKPF/MSEG | `MATDOC` (MKPF/MSEG as compatibility views) |
-| Material number | MATNR 18 chars | MATNR up to 40 chars (extended length must be activated — verify) |
+| Material number | MATNR 18 chars | MATNR up to 40 chars since S/4HANA 1511; not active by default, the field length extension must be activated (BAPIs/IDocs keep working with 18 chars until then) |
 | Credit management | SD credit management | SAP Credit Management (FIN-FSCM) |
 | UX | SAP GUI | SAP Fiori (+ SAP GUI on-premise/private cloud) |
 | Extensibility | User exits, BAdIs, modifications | "Clean core": key-user, on-stack developer extensibility (ABAP Cloud), side-by-side on SAP BTP |
 | Migration tooling | LSMW, custom loads | Migration Cockpit ("Migrate Your Data" Fiori app; LTMC in earlier releases), LTMOM for object modelling; LSMW not recommended in S/4HANA |
 
-Maintenance: SAP Business Suite 7 (incl. ECC 6.0 EhP) mainstream maintenance ends end of 2027, optional extended maintenance to end of 2030 — verify your contract. Deployment options: on-premise, RISE with SAP (private cloud), S/4HANA Cloud public edition (released APIs only, no classic modifications).
+Maintenance: SAP Business Suite 7 (incl. ECC 6.0 EhP) mainstream maintenance ends 31 December 2027; optional extended maintenance (paid add-on, +2 percentage points) runs 2028 to end of 2030; S/4HANA maintenance is committed until end of 2040 (SAP announcement, February 2020). Deployment options: on-premise, RISE with SAP (private cloud), S/4HANA Cloud public edition (released APIs only, no classic modifications).
 
 ## 2. Organisational structure and key tables
 Organisational units: client (MANDT), company code (BUKRS), controlling area, plant (WERKS), storage location, sales organisation + distribution channel + division (= sales area), purchasing organisation, profit centre, cost centre, business area, segment.
@@ -70,7 +70,7 @@ Read access for extraction should go through released CDS views/APIs (mandatory 
 | INVOIC | Invoice (outbound billing, inbound vendor invoice) | INVOIC02 |
 | MATMAS | Material master | MATMAS05 |
 | DEBMAS / CREMAS | Customer / vendor master | DEBMAS06/07, CREMAS05/06 |
-| ACC_DOCUMENT | Accounting document posting | ACC_DOCUMENT03 (verify) |
+| ACC_DOCUMENT | Accounting document posting (the ACC_DOCUMENT interface replaces INVOIC-based FI postings) | ACC_DOCUMENT03 / ACC_DOCUMENT04 — release-dependent, check WE30 |
 | WMMBXY | Goods movements | WMMBID02 |
 | PAYEXT / REMADV | Payment order / remittance advice | PEXR2002 |
 | FINSTA | Bank statement | FINSTA01 |
@@ -106,17 +106,17 @@ Read access for extraction should go through released CDS views/APIs (mandatory 
 - **ABAP RESTful Application Programming Model (RAP)**: OData V2/V4 services via service definition + service binding; released APIs are the S/4HANA Cloud integration surface.
 - **Released APIs** are catalogued on the SAP Business Accelerator Hub (formerly SAP API Business Hub), e.g. `API_BUSINESS_PARTNER`, `API_SALES_ORDER_SRV` — check the communication scenario (S/4HANA Cloud: communication arrangement, communication system, communication user).
 - OData specifics: CSRF protection (GET with `x-csrf-token: Fetch`, then send the token and session cookies on modifying requests), `$batch` with change sets (atomic units), `$filter`/`$top`/`$skip`/`$expand`, ETag-based optimistic locking on many services, server-side paging.
-- **SOAP services**: enterprise services and service consumers configured in `SOAMANAGER`; tracing/monitoring with `SRT_UTIL` and message monitor — verify.
-- **Events**: S/4HANA can publish business events (e.g. business partner changed) via SAP Event Mesh / Advanced Event Mesh through enterprise event enablement — verify release and set-up.
+- **SOAP services**: enterprise services and service consumers configured in `SOAMANAGER` (which also has its own Logs and Traces viewer); `SRT_UTIL` (Web Service Utilities) holds the runtime error log and performance/functional/payload traces (payload trace needs authorisation object `S_SRT_PTRC`).
+- **Events**: S/4HANA publishes business events (e.g. business partner changed) through Enterprise Event Enablement: a channel (SM59 destination + OAuth 2.0 credentials from the Event Mesh service key) with outbound topic bindings sends events to SAP Event Mesh; S/4HANA Cloud Private Edition connects via SAP Integration Suite, advanced event mesh or the Integration Suite event mesh capability (the Event Mesh "lite" plan is being retired).
 
 ## 6. SAP PI/PO and SAP Integration Suite (Cloud Integration)
 **PI/PO (on-premise)**
 - Design time in the Enterprise Services Repository (ESR): data types, message types, service interfaces, message mappings, operation mappings, imported objects (IDoc/RFC structures).
 - Configuration in the Integration Directory: business systems/components, communication channels (adapters: IDoc_AAE, RFC, SOAP, File/FTP, JDBC, JMS, REST, HTTP), integrated configurations (ICO).
 - Monitoring: message monitoring in PIMON (Advanced Adapter Engine), `SXMB_MONI` for the ABAP stack in dual-stack PI; communication channel monitor; resend/cancel of messages.
-- PO 7.5 is the last release; SAP's direction is migration to SAP Integration Suite — verify maintenance end dates for your contract.
+- PO 7.5 is the last release: SAP NetWeaver 7.5 (incl. PI/PO 7.5) mainstream maintenance ends 31 December 2027, optional extended maintenance to end of 2030, aligned with Business Suite 7 (SAP Note 1648480); SAP's direction is migration to SAP Integration Suite.
 **SAP Integration Suite (BTP)**
-- Cloud Integration (CPI): integration flows (iFlows) with adapters (SOAP, IDoc, RFC via Cloud Connector, OData, SFTP, AS2, JMS, AMQP, Kafka — verify), mapping (graphical, XSLT, Groovy/JavaScript scripts), message processing logs, JMS queues for asynchronous retry, security material (keystore, credentials, PGP keys), prepackaged integration content.
+- Cloud Integration (CPI): integration flows (iFlows) with adapters (SOAP, IDoc, RFC via Cloud Connector, OData, SFTP, AS2, JMS, AMQP, Kafka sender/receiver), mapping (graphical, XSLT, Groovy/JavaScript scripts), message processing logs, JMS queues for asynchronous retry, security material (keystore, credentials, PGP keys), prepackaged integration content.
 - Other capabilities: API Management, Event Mesh, Integration Advisor (B2B mapping), Trading Partner Management, Edge Integration Cell (customer-managed runtime) — verify licence scope.
 - SAP Cloud Connector: reverse-invoke tunnel from BTP to on-premise systems (no inbound firewall opening).
 
@@ -162,3 +162,13 @@ In S/4HANA many functions are primarily delivered as Fiori apps (e.g. journal en
 - Partner profile and RFC destination differences between QAS and PRD discovered at go-live.
 - System refresh without BDLS/neutralisation sending test IDocs to real partners.
 - S/4HANA: BP/CVI mapping (customer/vendor number ranges, roles) breaks legacy DEBMAS/CREMAS assumptions — verify the master data integration approach (BP services, DRF, MDG) per release.
+
+## Sources
+- https://news.sap.com/2020/02/sap-s4hana-maintenance-2040-clarity-choice-sap-business-suite-7/ — Business Suite 7 maintenance 2027/2030, S/4HANA to 2040
+- https://blogs.sap.com/t5/technology-blogs-by-sap/maintenance-strategy-for-sap-netweaver-7-5-fully-aligned-with-sap-business/ba-p/13456253 — NetWeaver 7.5 and PI/PO 7.5 maintenance alignment
+- https://learning.sap.com/learning-journeys/exploring-functions-and-innovation-in-sap-s-4hana-sourcing-and-procurement/listing-simplifications-for-the-material-master-in-sap-s-4hana_acda4aa1-4ce7-4bb4-a41b-745dd33621f9 — 40-character material number, activation required
+- https://help.sap.com/saphelp_nw73/helpdata/en/c1/54dae3daa84deda5ba3de46425832f/content.htm — SRT_UTIL error log and traces
+- https://help.sap.com/docs/cloud-integration/sap-cloud-integration/kafka-adapter — Cloud Integration Kafka adapter
+- https://help.sap.com/docs/integration-suite/sap-integration-suite/configure-as2-sender-adapter — Cloud Integration AS2 adapter
+- https://help.sap.com/docs/SAP_S4HANA_ON-PREMISE/8308e6d301d54584a33cd04a9861bc52/c128459eb1164a4bb3eb95ef523b8496.html — S/4HANA Enterprise Event Enablement
+- https://help.sap.com/doc/95a95a083ca04acebc11c36c21679602/617.47/en-US/a3173b1216f04b1290e616bf3891a5ad.pdf — SAP configuration guide citing ACC_DOCUMENT04 basic type

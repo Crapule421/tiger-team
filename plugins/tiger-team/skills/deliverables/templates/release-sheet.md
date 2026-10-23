@@ -12,6 +12,7 @@
 | Point of no return | `<HH:MM>` — _after this time, rollback is no longer possible or becomes a new change_ |
 | Rollback decision deadline | `<HH:MM>` — _latest time to start rollback and still finish within the window_ |
 | Release manager | `<role>` |
+| Status | `<Draft / Approved / Executed / Closed>` |
 | Sensitivity label | `<Internal / Confidential>` |
 
 | Version | Date | Author | Changes |
@@ -36,19 +37,19 @@ Linked items: _UAT sign-off `<ref>` (with reservations?), requirements, defects 
 
 ## 3. Prerequisites checklist (D-5 to D-0)
 
-| # | Check | Owner | Status |
+| ID | Check | Owner | Status |
 |---|---|---|---|
-| P1 | Change approved (CAB), business informed | PM | ☐ |
-| P2 | UAT sign-off obtained; reservations accepted for production | PM | ☐ |
-| P3 | Packages staged and checksums verified | DevSecOps | ☐ |
-| P4 | Production access and accounts ready for each operator (named, time-bound) | Infra | ☐ |
-| P5 | Firewall flows opened and tested | Infra | ☐ |
-| P6 | Pre-release backup planned and restore path confirmed | DBA | ☐ |
-| P7 | Rollback procedure rehearsed (pre-production) | All | ☐ |
-| P8 | Scheduler holds prepared; interfaces partners informed | Scheduling / Integration | ☐ |
-| P9 | Monitoring maintenance mode planned (to avoid false alerts), then re-enabled | Run | ☐ |
-| P10 | Release rehearsed in pre-production with timings | All | ☐ |
-| P11 | Business testers available for post-release checks | Business owner | ☐ |
+| PRE-01 | Change approved (CAB), business informed | PM | ☐ |
+| PRE-02 | UAT sign-off obtained (`PVR-xxx`); reservations accepted for production | PM | ☐ |
+| PRE-03 | Packages staged and checksums verified | DevSecOps | ☐ |
+| PRE-04 | Production access and accounts ready for each operator (named, time-bound) | Infra | ☐ |
+| PRE-05 | Firewall flows opened and tested | Infra | ☐ |
+| PRE-06 | Pre-release backup planned and restore path confirmed | DBA | ☐ |
+| PRE-07 | Rollback procedure rehearsed (pre-production) | All | ☐ |
+| PRE-08 | Scheduler holds prepared; interface partners informed | Scheduling / Integration | ☐ |
+| PRE-09 | Monitoring maintenance mode planned (to avoid false alerts), then re-enabled | Run | ☐ |
+| PRE-10 | Release rehearsed in pre-production with timings | All | ☐ |
+| PRE-11 | Business testers available for post-release checks | Business owner | ☐ |
 
 ## 4. Team and contacts
 
@@ -67,10 +68,11 @@ _Roles, not personal data, in shared versions. Bridge / chat channel for the rel
 
 | Checkpoint | Time | Criteria | Decision by | Decision |
 |---|---|---|---|---|
-| GNG-0 (D-1) | `<...>` | _All prerequisites done; no open P1/P2 incident; freeze respected_ | Release manager + service owner | ☐ Go ☐ No-go |
-| GNG-1 (start) | `<HH:MM>` | _Team present; backups OK; production stable_ | Release manager | ☐ Go ☐ No-go |
-| GNG-2 (point of no return) | `<HH:MM>` | _Steps on schedule; technical checks OK_ | Release manager | ☐ Go ☐ Rollback |
-| GNG-3 (opening) | `<HH:MM>` | _Smoke tests and business checks OK_ | Release manager + business | ☐ Open ☐ Rollback |
+| GNG-0 (D-5 readiness) | `<...>` | _PRE-01 to PRE-11 on track; every open item has an owner and a date_ | Release manager + PM | ☐ Go ☐ No-go |
+| GNG-1 (D-1 final go) | `<...>` | _All prerequisites done; no open P1/P2 incident; freeze respected_ | Release manager + service owner | ☐ Go ☐ No-go |
+| GNG-2 (H0 start) | `<HH:MM>` | _Team present; backups OK; production stable_ | Release manager | ☐ Go ☐ No-go |
+| GNG-3 (pre-PNR) | `<HH:MM>` | _Steps on schedule; technical checks OK; rollback still fits before the deadline_ | Release manager | ☐ Go ☐ Rollback |
+| GNG-4 (opening) | `<HH:MM>` | _Smoke tests and business checks OK_ | Release manager + business | ☐ Open ☐ Rollback |
 
 ## 6. Timed run sheet
 
@@ -87,14 +89,15 @@ _One row per atomic action. Times are planned; record actual times live. A step 
 | 07 | `<21:25>` | 15 min | Deploy packages, apply configuration | `<ref>` | DevSecOps | Run | Versions match §2 | | ☐ | |
 | 08 | `<21:40>` | 10 min | Start application | DEX §4 | Run | Infra | Health checks green | | ☐ | |
 | 09 | `<21:50>` | 15 min | Technical smoke tests | `<ref>` | Dev | Run | All pass | | ☐ | |
-| 10 | `<22:05>` | — | **GNG-2 / GNG-3** | §5 | RM | — | Decision recorded | | ☐ | |
+| 10 | `<22:05>` | — | **GNG-3 (pre-PNR)**: continue or roll back | §5 | RM | — | Decision recorded | | ☐ | |
 | 11 | `<22:10>` | 20 min | Business checks | `<ref>` | Business | RM | All pass | | ☐ | |
-| 12 | `<22:30>` | 10 min | Resume interfaces and scheduler; remove maintenance page | `<ref>` | Scheduling | Run | First flows processed | | ☐ | |
-| 13 | `<22:40>` | 10 min | Re-enable monitoring; close bridge; communication | §8 | RM | Run | Alerts active | | ☐ | |
+| 12 | `<22:30>` | — | **GNG-4 (opening)**: open or roll back | §5 | RM | — | Decision recorded | | ☐ | |
+| 13 | `<22:35>` | 10 min | Resume interfaces and scheduler; remove maintenance page — **point of no return** | `<ref>` | Scheduling | Run | First flows processed | | ☐ | |
+| 14 | `<22:45>` | 10 min | Re-enable monitoring; close bridge; communication | §8 | RM | Run | Alerts active | | ☐ | |
 
 ## 7. Rollback plan
 
-**Triggers**: _GNG-2 or GNG-3 criteria not met; blocking defect without workaround; window overrun beyond `<HH:MM>`; data integrity doubt._
+**Triggers** (pre-agreed, applied without debate before the point of no return): _GNG-3 or GNG-4 criteria not met; blocking defect without workaround; rollback decision deadline `<HH:MM>` reached with steps still open; data integrity doubt._
 
 | Step | Duration | Action | Command / ref | Owner | Expected result |
 |---|---|---|---|---|---|

@@ -138,3 +138,7 @@ Findings typical of such a map: three applications covering "appointment booking
 - Rules without enforcement: cite rule numbers in design reviews and require dispensations.
 - Rationalisation business cases that ignore migration and data archiving costs.
 - Forgetting non-production, shadow IT and end-user computing (spreadsheets, macros) in the inventory.
+
+## Sources
+- No normative text defines urbanisation du SI: this file is practitioner synthesis (zone names, rules and the TIME quadrants vary by organisation and APM tool). For the TOGAF / ArchiMate mapping used in §1, see the sources listed in `togaf-archimate.md`.
+- Retention periods, health-identifier rules and interoperability frameworks cited as "verify" are regulatory: use the `sector-compliance` references.

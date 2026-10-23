@@ -7,6 +7,7 @@ tools: Read, Grep, Glob, Write, Edit
 disallowedTools: WebFetch, WebSearch, Agent
 skills:
   - architecture-reference
+  - deliverables
   - sector-compliance
 color: blue
 ---

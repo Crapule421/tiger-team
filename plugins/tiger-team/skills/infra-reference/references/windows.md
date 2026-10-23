@@ -169,7 +169,7 @@ Get-ClusterLog -Destination C:\temp -TimeSpan 60
 
 ## 11. Patching
 - Monthly cumulative updates (security release on Patch Tuesday, second Tuesday of the month); out-of-band releases for critical issues; servicing stack updates as required.
-- Tooling: WSUS, Configuration Manager (MECM), Azure Update Manager / Azure Arc, Intune for some server scenarios; hotpatching on Windows Server 2025 (with prerequisites/licensing - verify).
+- Tooling: WSUS, Configuration Manager (MECM), Azure Update Manager / Azure Arc, Intune for some server scenarios; Hotpatch on Windows Server 2025 (Standard/Datacenter connected to Azure Arc - no extra cost per Microsoft - or Datacenter: Azure Edition VMs): quarterly cumulative baseline with reboot, then two months of reboot-less security hotpatches; non-security, .NET and driver updates still need reboots.
 - Checks:
 ```
 Get-HotFix | Sort-Object InstalledOn -Descending | Select -First 10
@@ -192,3 +192,8 @@ w32tm /query /status               # time source and offset
 nltest /sc_query:example.org       # secure channel with the domain
 ```
 Then layer by layer (network.md section 11): DNS -> routing -> port -> TLS -> authentication (Kerberos/SPN/time) -> application.
+
+## Sources
+
+- https://learn.microsoft.com/en-us/windows-server/get-started/hotpatch - Hotpatch for Windows Server prerequisites and cycle
+- https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/best-practices-for-dns-client-settings - DNS client settings on domain controllers

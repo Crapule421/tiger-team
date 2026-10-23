@@ -99,14 +99,14 @@ Quantify every NFR; "highly available" is not a requirement.
 | Public / internal, non-sensitive | Public cloud acceptable with standard controls |
 | Personal data (GDPR) | EU hosting preferred; transfers outside EEA need Chapter V basis and transfer impact assessment |
 | Health personal data (France) | HDS-certified hosting provider required (Code de la santé publique, Art. L.1111-8); recent HDS referential adds data-location requirements in the EEA — verify current version and transition dates |
-| Sensitive data of the French State / critical operators | SecNumCloud-qualified offers expected under the "cloud au centre" doctrine (2021, updated 2023) and later legislation (SREN law 2024) — verify scope |
+| Data of particular sensitivity (données d'une sensibilité particulière) of State services, State operators and listed GIP | SecNumCloud-qualified offer, or an EU/EEA certification ANSSI recognises as equivalent: SREN law Art. 31 (2024), décret n° 2026-272 (14 April 2026), arrêté of 12 August 2026; the "cloud au centre" doctrine (2021, updated 2023) extends the expectation to other State IS — exemption regime in those texts |
 | Diffusion Restreinte (DR) | Systems accredited per II 901; specific hosting constraints — verify |
 | Classified (Secret / Très Secret, IGI 1300) | Dedicated accredited infrastructure; public cloud generally excluded |
 | Banking critical or important functions | Allowed with DORA third-party requirements, outsourcing rules (EBA guidelines) and supervisor notification where required — verify |
 
-**SecNumCloud (concept)**: ANSSI qualification of cloud service providers (current reference v3.2 — verify). Beyond technical security requirements it includes protection against non-EU extraterritorial laws (provider established in the EU, control/ownership constraints, data and support operated in the EU). "Sovereign" marketing labels are not qualification: ask for the qualification certificate and its exact service scope.
+**SecNumCloud**: ANSSI qualification of cloud service providers against the référentiel d'exigences v3.2 (8 March 2022; the version approved by the arrêté of 12 August 2026). Beyond technical security requirements, its §19.6 protects against non-EU extraterritorial law: provider established in the EU, non-EU shareholders capped at 24 % individually and 39 % collectively, data stored and the service administered and supervised from the EU. "Sovereign" marketing labels are not qualification: ask for the qualification certificate and its exact service scope.
 **Extraterritorial exposure**: assess non-EU legal access risk (e.g., US CLOUD Act, FISA s.702) against data class; encryption with customer-held keys (HSM/BYOK/HYOK) reduces but does not always remove it.
-**Reversibility clauses** (contract + architecture): exit plan and assistance period; data and metadata export in documented open formats at no prohibitive cost; deletion certificate; documentation and configuration export; continuity of service during exit; notice periods; sub-processor list; audit rights. EU Data Act cloud-switching provisions apply from September 2025 with switching charges phased out by January 2027 — verify.
+**Reversibility clauses** (contract + architecture): exit plan and assistance period; data and metadata export in documented open formats at no prohibitive cost; deletion certificate; documentation and configuration export; continuity of service during exit; notice periods; sub-processor list; audit rights. EU Data Act (Regulation (EU) 2023/2854, Chapter VI) applies since 12 September 2025: providers must support switching and may bill only their actual switching/egress costs until 12 January 2027, none after that date.
 **Architecture enablers**: portable workloads (containers, IaC), standard databases or documented migration paths, avoid deep coupling to proprietary PaaS for core functions unless an ADR accepts it, periodic exit test (at least export + restore elsewhere).
 **Cloud migration options** (6R/7R): retire, retain, rehost, relocate, replatform, refactor, repurchase — decide per application from portfolio assessment (see urbanisation reference).
 
@@ -118,7 +118,7 @@ Quantify every NFR; "highly available" is not a requirement.
 - Debt affecting critical functions is an ICT risk: report it in the risk framework, not only in IT backlogs.
 
 ## 8. DORA ICT risk from an architecture perspective
-Regulation (EU) 2022/2554, applicable since 17 January 2025, with RTS/ITS (e.g., ICT risk management framework RTS — verify references). Article numbers below to be verified before citation.
+Regulation (EU) 2022/2554, applicable since 17 January 2025, completed by RTS/ITS. Article numbers below are indicative: confirm them on EUR-Lex before citing them in a deliverable.
 
 | DORA topic | Architecture contribution |
 |---|---|
@@ -155,3 +155,10 @@ Run before G1/G2 and on any consolidated deliverable produced by several experts
 
 ## 10. Review output format (default)
 Findings table: `# | area | finding | severity (Critical/High/Medium/Low) | principle/NFR breached | recommendation | owner`. Then decision: compliant / with reservations / dispensation / non-compliant, followed by the team-standard Risks, Handoffs, Open questions, Assumptions sections.
+
+## Sources
+- European Commission, "Data Act explained" (application 12 Sep 2025, switching charges end 12 Jan 2027): https://digital-strategy.ec.europa.eu/en/factpages/data-act-explained
+- European Commission, Data Act policy page (entry into force, application): https://digital-strategy.ec.europa.eu/en/policies/data-act
+- Arrêté du 12 août 2026 approving SecNumCloud v3.2 (Légifrance): https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054678082
+- ANSSI, SecNumCloud référentiel d'exigences v3.2 du 8 mars 2022 (PDF, §19.6): https://cyber.gouv.fr/sites/default/files/document/secnumcloud-referentiel-exigences-v3.2.pdf
+- Framework and modelling sources: `references/togaf-archimate.md`; ADR sources: `references/adr.md`.

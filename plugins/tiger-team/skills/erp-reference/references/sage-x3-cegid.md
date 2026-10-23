@@ -18,19 +18,19 @@ Sage X3 and Cegid behaviour depends strongly on version, legislation set-up, hos
 - Organisation: companies, sites (financial and/or logistic), legislation (e.g. FRA) driving accounting and tax rules.
 - Entities and tables (names to confirm in the data dictionary of your version): business partners (`BPARTNER`), customers (`BPCUSTOMER`), suppliers (`BPSUPPLIER`), products (`ITMMASTER`), sales orders (`SORDER`), journal entries (`GACCENTRY` header) — verify.
 - Accounting from logistic documents is generated through automatic journal rules (accounting interface parameters) — check posting logic per document type with the finance key user.
-- Major versions: V11, V12 and later release naming — verify the exact release and patch level; APIs differ significantly between versions.
+- Major versions: V11, V12 and the year-based releases built on V12 (e.g. 2021 R2, 2023 R2, 2024 R1) — record the exact release and patch level; APIs differ significantly between versions.
 
 ## 2. Sage X3 import/export templates
-- Import/export templates (function `GESAOE` — verify) define for an object: file format (delimited or fixed), field separator, record types (e.g. header vs line identifiers), field list and order, character set, date format, and whether the template is used for import, export or both.
-- Standard templates exist for common objects (e.g. customers, suppliers, products, sales/purchase orders, journal entries) with codes such as BPC, BPS, ITM, SOH, POH — verify codes and content in your folder; copy and adapt rather than modify standard templates.
-- Execution: interactively (Usage > Imports/exports) or in batch via the batch server (scheduled tasks/recurring requests), with import logs listing accepted and rejected records — verify menu paths.
+- Import/export templates (function `GESAOE`, Setup > Usage > Imports/exports) define for an object: file format (delimited or fixed), field separator, record types (e.g. header vs line identifiers), field list and order, character set, date format, and whether the template is used for import, export or both. Rejected lines can be parked in the import/export temporary storage (`GESAOW`) for correction and re-import.
+- Standard templates exist for common objects (e.g. customers, suppliers, products, sales/purchase orders, journal entries) with codes such as BPC, BPS, ITM, SOH, POH — verify codes and content in your folder (defaults are in the SEED folder); copy and adapt rather than modify standard templates.
+- Execution: interactively (Usage > Imports/exports > Imports, with a Test action that validates the file without importing) or in batch via the batch server using the standard task `IMPORT`; an import log lists accepted and rejected records.
 - Behaviour to confirm per template: creation vs update vs creation-or-update; transaction granularity (one record per transaction vs whole file); behaviour on error (skip record and continue vs stop); trigger of business rules and automatic journals.
 - Pitfalls: template sequence/record type mismatch after upgrade; header/lines structure misunderstood (lines attached to the wrong header); character set of the file vs template setting; decimal separator; leading zeros on codes; dates in the user's format vs template format.
 
 ## 3. Sage X3 web services and APIs
-- **Classic SOAP web services**: objects, sub-programs and import templates published as web services and called through Syracuse with a connection pool configured in administration; generic operations on the `CAdxWebServiceXmlCC` endpoint such as `run` (sub-program), `save`, `read`, `modify`, `delete`, `query`, `getDescription` — verify operation names, authentication and pool configuration for your version.
+- **Classic SOAP web services**: objects, sub-programs and import templates published as web services and called through Syracuse with a connection pool configured in administration; generic operations on the `CAdxWebServiceXmlCC` endpoint: `run` (sub-program), `save`, `read`, `modify`, `delete`, `query` (object services only), `getDescription`, `actionObject`, `actionObjectKeys`, `getDataXmlSchema`, `deleteLines`; authentication and pool configuration vary by version.
 - **REST / SData**: Syracuse exposes REST-style endpoints (SData heritage) for representations/classes — verify support level.
-- **GraphQL API**: recent Sage X3 releases introduced a GraphQL-based API for selected nodes — verify availability, licensing and coverage in your release before designing on it.
+- **GraphQL API** (Sage X3 Services): introduced with release 2021 R2 and extended since (nodes added per release); check node coverage, licensing and the compatible release before designing on it.
 - Design rules: dedicated web service user with minimal rights; pool sizing aligned to concurrency; idempotence via external reference fields; timeouts aligned to X3 processing time; avoid chatty per-line calls for documents with many lines.
 
 ## 4. Sage X3 operations and pitfalls
@@ -58,10 +58,10 @@ Sage X3 and Cegid behaviour depends strongly on version, legislation set-up, hos
 9. **Upgrade resilience**: version templates/specs; regression tests per upgrade.
 
 ## 7. French specifics frequently met
-- **FEC** (Fichier des Écritures Comptables): legal export of accounting entries for tax audits (Livre des procédures fiscales, art. L47 A and A47 A-1 for the format) — the ERP must produce it; interfaces posting summarised journals must keep enough detail and references for FEC and audit trail — verify requirements with the statutory auditors.
+- **FEC** (Fichier des Écritures Comptables): legal export of accounting entries for tax audits (Livre des procédures fiscales, art. L47 A I; format per art. A47 A-1: flat file or XML, 18 mandatory fields, one file per fiscal year named `SirenFECAAAAMMJJ`) — the ERP must produce it; interfaces posting summarised journals must keep enough detail and references for FEC and audit trail — verify requirements with the statutory auditors.
 - **Lettrage** (matching/clearing of customer/supplier items) and **rapprochement bancaire** (bank reconciliation) driven by imported bank statements (CFONB 120, camt.053).
 - **Analytic accounting** with multiple axes/sections; mapping of source cost centres to ERP analytic codes.
-- **E-invoicing reform** (phased from September 2026): ERP must exchange invoices in structured formats (Factur-X, UBL, CII) via an approved platform and handle lifecycle statuses — verify the editor's roadmap and the platform connection for your version.
+- **E-invoicing reform** (reception for all and issuance for large/mid-size companies since 1 September 2026; issuance for SMEs and micro-enterprises from 1 September 2027): the ERP must exchange invoices in structured formats (Factur-X, UBL, CII) via an approved platform and handle lifecycle statuses — verify the editor's roadmap and the platform connection for your version.
 - **Payment and direct debit files**: SEPA pain.001/pain.008 generation, bank-specific variants, EBICS transmission (often through a bank connectivity tool).
 
 ## 8. Review checklist
@@ -74,3 +74,11 @@ Sage X3 and Cegid behaviour depends strongly on version, legislation set-up, hos
 - [ ] Accounting results validated by finance; FEC/audit trail implications checked.
 - [ ] Licences for technical users/APIs confirmed; credentials stored in a vault.
 - [ ] Upgrade regression tests and environment neutralisation after copies planned.
+
+## Sources
+- https://online-help.sagex3.com/erp/12/en-us/Content/FCT/GIMPOBJ.htm — Sage X3 Imports function, GESAOE/GESAOW, IMPORT batch task
+- https://online-help.sagex3.com/erp/11/en-US/V7DEV/administration-reference_soap-generic.html — Classic SOAP web service operations
+- https://online-help.sagex3.com/erp/12/en-us/Content/V7DEV/api-guide_api-soap-import-export-example.html — SOAP import/export example
+- https://developer.sage.com/x3/graphql — Sage X3 GraphQL API, first release 2021 R2
+- https://communityhub.sage.com/gb/sage-x3/f/announcements/tags/graphql — Sage announcements on 2023/2024 releases
+- https://www.impots.gouv.fr/fichiers-standards-des-ecritures-comptables-art-l-47-1-du-lpf — FEC legal basis and format

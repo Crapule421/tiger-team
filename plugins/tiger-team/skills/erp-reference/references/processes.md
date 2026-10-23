@@ -37,7 +37,7 @@ Pitfalls: orders accepted for blocked customers by interface bypassing credit ch
 | Payment | Payment proposal/run, payment file | Bank (pain.001 via EBICS/SWIFT/host-to-host), treasury | Four-eyes approval, payment file integrity (signing), sanction screening |
 | Bank reconciliation | Statement, clearing | camt.053/CFONB 120/MT940 | Unreconciled items ageing |
 Simplified entries: goods receipt Dr Inventory or Expense / Cr GR/IR; invoice Dr GR/IR / Dr Input VAT / Cr Vendor (AP); payment Dr Vendor / Cr Bank (or bank clearing account until statement).
-KPIs: DPO, first-time match rate, invoices on hold, late payment penalties (France: statutory payment terms and late payment penalties — verify current rules).
+KPIs: DPO, first-time match rate, invoices on hold, late payment penalties (France: contractual terms capped at 60 days from invoice date or 45 days end of month, 30 days when nothing is agreed, with sector exceptions; late-payment penalties and a fixed recovery indemnity are due automatically — amounts per current Code de commerce art. L441-10).
 Pitfalls: vendor IBAN changed through an interface without verification (fraud vector); duplicate invoices from OCR + EDI channels; GR/IR balances never cleared; payment files editable between ERP and bank (integrity gap).
 
 ## 3. Record-to-Report (R2R)
@@ -108,10 +108,20 @@ Rules: migration clearing (suspense) accounts must net to zero after all loads; 
 Cut-over pitfalls: closing period not aligned with go-live date (go-live preferably at period start after legacy close); bank/EBICS contracts and certificates not migrated in time; partners not informed of new identifiers or endpoints; schedulers in both systems running the same job.
 
 ## 9. French / EU specifics
-- **FEC** export obligation for computerised accounting (LPF art. L47 A; format per art. A47 A-1 — verify); keep entry-level traceability.
+- **FEC** export obligation for computerised accounting (LPF art. L47 A I; format per art. A47 A-1: flat file or XML, 18 mandatory fields in a fixed order, one file per fiscal year named `SirenFECAAAAMMJJ`, dates `AAAAMMJJ`); keep entry-level traceability.
 - **Archiving**: accounting books and supporting documents retained 10 years (Code de commerce art. L123-22); tax retention rules also apply — verify per document type.
-- **E-invoicing and e-reporting reform**: phased obligations from September 2026 / September 2027 via approved platforms; invoice lifecycle statuses and e-reporting of B2C/international transactions impact O2C and P2P interfaces — verify current calendar and specifications.
-- **SEPA**: SCT, SCT Inst (Instant Payments Regulation incl. Verification of Payee), SDD Core/B2B with mandates and creditor identifier (ICS); bank formats per bank implementation guides.
+- **E-invoicing and e-reporting reform**: reception for all companies and issuance for large/mid-size companies since 1 September 2026, issuance for SMEs and micro-enterprises from 1 September 2027, via approved platforms ("plateformes agréées") that each company must designate; invoice lifecycle statuses and e-reporting of B2C/international transactions (same calendar) impact O2C and P2P interfaces — follow the DGFiP external specifications for the detailed rules.
+- **SEPA**: SCT, SCT Inst (Instant Payments Regulation: euro-area PSPs receive since 9 January 2025, send with Verification of Payee since 9 October 2025), SDD Core/B2B with mandates and creditor identifier (ICS); bank formats per bank implementation guides.
 - **VAT**: intra-EU VAT number validation (VIES), reverse charge, VAT on receipts vs debits for services ("TVA sur les encaissements") affecting posting logic — verify with tax.
 - **Banking sector** (financial entities): DORA requirements on ICT third parties and incident reporting extend to ERP SaaS and integration platforms supporting critical functions — coordinate with enterprise-architect.
 - **Healthcare entities**: ERP processes for public hospitals follow public accounting rules (M21 instruction, Chorus Pro for public-sector invoicing) — verify.
+
+## Sources
+- https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000006219327/ — Code de commerce L123-22, 10-year retention
+- https://www.impots.gouv.fr/fichiers-standards-des-ecritures-comptables-art-l-47-1-du-lpf — FEC obligation under LPF L47 A
+- https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000027804775 — LPF A47 A-1 FEC format
+- https://bofip.impots.gouv.fr/bofip/9028-PGP.html/identifiant=BOI-CF-IOR-60-40-20-20170607 — BOFiP FEC format details
+- https://www.economie.gouv.fr/dgccrf/les-fiches-pratiques/delais-de-paiement-les-regles-connaitre — DGCCRF payment term caps
+- https://www.economie.gouv.fr/tout-savoir-sur-la-facturation-electronique-pour-les-entreprises — e-invoicing reform calendar 2026/2027
+- https://www.europeanpaymentscouncil.eu/news-insights/news/key-impacts-instant-payments-regulation-2023-sct-inst-scheme-rulebook-and — IPR dates 9 January / 9 October 2025
+- https://www.europeanpaymentscouncil.eu/sites/default/files/kb/file/2025-10/EPC266-25%20Press%20Release%20VOP%20rulebook%20now%20into%20force.pdf — VoP rulebook in force 5 October 2025

@@ -55,7 +55,7 @@ Coupling to check for each flow: **temporal** (both must be up), **format** (sha
 | Technique | How | Notes |
 |---|---|---|
 | Natural business key | Unique constraint on (source, business ID), e.g. invoice number + supplier | Best when the business key is truly unique and stable |
-| Idempotency key | Producer generates a unique key per business operation (UUID); consumer stores key + result | Keep keys ≥ max replay/retry window; return the stored result on duplicate. HTTP header `Idempotency-Key` is an IETF draft — verify status |
+| Idempotency key | Producer generates a unique key per business operation (UUID); consumer stores key + result | Keep keys ≥ max replay/retry window; return the stored result on duplicate. HTTP header `Idempotency-Key` is still an IETF HTTPAPI working-group draft (draft-ietf-httpapi-idempotency-key-header), not an RFC as of October 2026 |
 | Upsert / set-state semantics | "Set status = SHIPPED" instead of "increment" | Combine with version numbers to reject stale updates |
 | Version / sequence per key | Reject or park messages older than the stored version | Handles out-of-order delivery |
 | File registry | Store file ID + SHA-256 of received files; reject or flag duplicates | Same name with different content is a different case: alert |
@@ -123,7 +123,7 @@ Logs: structured (JSON), correlation IDs, no secrets, no full payloads or person
 | Tighten validation, change default, change ordering, change field meaning with same schema | Breaking (semantic) |
 | Remove/rename field, change type/format, shorten length, optional → mandatory, change ID semantics or error codes | Breaking |
 
-Rules: semantic versioning of the contract (MAJOR.MINOR.PATCH); major version visible (URL `/v2`, media type, topic name, file layout version in header record); run N and N-1 in parallel with a published deprecation date (HTTP `Deprecation` RFC 9745 and `Sunset` RFC 8594 headers); consumer inventory (gateway analytics, broker ACLs, MFT partner list) before removal; tolerant reader + strict writer; consumer-driven contract tests in CI; for events use a schema registry with an enforced compatibility mode (see mft-mq-kafka.md); never change a fixed-width layout without a new version identifier.
+Rules: semantic versioning of the contract (MAJOR.MINOR.PATCH); major version visible (URL `/v2`, media type, topic name, file layout version in header record); run N and N-1 in parallel with a published deprecation date (HTTP `Deprecation` header, RFC 9745 Proposed Standard 2025, and `Sunset` header, RFC 8594 Informational); consumer inventory (gateway analytics, broker ACLs, MFT partner list) before removal; tolerant reader + strict writer; consumer-driven contract tests in CI; for events use a schema registry with an enforced compatibility mode (see mft-mq-kafka.md); never change a fixed-width layout without a new version identifier.
 
 ## 8. Interface security
 | Mechanism | Use | Must-haves | Pitfalls |
@@ -136,7 +136,7 @@ Rules: semantic versioning of the contract (MAJOR.MINOR.PATCH); major version vi
 | Payload encryption | Confidentiality across intermediaries/storage | JWE, XML-Enc, CMS/PGP; key rotation; integrity protection too | Encryption without integrity; inability to scan content |
 | Webhook verification | Inbound callbacks from SaaS/partners | HMAC or signature over raw body + timestamp, reject stale timestamps, idempotent by event ID | Verifying signature on a re-serialised body |
 
-Baseline: TLS 1.2 minimum, TLS 1.3 preferred, cipher suites per ANSSI TLS guidance (verify current version); secrets in a vault, rotated, never in repositories or scripts; dedicated least-privilege technical account per interface and environment; schema validation, size limits, XXE disabled, archive bomb limits; network filtering and DMZ relay for external partners; GDPR minimisation (only fields the purpose requires) and retention of payload archives; health data hosted per HDS rules; financial entities: DORA third-party and incident rules; classified/Diffusion Restreinte flows out of scope of cloud tooling (hand off to devsecops-expert / infra-expert).
+Baseline: TLS 1.2 minimum, TLS 1.3 preferred, cipher suites per the ANSSI guide "Recommandations de sécurité relatives à TLS" (ANSSI-PA-035, version 1.2 of March 2020 at the time of writing); secrets in a vault, rotated, never in repositories or scripts; dedicated least-privilege technical account per interface and environment; schema validation, size limits, XXE disabled, archive bomb limits; network filtering and DMZ relay for external partners; GDPR minimisation (only fields the purpose requires) and retention of payload archives; health data hosted per HDS rules; financial entities: DORA third-party and incident rules; classified/Diffusion Restreinte flows out of scope of cloud tooling (hand off to devsecops-expert / infra-expert).
 
 ## 9. Interface review checklist
 **Business and ownership**

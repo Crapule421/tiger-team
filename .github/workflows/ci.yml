@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  checks:
+    name: Lint and guard tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Structural lint
+        run: bash tests/lint.sh
+      - name: Confidentiality guard tests
+        run: bash tests/confidentiality-guard.test.sh

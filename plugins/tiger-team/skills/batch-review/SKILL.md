@@ -29,9 +29,9 @@ In that case reply only with: the category detected (never quote the value), whe
 ## 2. Load knowledge
 - Always Read `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/SKILL.md` (principles, checklist section 4, incident method, critical-path method, anti-patterns).
 - Identify the scheduler, then Read the matching reference:
-  - Control-M (JSON with `"Type": "Folder"` / `"Job:..."`, or XML with `DEFTABLE`/`JOB`/`INCOND`/`OUTCOND`): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/control-m.md`
-  - Dollar Universe (uprocs, sessions, tasks, MU, `uxext` extracts): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/dollar-universe.md`
-  - VTOM (environments, applications, jobs, links, `vtexport` XML): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/vtom.md`
+  - Control-M (JSON with `"Type": "Folder"` / `"SimpleFolder"` / `"Job:..."`, or EM XML with a `DEFTABLE` root and `FOLDER` / `SMART_FOLDER` / `JOB` elements): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/control-m.md`
+  - Dollar Universe (uprocs, sessions, tasks, MU, `uxext` extracts, `S_*` variables): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/dollar-universe.md`
+  - VTOM (environments, applications, jobs, links, `vtexport` XML, `TOM_*` variables): `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/vtom.md`
   - Unknown or mixed tools: Read `${CLAUDE_PLUGIN_ROOT}/skills/scheduling-reference/references/mapping.md` and state the identification as an assumption.
 
 ## 3. Build the model

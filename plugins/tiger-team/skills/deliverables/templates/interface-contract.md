@@ -158,7 +158,7 @@ _Synthetic data only. Link to the test campaign._
 
 ## 15. Approval
 
-| Party | Role | Name | Date | Decision |
+| Party | Role | Name / function | Date | Decision |
 |---|---|---|---|---|
 | Provider | Technical owner | `<...>` | | |
 | Consumer | Technical owner | `<...>` | | |

@@ -9,18 +9,7 @@ user-invocable: false
 Senior PM reference for technical and application integration projects in regulated French/EU contexts (banking, healthcare, defense). Rules of thumb are starting points: calibrate them with the organisation's own history before committing numbers.
 
 ## Templates (reference, do not re-invent)
-Located in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`. Read the one you need; if it is missing, follow the structure given here.
-
-| Template | Use |
-|---|---|
-| `raci.md` | Responsibility matrix |
-| `raid.md` | Risks, Assumptions, Issues, Dependencies log |
-| `release-sheet.md` | Release sheet (fiche MEP) and cut-over run sheet |
-| `uat-signoff.md` | UAT sign-off (PV de recette) with reservations (réserves) |
-| `dat.md` | Technical architecture document (DAT, dossier d'architecture technique) |
-| `dex.md` | Operations handbook (DEX, dossier d'exploitation) |
-| `interface-contract.md` | Contract for one interface / flow |
-| `flow-matrix.md` | Flow matrix (matrice des flux): source, target, protocol, port, frequency, volume |
+Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/` (index, ID conventions and writing rules in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/SKILL.md`): `raci.md`, `raid.md`, `release-sheet.md` (fiche MEP and run sheet), `uat-signoff.md` (PV de recette with réserves), `dat.md`, `dex.md`, `interface-contract.md`, `flow-matrix.md`. Read the one you need; if it is missing, follow the structure given here.
 
 ## 1. Vocabulary (FR → EN)
 | FR | EN / meaning |
@@ -31,7 +20,7 @@ Located in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`. Read the one 
 | SFG / SFD | General / detailed functional specifications |
 | PAQ / PAS | Quality assurance plan / security assurance plan |
 | Recette, PV de recette, réserve | Acceptance testing, acceptance report, reservation (open defect accepted under conditions) |
-| VABF / VSR | Functional fitness verification before go-live / regular-service verification in production over a contractual period |
+| VA (VABF) / VSR | Acceptance stages of the public-procurement CCAG-TIC (2021, Art. 32): vérification d'aptitude (usually called VABF) before go-live, then vérification de service régulier in production (30 days by default) |
 | MEP / MES | Production deployment / service opening to users |
 | Bascule / retour arrière / point de non-retour | Cut-over / rollback / point of no return (PNR) |
 | COPIL / COPROJ | Steering committee / project committee |
@@ -152,11 +141,11 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 | Operability (exploitabilité) | Ops | Préprod | Start/stop, monitoring alerts, logs, backup/restore, scheduling, restart after failure validated |
 | Resilience / DR | Infra + ops | Préprod / DR | Failover and restore within RTO/RPO |
 | UAT (recette utilisateur) | Business key users | Recette | PV de recette signed, reservations listed |
-| VABF / VSR | Customer vs supplier (contract) | Préprod or prod / prod | Per contract (public procurement: CCAG-TIC terms — verify the applicable version and clauses) |
+| VA (VABF) / VSR | Customer vs supplier (contract) | Préprod or prod / prod | Per contract; CCAG-TIC 2021 defaults (arrêté du 30 mars 2021, last amended 29 Dec 2022): VA decided within 30 days (Art. 33.2.1); VSR observed over 30 days, unavailability ≤ 2 % of business hours (Art. 32.4); decision within 7 days — admission, ajournement, réfaction or rejet (Art. 33.2.2). The CCAP may override |
 
 **Integration-specific test cases**: rejects and error queues; replay/resend; duplicates and idempotency; out-of-order messages; partial files; empty files; maximum volume; cut-off times; time zones and DST change; encoding and special characters; decimal separators and rounding; end of month/year; partner unavailable; certificate expiry; restart of interrupted batch.
 
-**Defect severity**: blocking (no workaround, prevents go-live), major (significant impact, workaround exists), minor. Default go-live rule: 0 blocking; majors only with documented workaround accepted by business and a fix date; minors tracked.
+**Defect severity** (as in `uat-signoff.md`): blocking (no workaround, prevents go-live), major (significant impact, workaround exists), minor, cosmetic. Default go-live rule: 0 blocking; majors only with documented workaround accepted by business and a fix date; minors and cosmetics tracked.
 **Traceability**: requirement → test case → result → defect; mandatory for regulated contexts and audits.
 
 ## 9. Cut-over (bascule) & rollback
@@ -221,7 +210,7 @@ Experts legitimately disagree (security vs delay, ideal architecture vs legacy r
 4. Score remaining options: residual risk (after mitigation), cost (TCO 3-5 years), delay (critical path impact), reversibility, operability, strategic fit. Use a weighted matrix (`${CLAUDE_PLUGIN_ROOT}/skills/architecture-reference/references/adr.md`).
 5. Decide at the right level; record in the decision log or an ADR; update RAID (accepted risks, debt with sunset date).
 
-**Default priority order**: compliance and security baseline > production stability / operational resilience > data integrity > hard regulatory deadline > cost > delay of non-regulatory milestones > elegance.
+**Default priority order** (same as the `mission` skill, unless the user sets another): regulatory compliance (incl. hard regulatory deadlines) > security > data integrity > service availability / production stability > delay > cost > elegance.
 
 | Decision | Decides | Advises |
 |---|---|---|
@@ -281,3 +270,7 @@ Method: bottom-up from the interface inventory (count × complexity) cross-check
 | Hosting, network, firewall flows, capacity, HA/DR, certificates, cloud landing zone | infra-expert |
 | IBM i (AS/400) platform, Db2 for i, RPG/COBOL, journaling, CCSID/EBCDIC, IBM i integration | ibmi-expert |
 | Planning, governance, RAID, cut-over orchestration, arbitration | project-manager |
+
+## Sources
+- CCAG-TIC 2021, arrêté du 30 mars 2021 (NOR ECOM2106875A), consolidated text with amendments (21 Apr 2021, 30 Sep 2021, 29 Dec 2022): https://www.legifrance.gouv.fr/loda/id/JORFTEXT000043310689
+- CCAG-TIC Art. 32 "Vérifications qualitatives" (VA 32.3, VSR 32.4): https://www.legifrance.gouv.fr/loda/article_lc/LEGIARTI000043320039

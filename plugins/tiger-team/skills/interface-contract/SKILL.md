@@ -48,13 +48,13 @@ In that case reply only with: the category detected (never quote the value), whe
 Use only fictitious examples (APP_COMPTA, APP_CRM, example.org, IBAN/identifier placeholders such as `FR76<FICTITIOUS_IBAN>` clearly marked fictitious). Never invent product parameters: write "verify against your version".
 
 ## 4. Default structure (when the template is absent)
-1. **Identification** — interface ID (e.g. `IF-<SRC>-<TGT>-<NNN>`), name, version, status (draft/validated), authors (roles), date, related documents.
+1. **Identification** — interface ID (`INT-<nnn>`, the deliverables convention), name, version, status (draft/validated), authors (roles), date, related documents.
 2. **Parties** — source and target systems, owners (business/technical), operating teams, partner contacts (roles), RACI for incidents.
 3. **Functional description** — business purpose, process, trigger event, business rules, out of scope.
 4. **Trigger and frequency** — event/schedule/file arrival, calendar, cut-off times, batch windows, time zone.
 5. **Transport** — pattern, protocol, endpoints/queues/topics/IDF (placeholders), network zones, message/file naming, acknowledgments.
 6. **Format and schema** — format, encoding, schema reference + version, example payloads (fictitious), header/trailer and control totals for files.
-7. **Field mapping** — table: `# | source field | type/length | mandatory | rule | target field | type/length | default | code list | example`.
+7. **Field mapping** — one row per target field, table: `# | Target field | Type / length | Mandatory | Source field | Transformation rule | Default | Fictitious example | Classification` (Classification marks personal or regulated fields, e.g. Personal / Internal), as in section 7 of the deliverables template.
 8. **Volumetry** — average/peak per period, payload size, growth at 3 years, peak periods (month-end, payroll, season).
 9. **SLAs** — availability, latency/delivery deadline, throughput, support hours, RPO/RTO of the flow.
 10. **Error handling and replay** — error classes and handling, retry policy, timeouts, DLQ/reject flow, functional reject format, replay procedure and authorisation, reconciliation controls.

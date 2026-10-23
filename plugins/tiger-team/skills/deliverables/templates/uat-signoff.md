@@ -13,7 +13,7 @@
 | Contract reference (if any) | `<contract / statement of work, acceptance clause>` |
 | Sensitivity label | `<Internal / Confidential>` |
 
-_VABF (vérification d'aptitude au bon fonctionnement) and VSR (vérification de service régulier) are terms used in French public procurement; use the acceptance stages defined in your contract._
+_VA (vérification d'aptitude, usually called VABF) and VSR (vérification de service régulier) are the acceptance stages of the French public-procurement CCAG-TIC 2021 (Art. 32-33: VA decided within 30 days, VSR observed over 30 days in production); use the stages and durations defined in your contract (CCAP)._
 
 | Version | Date | Author | Changes |
 |---|---|---|---|

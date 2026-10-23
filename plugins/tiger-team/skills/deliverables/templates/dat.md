@@ -20,7 +20,7 @@
 | Reviewer: operations | `<...>` | | |
 | Approver: architecture board | `<...>` | | |
 
-Related documents: _requirements `<ref>`, ADR log `<ref>`, interface contracts `INT-xxx`, flow matrix `<ref>`, DEX `<ref>`, RAID `<ref>`._
+Related documents: _requirements `REQ-xxx`, ADR log `ADR-xxxx`, interface contracts `INT-xxx`, flow matrix `FLM-xxx`, DEX `DEX-xxx`, RAID `RAID-<project>`._
 
 ## 1. Purpose and scope
 
@@ -80,7 +80,7 @@ flowchart LR
 ### 4.3 Key architecture decisions
 | ADR | Decision | Alternatives considered | Rationale | Date |
 |---|---|---|---|---|
-| ADR-001 | `<...>` | `<...>` | `<...>` | `<...>` |
+| ADR-0001 | `<...>` | `<...>` | `<...>` | `<...>` |
 
 ## 5. Integration architecture
 

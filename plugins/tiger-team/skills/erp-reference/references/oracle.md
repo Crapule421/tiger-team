@@ -51,22 +51,22 @@ Design rules: use `GROUP_ID`/batch identifiers per run for traceability and sele
 - Concurrent manager: requests with phase (Pending, Running, Completed, Inactive) and status (Normal, Error, Warning…); request sets; logs and output files per request; `FND_CONCURRENT_REQUESTS` for monitoring.
 - Scheduling of import programs is often done by the concurrent manager; enterprise schedulers can submit via `CONCSUB` or APIs — coordinate with scheduling-expert.
 - Setups migrated with `FNDLOAD` (AOL objects: concurrent programs, value sets, menus, responsibilities) and product-specific tools; patches with AD utilities (`adop` in 12.2).
-- Support: verify Premier/extended support dates for your EBS release with Oracle's Lifetime Support Policy.
+- Support: Oracle commits Premier Support for EBS 12.2 "through at least 2035" (Applications Unlimited, reviewed annually; 12.2 is the long-term support release); earlier releases (12.1 and below) are outside Premier Support — check the Lifetime Support Policy for your release.
 
 ## 5. Oracle Fusion Cloud essentials
 - SaaS (ERP, SCM, HCM, CX): no database access; integration only through REST, SOAP, file-based imports and extract tools.
-- Quarterly updates (release names like 25A, 25B, 25C, 25D): APIs, FBDI templates and import jobs can change — regression-test interfaces each quarter; monitor deprecation notices.
-- Jobs run in Enterprise Scheduler Service (ESS); files exchanged through Universal Content Management (UCM, Oracle WebCenter Content) accounts per domain (e.g. `fin$/payables$/import$` — verify account names per object).
+- Quarterly updates (release names like 25A … 26D): APIs, FBDI templates and import jobs can change — regression-test interfaces each quarter; monitor deprecation notices.
+- Jobs run in Enterprise Scheduler Service (ESS); files exchanged through Universal Content Management (UCM, Oracle WebCenter Content) accounts, one per import object as listed in the FBDI documentation (e.g. `fin/payables/import` for Payables invoices, written `fin$/payables$/import$` in RIDC/command-line form); the account decides which import process picks the file up.
 - Security: integration user with least-privilege job/data roles (data access sets, business unit access); authentication via OAuth (OCI IAM identity domains / IDCS) or basic auth where still allowed — verify policy.
 
 ## 6. Fusion inbound: REST, SOAP, FBDI, HDL, ADFdi
 **REST APIs**: resource-based, versioned paths such as `/fscmRestApi/resources/<version>/...` (ERP/SCM) and `/hcmRestApi/resources/<version>/...` (HCM) — verify resource names and the version string in the REST API guide of your release. Suited to low/medium volume, near real-time document creation and lookups; respect pagination (`limit`, `offset`, `hasMore`) and query (`q=`) syntax.
-**SOAP services**: e.g. `ErpIntegrationService` for FBDI orchestration (operations such as uploading a file to UCM and submitting load/import jobs, e.g. `loadAndImportData`, and job status/output retrieval) — verify operation names and the equivalent REST resource (`erpintegrations`) for your release.
+**SOAP services**: e.g. `ErpIntegrationService` for FBDI orchestration: `uploadFileToUcm` (base64 content, returns the UCM document ID), `submitESSJobRequest` (job package + definition + parameters, returns a request ID), `getESSJobStatus` polling and output download; the one-shot `loadAndImportData` is deprecated in favour of `importBulkData` on the REST resource `erpintegrations` (`POST /fscmRestApi/resources/<version>/erpintegrations`).
 **FBDI (File-Based Data Import)**, the standard bulk inbound path for ERP/SCM:
 1. Download the object's FBDI template (XLSM) for your release; fill or generate the CSV files in exactly the template's column order.
 2. Zip the CSV(s); upload to UCM (UI, `ErpIntegrationService`, or REST).
 3. Run "Load Interface File for Import" (ESS) to load the interface tables.
-4. Run the object-specific import job (e.g. Import Journals, Import Payables Invoices, Import AutoInvoice — verify names).
+4. Run the object-specific import job (e.g. Import Payables Invoices; Import Journals and Import AutoInvoice for GL/AR — confirm job names in your release's FBDI guide).
 5. Review the import execution report; correct errors (ADFdi correction spreadsheets where provided, or purge and reload); purge interface/error tables.
 6. Optional callback notification on job completion to the middleware.
 **HDL (HCM Data Loader)**: pipe-delimited `.dat` files per business object (e.g. `Worker.dat`) with `METADATA` lines followed by `MERGE`/`DELETE` lines; keys via source keys (`SourceSystemOwner` + `SourceSystemId`), user keys, or GUIDs/surrogate IDs; zipped and uploaded, then imported and loaded; HSDL for spreadsheet-based loads. Define the source-key strategy at the start: it drives all later updates.
@@ -80,7 +80,7 @@ Design rules: use `GROUP_ID`/batch identifiers per run for traceability and sele
 - **Business events**: subscribable events (e.g. via the OIC ERP Cloud adapter) for near real-time outbound notifications — verify available events per object.
 
 ## 8. Oracle Integration (OIC)
-- Integrations (app-driven orchestration, scheduled orchestration, basic routing in older generations), connections based on adapters (ERP Cloud, HCM Cloud, REST, SOAP, FTP/SFTP, database, ATP, file), lookups (value mapping), mapper (XSLT-based), tracking fields (business identifiers used to search instances), fault handlers, resubmission of failed instances, connectivity agent for on-premise endpoints, B2B for EDI, process automation — verify features of your OIC generation (Gen 3 is current).
+- Integrations (app-driven orchestration, scheduled orchestration, basic routing in older generations), connections based on adapters (ERP Cloud, HCM Cloud, REST, SOAP, FTP/SFTP, database, ATP, file), lookups (value mapping), mapper (XSLT-based), tracking fields (business identifiers used to search instances), fault handlers, resubmission of failed instances, connectivity agent for on-premise endpoints, B2B for EDI, process automation. Oracle Integration 3 is the current generation; Generation 2 instances differ (e.g. agent JDK, dropped features) — check which one you run.
 - The ERP Cloud adapter wraps FBDI uploads, ESS job submission, callbacks and business event subscriptions.
 - Design rules: tracking fields = business keys; idempotent target operations; parameterised connections per environment; integrations exported/imported as packages through CI/CD where possible.
 
@@ -94,3 +94,13 @@ Design rules: use `GROUP_ID`/batch identifiers per run for traceability and sele
 - Quarterly update changing behaviour without regression tests; deprecated REST versions.
 - Integration user with broad roles (e.g. full functional administrator) instead of least privilege.
 - Period status: GL periods (and sub-ledger periods in EBS: AP, AR, PO, INV) must be open for the accounting date; month-end closing order affects inbound flows.
+
+## Sources
+- https://oracle.com/a/ocom/docs/applications/ebusiness/ebs-122-premier-support-extended-through-at-least-2035.pdf — EBS 12.2 Premier Support through at least 2035
+- https://blogs.oracle.com/proactivesupportepm/applications-unlimited-and-oracle-premier-support-extension-to-2035 — Applications Unlimited support commitment
+- https://docs.oracle.com/en/cloud/saas/financials/25c/oeswf/erpintegrationservice-d16510e420.html — ErpIntegrationService SOAP operations, loadAndImportData deprecated
+- https://docs.oracle.com/en/cloud/saas/financials/24c/farfa/op-erpintegrations-post.html — erpintegrations REST resource
+- https://docs.oracle.com/en/cloud/saas/financials/25d/oefbf/payablesstandardinvoiceimport-3179.html — FBDI Payables invoice import, UCM account
+- https://docs.oracle.com/en/cloud/saas/financials/25d/fappp/how-payables-standard-invoice-import-data-is-processed.html — FBDI load and import job steps
+- https://docs.oracle.com/en/cloud/paas/application-integration/index.html — Oracle Integration 3 documentation home
+- https://docs.oracle.com/en/cloud/paas/application-integration/whats-new/differences-prior-versions-oracle-integration.html — Oracle Integration 3 vs Generation 2 differences

@@ -16,7 +16,7 @@
 
 Acceptance by operations: `<name/role, date>` — _the run team validates that it can operate the system with this document alone._
 
-Related documents: _DAT `<ref>`, flow matrix `<ref>`, interface contracts `INT-xxx`, release sheets._
+Related documents: _DAT `DAT-xxx`, flow matrix `FLM-xxx`, interface contracts `INT-xxx`, release sheets `REL-xxx`._
 
 ## 1. Service overview
 

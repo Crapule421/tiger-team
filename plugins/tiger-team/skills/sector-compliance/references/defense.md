@@ -26,20 +26,20 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 | SGDSN | Secrétariat général de la défense et de la sécurité nationale: issues the interministerial rules on defense secrecy (IGI 1300) |
 | ANSSI | Agence nationale de la sécurité des systèmes d'information, attached to the SGDSN: national cybersecurity authority, guides, qualifications, approvals |
 | HFDS | Haut fonctionnaire de défense et de sécurité in each ministry |
-| DRSD | Direction du renseignement et de la sécurité de la défense: protection of the defense sector, incl. security investigations for the defense industry (verify current remit) |
+| DRSD | Direction du renseignement et de la sécurité de la défense: counter-intelligence for the defense sphere; conducts the security investigations and issues the security opinions behind clearances of persons and companies in the defense industry (the clearance authority decides) |
 | Officier de sécurité (OS) | Person in charge of protecting classified information within an entity, incl. companies |
 | Autorité d'homologation | Authority that formally accepts the residual risks of an information system before operation |
 | Habilitation | Security clearance granted to a person for a classification level |
 | Besoin d'en connaître | Need-to-know: required in addition to the clearance |
-| OIV / SIIV | Operators of vital importance and their vital information systems (Code de la défense art. L. 1332-6-1 et seq.) |
+| OIV / SIIV | Operators of vital importance and their vital information systems (Code de la défense art. L. 1332-6-1 et seq., sector arrêtés under art. R. 1332-41-1 et seq.); regime to be recast by the NIS2 / REC transposition law once promulgated |
 
 ## 2. Protection of national defense secrecy: IGI 1300 (2021 reform)
 
 ### Facts
 
-- Criminal protection of national defense secrecy: Code pénal art. 413-9 et seq.
-- **IGI 1300** (Instruction générale interministérielle n° 1300 sur la protection du secret de la défense nationale): the reformed version was approved by order of 13 November 2020 and **entered into force on 1 July 2021** (verify).
-- Since that reform there are **two classification levels**: **Très Secret** and **Secret** (Code de la défense art. R. 2311-2, verify). The former "Confidentiel Défense" level **no longer exists**; legacy media marked with former levels follow transition rules: verify with your security officer.
+- Criminal protection of national defense secrecy: Code pénal art. 413-9 et seq. (art. 413-9 defines what is covered; art. 413-10 et seq. punish compromise, incl. by negligence).
+- **IGI 1300** (Instruction générale interministérielle n° 1300 sur la protection du secret de la défense nationale): the reformed version was approved by the arrêté of 13 November 2020 and **entered into force on 1 July 2021**; the SGDSN publishes the consolidated text (version of 9 August 2021).
+- Since that reform there are **two classification levels**: **Très Secret** and **Secret** (Code de la défense art. R. 2311-2, as amended by decree n° 2019-1271 of 2 December 2019). The former levels **no longer exist**: former "Confidentiel Défense" corresponds to Secret and former "Secret Défense" to Très Secret (equivalence rules for clearances and markings); handling of legacy media: ask your security officer.
 - Access requires **both** a clearance (habilitation) at the appropriate level **and** a need-to-know.
 - IGI 1300 covers marking, handling, storage, reproduction, transmission, destruction of classified media, protected zones, clearance of persons and legal entities, classified contracts, and classified information systems (which must be homologated and use products approved for the level).
 
@@ -53,9 +53,9 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 ### Facts
 
 - **Diffusion Restreinte (DR)** is a **protection marking, not a classification level**: information whose disclosure could harm the interests protected, without warranting classification. It still requires controlled handling.
-- **II 901** (Instruction interministérielle n° 901/SGDSN/ANSSI relative à la protection des systèmes d'information sensibles, 28 January 2015) sets the rules for **sensitive information systems**, including those processing DR information: homologation before use, security measures, use of products **qualified** or, for protecting DR information (e.g. encryption on public networks), **approved (agréés) by ANSSI**, controlled interconnections, administration and user rules.
-- ANSSI publishes architecture recommendations for sensitive / DR information systems, including the conditions under which a DR system may be connected to the Internet (verify the current guide).
-- **Do not assume** that a SecNumCloud-qualified cloud is, by itself, authorized to host DR information: verify with ANSSI guidance and the homologation authority.
+- **II 901** (Instruction interministérielle n° 901/SGDSN/ANSSI relative à la protection des systèmes d'information sensibles, 28 January 2015) sets the rules for **sensitive information systems**, including those processing DR information: homologation before use, security measures, use of products **qualified** or, for protecting DR information (e.g. encryption when it leaves a physically protected zone or crosses public networks), **approved (agréés) by ANSSI**, controlled interconnections, administration and user rules. It applies to State administrations and to any legal entity operating a DR system (and entities under the PPST); for other entities it is a recommendation.
+- ANSSI guide **ANSSI-PG-075** "Recommandations pour les architectures des systèmes d'information sensibles ou Diffusion Restreinte" (v1.2, 24 September 2021) defines three classes of sensitive systems according to their exposure to the Internet (secured gateway or physical isolation).
+- **Cloud**: under the ANSSI "Recommandations pour l'hébergement dans le cloud des systèmes d'information sensibles" (v1.0, July 2024) and the State "cloud au centre" doctrine, a DR-level system may only be hosted on a **SecNumCloud-qualified** offer (internal, private, community or public). Qualification is necessary but not sufficient: homologation, II 901 requirements (approved encryption) and, for "Spécial France" data, the location and the nationality of administrators remain to be checked.
 
 ### Implications
 
@@ -64,9 +64,9 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 
 ## 4. Caveats, export control and scientific potential protection
 
-- **"Spécial France"**: a dissemination caveat restricting access to French nationals and entities; it applies on top of the classification or protection marking. Verify the exact rules in IGI 1300.
+- **"Spécial France"**: a dissemination caveat restricting access to French nationals and entities; it applies on top of the classification or protection marking. Verify the exact handling rules in IGI 1300 with the security officer.
 - **Export control**: technical data can be controlled even when unclassified: EU dual-use items (Regulation (EU) 2021/821), war materials (French licensing regime), US ITAR/EAR for US-origin items. Giving access to a foreign national or storing data on servers abroad may constitute an export. A cloud AI service is such a server.
-- **PPST** (protection du potentiel scientifique et technique de la nation): restricted-access zones (ZRR) in laboratories and companies; access subject to authorization. Verify the applicable decree.
+- **PPST** (protection du potentiel scientifique et technique de la nation): decree n° 2011-1425 of 2 November 2011 (application of Code pénal art. 413-7) and arrêté of 3 July 2012; restricted-access zones (ZRR, Code pénal art. R. 413-5-1) in laboratories and companies; access subject to prior authorization after a ministerial opinion.
 - Contractual secrecy (NDA, program security instructions) may forbid any external processing even of unclassified data.
 
 ## 5. Security homologation and the RGS
@@ -74,8 +74,8 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 ### Facts
 
 - **Homologation de sécurité**: formal decision by the autorité d'homologation, based on a dossier, that the residual risks of an information system are known and accepted, before it is put into operation; it is reviewed on major change and at the end of its validity period.
-- **RGS** (Référentiel général de sécurité, v2.0, order of 13 June 2014), under ordonnance n° 2005-1516 and decree n° 2010-112, requires administrative authorities to homologate their information systems exchanging with users and other authorities (verify scope). II 901 and IGI 1300 require homologation for sensitive, DR and classified systems.
-- ANSSI publishes a step-by-step homologation guide (verify the current edition). Typical process:
+- **RGS** (Référentiel général de sécurité, v2.0, arrêté of 13 June 2014, applicable since 1 July 2014), under ordonnance n° 2005-1516 (art. 9) and decree n° 2010-112, requires administrative authorities to homologate the information systems used for their electronic exchanges with users and between authorities (téléservices). II 901 and IGI 1300 require homologation for sensitive, DR and classified systems; the LPM / OIV regime requires it for SIIV.
+- The ANSSI and the DINUM publish a **homologation guide** (collection "Gestion des risques cyber", first edition April 2025, version 2.2 of March 2026) with method sheets, replacing the 2014 nine-step guide. It distinguishes a **simplified** and a **reinforced** approach according to the stakes, requires an annual follow-up review, and caps the validity of a decision at **three years** for most regulated systems and at **two years** for IGI 1300 systems processing Très Secret information; ANSSI strongly recommends never exceeding three years. Typical content of a dossier:
 
 | Step | Content |
 |---|---|
@@ -86,7 +86,7 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 | 5. Verification | Security audits (e.g. by a PASSI-qualified provider), penetration tests, configuration reviews |
 | 6. Residual risks | Documented, with action plan |
 | 7. Decision | Homologation decision signed by the authority, with conditions and duration |
-| 8. Maintenance | Maintien en condition de sécurité (MCS), vulnerability watch, re-homologation on major change |
+| 8. Maintenance | Maintien en condition de sécurité (MCS), vulnerability watch, annual review, re-homologation on major change |
 
 ### Implications
 
@@ -97,10 +97,10 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 ## 6. ANSSI guides, qualifications and approvals
 
 - **Certification** (CSPN first-level certification, Common Criteria): a product was evaluated against a security target.
-- **Qualification** (historically élémentaire, standard and renforcé levels for products; verify current naming): certification plus ANSSI's recommendation for use by administrations and sensitive operators.
+- **Qualification** of products (three levels: **élémentaire**, **standard**, **renforcé**): certification plus ANSSI's recommendation for use by administrations and regulated operators (LPM, RGS, eIDAS); all qualified products and services carry the ANSSI "Visa de sécurité". ANSSI architecture guides tie the required level to the zone (e.g. external firewall of a sensitive IS qualified at standard level or higher).
 - **Agrément** (approval): required for products protecting classified or DR information.
-- Service provider qualifications: **SecNumCloud** (cloud; includes requirements on immunity from non-EU laws), **PASSI** (security audit), **PDIS** (incident detection), **PRIS** (incident response), **PACS** (security support and consulting), **PAMS** (secure administration and maintenance, relevant for integrators and managed-service providers). Verify the current list and versions.
-- Useful public ANSSI guides (titles indicative, verify current editions): IT hygiene guide; secure administration of information systems (dedicated admin workstations, tiering); interconnection of an IS to the Internet; architectures of sensitive / DR systems; logging; TLS recommendations; system partitioning. These public guides **can** be discussed with the team.
+- Service provider qualifications (référentiel versions at the time of review): **SecNumCloud** (cloud, v3.2 of 8 March 2022, with criteria on immunity from non-EU laws; qualification valid 3 years with annual surveillance audits), **PASSI** (security audit, v2.2, two levels: substantiel and élevé), **PDIS** (incident detection), **PRIS** (incident response, v3.0), **PACS** (security support and consulting, v2.0), **PAMS** (secure administration and maintenance, v1.1, relevant for integrators and managed-service providers).
+- Useful public ANSSI guides (check current editions): IT hygiene guide; secure administration of information systems (ANSSI-PA-022: dedicated admin workstations, tiering); interconnection of an IS to the Internet; architectures of sensitive / DR systems (ANSSI-PG-075); logging; TLS recommendations; system partitioning. These public guides **can** be discussed with the team.
 
 ## 7. Isolated networks, interconnections and removable media
 
@@ -112,11 +112,11 @@ _Scope: Ministry of the Armed Forces and other administrations, defense industry
 
 ## 8. People: clearance, need-to-know, supply chain
 
-- **Clearance (habilitation)**: decision by the competent authority after a security investigation, for a given level, linked to a position, time-limited. Integrators' staff working on classified systems need it **before** access; plan lead times (often months) in the RAID log.
+- **Clearance (habilitation)**: decision by the competent authority after a security investigation (DRSD for the defense sphere), for a given level, linked to a position, time-limited. Integrators' staff working on classified systems need it **before** access; plan lead times (often months) in the RAID log.
 - **Need-to-know**: grant access per task, not per team or per project; review on role change and on departure.
 - **Legal entities**: companies handling classified information under contract need to be cleared themselves, appoint a security officer and have suitable protected premises; classified contracts carry security clauses; subcontracting classified work requires prior authorization (verify IGI 1300 terminology and procedure).
 - **Supply chain**: nationality and clearance constraints on subcontractors, offshore support forbidden or restricted, provider qualification (e.g. PASSI, PAMS, SecNumCloud) where required, hardware and software provenance checks.
-- **NIS2** excludes public administration entities acting in defense and national security and allows Member States to exempt certain entities; defense companies may remain in scope for their other activities (Directive (EU) 2022/2555 art. 2, verify French transposition).
+- **NIS2** (Directive (EU) 2022/2555, art. 2(7) and 2(8)) excludes public administration entities whose activities are predominantly in national security, public security, defense or law enforcement, and lets Member States exempt specific entities from art. 21 and 23 obligations for such activities; defense companies may remain in scope for their other activities. French transposition: bill adopted by the Senate (12 March 2025), voted in the Assemblée nationale special committee (10 September 2025), **not promulgated at the time of this review (October 2026): verify**.
 
 ## 9. What the team can and cannot do
 
@@ -135,7 +135,7 @@ If the user starts sharing protected content: apply the stop procedure of the pa
 | Topic | Check |
 |---|---|
 | Qualification of data | Highest marking of data processed and produced (incl. aggregation effects) agreed with the security officer |
-| Homologation | Impact of every new flow, product, provider or interconnection on the homologation; planning of dossier, audits and committee |
+| Homologation | Impact of every new flow, product, provider or interconnection on the homologation; planning of dossier, audits and committee; validity period (max 3 years, 2 for Très Secret) |
 | Products | Qualified or approved products where required (encryption, gateways, diodes, firewalls) |
 | Network | Isolation or controlled interconnection per II 901 / IGI 1300; flows documented and approved; no implicit Internet access |
 | Administration | Dedicated admin workstations and network; nominative, cleared administrators; session traceability |
@@ -144,6 +144,24 @@ If the user starts sharing protected content: apply the stop procedure of the pa
 | Tooling | No cloud AI, SaaS or public registries inside; internal mirrors validated by security |
 | Documentation | Project deliverables written inside the protected environment and marked like the system |
 | Incidents | Reporting chain to the security officer, the homologation authority and the competent authorities, per internal instructions |
+
+## Sources
+
+- https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000042520705 — Arrêté of 13 November 2020 approving IGI 1300 (in force 1 July 2021)
+- https://www.sgdsn.gouv.fr/nos-missions/proteger/proteger-le-secret-de-la-defense-nationale/protection-secret-defense-nationale-documentation — SGDSN: IGI 1300 consolidated text and documentation
+- https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006071307/LEGISCTA000020411218/ — Code de la défense art. R. 2311-1 et seq., two classification levels
+- https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000039440051 — Decree n° 2019-1271 (classification reform, equivalences)
+- https://www.legifrance.gouv.fr/codes/section_lc/LEGITEXT000006070719/LEGISCTA000006165357/ — Code pénal art. 413-9 to 413-12
+- https://cyber.gouv.fr/reglementation/cybersecurite-systemes-dinformation/protection-information-sensible-diffusion-restreinte/instruction-interministerielle-n901/ — ANSSI: II 901 scope and requirements
+- https://messervices.cyber.gouv.fr/documents-guides/anssi-guide-recommandations_architectures_systemes_information_sensibles_ou_diffusion_restreinte-v1.2.pdf — ANSSI-PG-075 v1.2, architectures of sensitive / DR systems
+- https://cyber.gouv.fr/enjeux-technologiques/cloud/faq-recommandations-hebergement-cloud/ — ANSSI FAQ: cloud hosting of sensitive and DR systems, SecNumCloud
+- https://cyber.gouv.fr/sites/default/files/document/secnumcloud-referentiel-exigences-v3.2.pdf — SecNumCloud référentiel v3.2 (8 March 2022)
+- https://messervices.cyber.gouv.fr/documents-guides/guide-homologation-securite-web-04-2025.pdf — ANSSI / DINUM homologation guide (v2.2, March 2026)
+- https://cyber.gouv.fr/offre-de-service/solutions-certifiees-et-qualifiees/comprendre-levaluation-de-securite/qualification-de-produit-et-services/referentiels-qualification/ — ANSSI: qualification référentiels and versions (PASSI, PACS, PAMS, PRIS...)
+- https://cyber.gouv.fr/comprendre-la-qualification — ANSSI: qualification levels and Visa de sécurité
+- https://www.legifrance.gouv.fr/loda/id/JORFTEXT000029122964/ — Arrêté of 13 June 2014 approving RGS v2.0
+- https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000024749915/ — Decree n° 2011-1425 (PPST, ZRR)
+- https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000030949364 — Code de la défense art. L. 1332-6-1 (OIV / SIIV)
 
 ---
 

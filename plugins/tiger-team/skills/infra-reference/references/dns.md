@@ -44,7 +44,7 @@
 - Caches beyond the resolver:
   - Windows client cache: `ipconfig /displaydns`, `ipconfig /flushdns`, `Clear-DnsClientCache`.
   - Linux: systemd-resolved `resolvectl flush-caches` / `resolvectl statistics`; nscd/sssd caches if used.
-  - Java: the JVM caches lookups (`networkaddress.cache.ttl`; default about 30 s without a security manager, can be infinite in some configurations - verify for your JDK); connection pools keep old IPs until reconnect.
+  - Java: the JVM caches successful lookups (`networkaddress.cache.ttl` in `java.security`: the reference implementation defaults to 30 s, a negative value caches forever; failed lookups are cached 10 s); connection pools keep old IPs until reconnect.
   - Applications/LBs/proxies resolving once at startup (e.g. nginx `proxy_pass` with a hostname resolves at load unless a `resolver` is configured).
 - DNS-based failover is only as fast as the longest cache in the chain; for fast failover use a VIP/LB/listener instead.
 
@@ -72,7 +72,7 @@ rndc status
 - Secure dynamic updates: only authenticated domain members can register/update their records; DHCP servers can register on behalf of clients (credentials for DHCP DNS updates - use a dedicated account).
 - `_msdcs.<forest root>` zone and SRV records drive the DC locator: broken DNS = broken logons, GPO, Kerberos.
 - Aging and scavenging removes stale dynamic records: enable deliberately (both on zone and server), with intervals longer than DHCP lease/registration refresh; static records have no timestamp and are not scavenged.
-- DCs should point to another DC as primary DNS and to themselves (loopback) as secondary (commonly recommended - verify against your AD design guidelines); clients point only to internal DNS (never to public resolvers as secondary).
+- DC resolver settings (Microsoft guidance): a newly promoted DC points to an existing DC until inbound and outbound replication is verified (avoids DNS "islands"); afterwards either itself as preferred, or another DC/central DNS server as preferred with itself as alternate (or the reverse); never an ISP/public resolver. Clients point only to internal DNS (never to public resolvers as secondary).
 - PowerShell (DnsServer module):
 ```
 Get-DnsServerZone -ComputerName SRV-DC-01
@@ -91,7 +91,7 @@ Clear-DnsServerCache
 - Host records combine A/AAAA, PTR and optionally DHCP reservation in one object - deleting the host deletes all.
 - Extensible attributes tag objects (owner, application, environment) - use them to drive governance and reporting.
 - Automation via WAPI (REST API); integrate with ITSM/IaC rather than manual GUI changes; use the API in a least-privilege service account.
-- Security features: DNS firewall (RPZ), threat feeds, query logging to SIEM (check licensing - verify).
+- Security features: DNS Firewall (RPZ) requires an RPZ license on each recursive member; Infoblox threat feeds are a separate Grid-wide subscription (own feeds need none); query logging is the `queries` DNS logging category (significant performance impact) forwarded to syslog/SIEM, `rpz` logging is off by default.
 - Migration from BIND/Windows: import tools exist; check record ownership, AD-integrated zone dependencies (keep AD `_msdcs` and DC SRV records on AD DNS or delegate them), dynamic updates (GSS-TSIG for Windows clients).
 
 ## 8. DNSSEC
@@ -135,3 +135,11 @@ Note: `nslookup` uses its own resolver logic (not the OS stack): a name can reso
 - [ ] Hard-coded IPs and hosts files in applications/servers identified
 - [ ] Monitoring: query success rate, SERVFAIL rate, DNSSEC signature expiry, zone serial drift between servers
 - [ ] Post-cutover: test from every network zone (user LAN, DMZ, server VLANs, VPN, cloud, partner links)
+
+## Sources
+
+- https://raw.githubusercontent.com/openjdk/jdk/master/src/java.base/share/conf/security/java.security - JVM `networkaddress.cache.ttl` default 30 s
+- https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/net/InetAddress.html - InetAddress caching properties
+- https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/best-practices-for-dns-client-settings - DNS client settings on domain controllers
+- https://docs.infoblox.com/space/nios90/420544897/License+Requirements+and+Admin+Permissions+for+RPZ - Infoblox RPZ license requirements
+- https://docs.infoblox.com/space/nios90/1381139017 - Infoblox DNS logging categories

@@ -21,7 +21,7 @@ You do not see the prior conversation: work only from the input above and the fi
 
 ## 1. Confidentiality gate (mandatory, before any analysis)
 Stop and ask the user for an anonymized version - without producing the matrix - if the input contains:
-- classification markings ("Diffusion Restreinte", "Secret", "Tres Secret", "Confidentiel Defense" or equivalent);
+- classification markings ("Diffusion Restreinte", "Secret", "Très Secret", "Confidentiel Défense" or equivalent);
 - real personal data (names with identifiers, health data, customer records);
 - live secrets (passwords, pre-shared keys, private keys, tokens, community strings).
 Reply only with the category detected, the location (without quoting the value), and a request for a sanitized version. Note for the user in every output: a flow matrix describes production network exposure - label it Confidential and share it on a need-to-know basis.

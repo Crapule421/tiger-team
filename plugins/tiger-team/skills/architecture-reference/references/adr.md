@@ -46,7 +46,7 @@ Status: Proposed | Accepted | Deprecated | Superseded by ADR-XXXX
 Best for: small, fast decisions; teams new to ADRs.
 
 ## 4. Format B — MADR
-"Markdown Any Decision Records" (originally "Markdown Architectural Decision Records"); 3.x/4.x versions exist — verify the current template and field names (e.g., "deciders" became "decision-makers" in recent versions).
+Markdown Architectural Decision Records (MADR), current release 4.0.0 (September 2024). Fields and headings below are those of the 4.0 template (`decision-makers` replaced the older `deciders`; `Confirmation` was added in 3.x). Four variants exist: full, minimal, bare, bare-minimal.
 ```
 ---
 status: proposed | accepted | rejected | deprecated | superseded by ADR-XXXX
@@ -76,7 +76,7 @@ Chosen option: "<option>", because <justification>.
 Best for: decisions with several options and explicit drivers.
 
 ## 5. Format C — Y-statement (one-liner)
-Attributed to Olaf Zimmermann and colleagues:
+From Zdun, Capilla, Tran and Zimmermann, "Sustainable Architectural Decisions" (IEEE Software, 2013):
 > In the context of <use case / component>, facing <concern>, we decided for <option> and neglected <other options>, to achieve <qualities / benefits>, accepting <downside / cost>.
 Use in decision logs, COPIL slides, or as the summary line of a longer ADR.
 
@@ -217,3 +217,9 @@ When the question is broader than one decision (a perimeter's target state):
 - [ ] Debt created is registered with a sunset date; review date set if assumptions are volatile.
 - [ ] Handoffs to the experts who must implement or verify.
 Pitfalls: ADR written after the fact to justify a done deal (acceptable only if labelled as retro-documentation); ADRs as essays (keep 1-3 pages); editing accepted ADRs instead of superseding; no link from code/config/DAT back to the ADR.
+
+## Sources
+- Nygard, "Documenting Architecture Decisions" (15 Nov 2011): https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions
+- MADR documentation (4.0.0, template fields and headings): https://adr.github.io/madr/
+- MADR repository (template variants): https://github.com/adr/madr
+- ADR GitHub organisation (ADR definition, Y-statement origin): https://adr.github.io/

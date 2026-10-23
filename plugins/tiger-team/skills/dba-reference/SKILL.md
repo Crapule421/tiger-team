@@ -56,7 +56,7 @@ Method: (1) define the symptom (one query, one time window, whole instance); (2)
 ### MySQL / MariaDB
 - `EXPLAIN <stmt>`; actual: MySQL 8.0.18+ `EXPLAIN ANALYZE <stmt>`; MariaDB `ANALYZE <stmt>` (both execute the statement).
 - Top SQL: `sys.statement_analysis`, `performance_schema.events_statements_summary_by_digest`; slow query log (`slow_query_log`, `long_query_time`) + `pt-query-digest`.
-- InnoDB: `SHOW ENGINE INNODB STATUS\G` (latest deadlock, history list length), `information_schema.INNODB_TRX`, `sys.innodb_lock_waits`; MySQL 8: `performance_schema.data_locks` / `data_lock_waits` (MariaDB differs - verify against your version); metadata locks: `performance_schema.metadata_locks`.
+- InnoDB: `SHOW ENGINE INNODB STATUS\G` (latest deadlock, history list length), `information_schema.INNODB_TRX`, `sys.innodb_lock_waits`; MySQL 8: `performance_schema.data_locks` / `data_lock_waits`; MariaDB: `information_schema.INNODB_LOCKS` / `INNODB_LOCK_WAITS` and the `METADATA_LOCK_INFO` plugin; MySQL metadata locks: `performance_schema.metadata_locks`.
 
 ## 3. Locking and concurrency - traps
 
@@ -64,7 +64,7 @@ Method: (1) define the symptom (one query, one time window, whole instance); (2)
 |---|---|---|
 | All | Long transaction + DDL: the DDL waits, and every later query queues behind it | Short lock timeout on DDL, retry loop, run when no long transactions; check before (active sessions) |
 | Oracle | Unindexed foreign keys -> TM locks on child when parent rows deleted/PK updated | Index FK columns |
-| Oracle | DDL fails `ORA-00054` on busy object | `DDL_LOCK_TIMEOUT`; online variants (`CREATE INDEX ... ONLINE`, `ALTER TABLE ... MOVE ONLINE` 12.2+, `DBMS_REDEFINITION`) - EE features, verify |
+| Oracle | DDL fails `ORA-00054` on busy object | `DDL_LOCK_TIMEOUT`; online variants (`CREATE INDEX ... ONLINE`, `ALTER TABLE ... MOVE ONLINE` 12.2+, `DBMS_REDEFINITION`) - all Enterprise Edition only (not in SE2) |
 | Oracle | Commit inside a loop over an open cursor -> `ORA-01555 snapshot too old` | Chunk by key/rowid ranges (`DBMS_PARALLEL_EXECUTE`), size undo retention |
 | PostgreSQL | Most `ALTER TABLE` take ACCESS EXCLUSIVE; waiting for it blocks all readers | `SET lock_timeout`; `CREATE INDEX CONCURRENTLY`; FK/CHECK `NOT VALID` then `VALIDATE CONSTRAINT` |
 | PostgreSQL | Column type change rewrites the table (except safe cases such as increasing varchar length) | Expand/contract with new column + backfill |
@@ -73,7 +73,7 @@ Method: (1) define the symptom (one query, one time window, whole instance); (2)
 | SQL Server | Lock escalation to table on large DML | Batches below ~5000 rows; `ALTER TABLE ... SET (LOCK_ESCALATION = ...)` with care |
 | SQL Server | `NOLOCK` used as a "fix" | Dirty reads, missing/duplicate rows - reject in reviews |
 | Db2 | `LOCKTIMEOUT = -1` (wait forever) default | Set `CURRENT LOCK TIMEOUT` in release sessions |
-| Db2 | Some `ALTER TABLE` (e.g. DROP COLUMN, certain type changes) put table in REORG PENDING | Plan `REORG TABLE`; check `SYSIBMADM.ADMINTABINFO.REORG_PENDING`; verify which ALTERs on your version |
+| Db2 | `ALTER TABLE ... DROP COLUMN`, most `ALTER COLUMN SET DATA TYPE`, `SET NOT NULL`/`DROP NOT NULL` put a row-organized table in reorg-pending state (SQLSTATE 57007): until `REORG TABLE` only scans, DROP/RENAME/TRUNCATE and most other ALTERs are allowed; at most 31 units of work of such operations before REORG becomes mandatory | Plan `REORG TABLE` in the window; check `REORG_PENDING` / `NUM_REORG_REC_ALTERS` in `SYSIBMADM.ADMINTABINFO` |
 | MySQL | Metadata lock (MDL) waits: DDL blocked by an open transaction then blocks everyone | `lock_wait_timeout` low in release session; kill idle long transactions |
 | MySQL | Online DDL silently falls back to table copy | Always state `ALGORITHM=INSTANT` (or `INPLACE`) with `LOCK=NONE` so it errors instead; or gh-ost / pt-online-schema-change |
 | MySQL | Gap/next-key locks on range updates under REPEATABLE READ | Index the predicate; consider READ COMMITTED where acceptable |
@@ -85,10 +85,10 @@ Deadlocks: always a design issue (inconsistent access order, missing indexes). C
 | Engine | Local HA | DR / replicas | Key operations & checks |
 |---|---|---|---|
 | Oracle | RAC (shared storage, active-active, extra license) | Data Guard physical standby (redo apply); Active Data Guard = open read-only with apply (extra license) | Protection modes: Maximum Performance (ASYNC, default), Maximum Availability (SYNC, falls back), Maximum Protection (SYNC, primary stops if no standby). Broker `dgmgrl`: `SHOW CONFIGURATION;`, `VALIDATE DATABASE <stby>;`, `SWITCHOVER TO <stby>;`, `FAILOVER TO <stby>;`. Lag: `V$DATAGUARD_STATS`. Primary in `FORCE LOGGING`. Fast-Start Failover needs an observer (ideally on a third site). |
-| PostgreSQL | Patroni (DCS: etcd/Consul/ZooKeeper) + HAProxy/VIP | Streaming replication (physical, WAL); logical replication (publications/subscriptions, PG10+) | `pg_stat_replication` (`sent_lsn`, `write_lsn`, `flush_lsn`, `replay_lsn`), `pg_is_in_recovery()`, `pg_promote()` (PG12+). Sync: `synchronous_standby_names` + `synchronous_commit`. Replication slots retain WAL if a replica is down -> disk full: monitor, cap with `max_slot_wal_keep_size` (PG13+). Patroni: `patronictl -c <cfg> list` / `switchover` / `failover`; REST health endpoints (`/primary`, `/replica`) for the load balancer. Logical replication does not replicate DDL (sequences: verify against your version). |
-| SQL Server | Failover Cluster Instance (shared storage, WSFC) | Always On Availability Groups (WSFC, or Pacemaker on Linux); log shipping | Automatic failover only between synchronous-commit replicas. Listener for clients (`MultiSubnetFailover=True`). Logins, Agent jobs, linked servers, credentials are NOT replicated (contained AG in 2022 helps). Basic AG on Standard Edition (1 DB, 2 replicas). Check `sys.dm_hadr_database_replica_states`. Planned failover: `ALTER AVAILABILITY GROUP [<AG>] FAILOVER;` on the target sync secondary. Readable secondaries have licensing impact. |
+| PostgreSQL | Patroni (DCS: etcd/Consul/ZooKeeper) + HAProxy/VIP | Streaming replication (physical, WAL); logical replication (publications/subscriptions, PG10+) | `pg_stat_replication` (`sent_lsn`, `write_lsn`, `flush_lsn`, `replay_lsn`), `pg_is_in_recovery()`, `pg_promote()` (PG12+). Sync: `synchronous_standby_names` + `synchronous_commit`. Replication slots retain WAL if a replica is down -> disk full: monitor, cap with `max_slot_wal_keep_size` (PG13+). Patroni: `patronictl -c <cfg> list` / `switchover` / `failover`; REST health endpoints (`/primary`, `/replica`) for the load balancer. Logical replication replicates neither DDL nor sequence values (as of PG 18): apply additive schema changes on the subscriber first and reset sequences before failing over to a subscriber. |
+| SQL Server | Failover Cluster Instance (shared storage, WSFC) | Always On Availability Groups (WSFC, or Pacemaker on Linux); log shipping | Automatic failover only between synchronous-commit replicas. Listener for clients (`MultiSubnetFailover=True`). Logins, Agent jobs, linked servers, credentials are NOT replicated (contained AG, SQL Server 2022 Enterprise, helps). Full AGs need Enterprise; Basic AG on Standard Edition (1 DB, 2 replicas). Check `sys.dm_hadr_database_replica_states`. Planned failover: `ALTER AVAILABILITY GROUP [<AG>] FAILOVER;` on the target sync secondary. Readable secondaries have licensing impact. |
 | Db2 LUW | pureScale (active-active) or HADR + Pacemaker/TSA automation | HADR (up to 3 standbys, `HADR_TARGET_LIST`) | `HADR_SYNCMODE`: SYNC, NEARSYNC, ASYNC, SUPERASYNC. Monitor `db2pd -db <DB> -hadr` or `MON_GET_HADR`. Role switch on standby: `TAKEOVER HADR ON DATABASE <DB>` (`BY FORCE` for failover). Reads on standby via `DB2_HADR_ROS` (limitations). |
-| MySQL / MariaDB | InnoDB Cluster (Group Replication + MySQL Router); Galera (MariaDB) | Async / semi-sync replication, GTID-based | `SHOW REPLICA STATUS` (MySQL 8.0.22+; older/MariaDB: `SHOW SLAVE STATUS` - verify). Watch replication lag and errant GTIDs; Galera needs a primary-component quorum (3 nodes or arbitrator). |
+| MySQL / MariaDB | InnoDB Cluster (Group Replication + MySQL Router); Galera (MariaDB) | Async / semi-sync replication, GTID-based | `SHOW REPLICA STATUS` (MySQL 8.0.22+; MariaDB 10.5.1+ accepts `REPLICA` as a synonym of `SLAVE`; older versions: `SHOW SLAVE STATUS`). Watch replication lag and errant GTIDs; Galera needs a primary-component quorum (3 nodes or arbitrator). |
 
 Design rules: define RPO/RTO per application before choosing sync/async; DR test at least yearly with documented results (DORA requires ICT continuity testing for financial entities); clients must reconnect transparently (connection strings with multiple hosts/listener/SCAN, retry logic); monitor lag and alert; split-brain protection (quorum, fencing, observer/witness on a third site).
 
@@ -104,7 +104,7 @@ Design rules: define RPO/RTO per application before choosing sync/async; DR test
 
 Rules: ad hoc backups must not break the chain (SQL Server `COPY_ONLY`); TDE keys/certificates/wallets backed up separately and tested (an encrypted backup without its key is lost); backups encrypted, offsite/immutable copy (ransomware); restore tests scheduled with measured duration (= real RTO); backups contain personal data: same GDPR controls as prod.
 
-Pre-release safety net: Oracle guaranteed restore point `CREATE RESTORE POINT before_rel_123 GUARANTEE FLASHBACK DATABASE;` (rollback: `FLASHBACK DATABASE TO RESTORE POINT before_rel_123;` in MOUNT state then `OPEN RESETLOGS`; drop the restore point afterwards - it consumes FRA space; Flashback Database is an EE feature - verify). Others: full/differential backup or storage snapshot immediately before the release, with tested restore time.
+Pre-release safety net: Oracle guaranteed restore point `CREATE RESTORE POINT before_rel_123 GUARANTEE FLASHBACK DATABASE;` (rollback: `FLASHBACK DATABASE TO RESTORE POINT before_rel_123;` in MOUNT state then `OPEN RESETLOGS`; drop the restore point afterwards - it consumes FRA space; Flashback Database is an Enterprise Edition feature, not in SE2). Others: full/differential backup or storage snapshot immediately before the release, with tested restore time.
 
 ## 6. Security
 
@@ -167,12 +167,12 @@ Header: target engine/version, schema, prerequisites (previous version installed
 1. **Idempotent / re-runnable**: guard every DDL.
    - PostgreSQL: `CREATE TABLE IF NOT EXISTS`, `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`, `CREATE INDEX [CONCURRENTLY] IF NOT EXISTS`, `DROP ... IF EXISTS`.
    - SQL Server: `IF COL_LENGTH(N'dbo.Orders', N'StatusCode') IS NULL ALTER TABLE dbo.Orders ADD StatusCode varchar(10) NULL;`; `IF NOT EXISTS (SELECT 1 FROM sys.indexes WHERE name = N'IX_Orders_Status' AND object_id = OBJECT_ID(N'dbo.Orders'))`; `CREATE OR ALTER` (2016 SP1+) for views/procs/functions/triggers; `DROP ... IF EXISTS` (2016+).
-   - Oracle: `CREATE OR REPLACE` for code objects; `IF [NOT] EXISTS` on CREATE/DROP only in 23ai+; before that, check `USER_TABLES`/`USER_TAB_COLUMNS`/`USER_INDEXES` in a PL/SQL block with `EXECUTE IMMEDIATE`.
-   - Db2: `CREATE OR REPLACE` for views/routines; check `SYSCAT.TABLES`/`SYSCAT.COLUMNS`/`SYSCAT.INDEXES` (newer releases add IF [NOT] EXISTS clauses - verify against your version).
+   - Oracle: `CREATE OR REPLACE` for code objects; `IF [NOT] EXISTS` on CREATE/ALTER/DROP from 23ai (not in 19c; not combinable with `OR REPLACE`); before that, check `USER_TABLES`/`USER_TAB_COLUMNS`/`USER_INDEXES` in a PL/SQL block with `EXECUTE IMMEDIATE`.
+   - Db2: `CREATE TABLE IF NOT EXISTS` / `DROP TABLE IF EXISTS` (11.5+, tables only, not with `AS SELECT`); `CREATE OR REPLACE` for views/routines; for other objects check `SYSCAT.TABLES`/`SYSCAT.COLUMNS`/`SYSCAT.INDEXES` in a compound SQL block.
    - MySQL: `CREATE TABLE IF NOT EXISTS`, `DROP ... IF EXISTS`; `ADD COLUMN IF NOT EXISTS` / `CREATE INDEX IF NOT EXISTS` exist in MariaDB, not MySQL - check `information_schema` instead.
    - DML: `INSERT ... WHERE NOT EXISTS` / `MERGE` / `ON CONFLICT DO NOTHING` (PG) / `INSERT ... ON DUPLICATE KEY UPDATE` (MySQL) for reference data.
-2. **Online index creation**: Oracle `CREATE INDEX ... ONLINE` (EE); PostgreSQL `CREATE INDEX CONCURRENTLY` (not in a transaction block; on failure leaves an INVALID index - `DROP INDEX CONCURRENTLY` and retry); SQL Server `WITH (ONLINE = ON[, RESUMABLE = ON])` (Enterprise; resumable create 2019+); MySQL `ALGORITHM=INPLACE, LOCK=NONE`; Db2 concurrent access during CREATE INDEX - verify against your version. Oracle: `INVISIBLE` index to test before exposing to the optimizer.
-3. **Cheap vs expensive DDL**: adding a nullable column is metadata-only almost everywhere; adding a column with a default is metadata-only in Oracle (11g+ NOT NULL, 12c+ nullable), PostgreSQL 11+ (non-volatile default), MySQL 8.0.12+ `ALGORITHM=INSTANT`, SQL Server Enterprise (runtime-constant default - verify). Type changes, NOT NULL on existing columns, and table moves are typically expensive (rewrite or full scan).
+2. **Online index creation**: Oracle `CREATE INDEX ... ONLINE` (EE); PostgreSQL `CREATE INDEX CONCURRENTLY` (not in a transaction block; on failure leaves an INVALID index - `DROP INDEX CONCURRENTLY` and retry); SQL Server `WITH (ONLINE = ON[, RESUMABLE = ON])` (Enterprise; resumable create 2019+); MySQL `ALGORITHM=INPLACE, LOCK=NONE`; Db2 allows concurrent read/write access during `CREATE INDEX` (writes blocked briefly at the end; in pureScale, concurrent writes by default only from 11.5). Oracle: `INVISIBLE` index to test before exposing to the optimizer.
+3. **Cheap vs expensive DDL**: adding a nullable column is metadata-only almost everywhere; adding a column with a default is metadata-only in Oracle (11g+ NOT NULL, 12c+ nullable), PostgreSQL 11+ (non-volatile default), MySQL 8.0.12+ `ALGORITHM=INSTANT`, SQL Server 2012+ Enterprise edition (NOT NULL column with a runtime-constant default; other editions update every row). Type changes, NOT NULL on existing columns, and table moves are typically expensive (rewrite or full scan).
 4. **Large DML in batches**: 1k-50k rows per commit by key range; restartable (predicate excludes already-processed rows); throttle to protect replication lag and log/undo; SQL Server stay under ~5000 rows per statement to avoid escalation; index the batch predicate. Examples:
    - SQL Server: `WHILE 1=1 BEGIN UPDATE TOP (4000) dbo.Orders SET StatusCode = 'ARCH' WHERE OrderDate < '2020-01-01' AND (StatusCode IS NULL OR StatusCode <> 'ARCH'); IF @@ROWCOUNT = 0 BREAK; END`
    - PostgreSQL 11+ (`DO` block not inside an explicit transaction): loop `UPDATE ... WHERE id IN (SELECT id ... LIMIT 10000)`, `GET DIAGNOSTICS n = ROW_COUNT; EXIT WHEN n = 0; COMMIT;`
@@ -209,3 +209,18 @@ Header: target engine/version, schema, prerequisites (previous version installed
 - [ ] Grants least privilege; no personal data in scripts/logs; no secrets in clear
 - [ ] HA impact assessed: replication lag, log volume, standby apply, logical replication of DDL
 - [ ] Coordination: application deploy order, batch scheduling freeze, monitoring silenced/annotated
+
+## Sources
+
+- https://docs.oracle.com/en/database/oracle/oracle-database/23/dblic/Licensing-Information.html - Oracle features by edition (Flashback, online DDL, packs)
+- https://docs.oracle.com/en/database/oracle/oracle-database/26/lnpls/release-changes.html - Oracle `IF [NOT] EXISTS` DDL syntax support
+- https://www.postgresql.org/docs/current/logical-replication-restrictions.html - logical replication: no DDL, no sequences
+- https://www.postgresql.org/docs/current/sql-createindex.html - `CREATE INDEX CONCURRENTLY` transaction and INVALID behaviour
+- https://www.postgresql.org/docs/current/runtime-config-client.html - `lock_timeout`, `idle_in_transaction_session_timeout`
+- https://learn.microsoft.com/en-us/sql/t-sql/statements/alter-table-transact-sql - metadata-only NOT NULL column add, Enterprise
+- https://learn.microsoft.com/en-us/sql/sql-server/editions-and-components-of-sql-server-2022 - online index, TDE, AG by edition
+- https://www.ibm.com/docs/en/db2/12.1?topic=statements-alter-table - Db2 reorg-pending ALTER operations
+- https://www.ibm.com/docs/en/db2/12.1?topic=statements-create-index - Db2 concurrent access during CREATE INDEX
+- https://www.ibm.com/docs/en/db2/11.5?topic=statements-create-table - Db2 11.5 `CREATE TABLE IF NOT EXISTS`
+- https://dev.mysql.com/doc/refman/8.0/en/show-replica-status.html - `SHOW REPLICA STATUS` from MySQL 8.0.22
+- https://mariadb.com/kb/en/mariadb-1051-release-notes/ - MariaDB 10.5.1 `REPLICA` synonym

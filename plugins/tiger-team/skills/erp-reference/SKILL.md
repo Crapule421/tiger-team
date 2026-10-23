@@ -30,7 +30,7 @@ Related: integration patterns and formats `${CLAUDE_PLUGIN_ROOT}/skills/integrat
 ## 2. Mechanism cheat sheet
 | ERP | Inbound (into ERP) | Outbound (from ERP) | Monitoring / reprocessing |
 |---|---|---|---|
-| SAP ECC / S/4HANA | IDoc (ALE/EDI), BAPI/RFC, OData (Gateway/RAP), SOAP services, file + standard programs, Migration Cockpit for migration | IDoc (output/change pointers), OData, SOAP, RFC, business events (S/4 — verify), extracts (CDS views) | BD87/WE02/WE05, SM58, SMQ1/SMQ2, SLG1, /IWFND/ERROR_LOG, AIF (if used) |
+| SAP ECC / S/4HANA | IDoc (ALE/EDI), BAPI/RFC, OData (Gateway/RAP), SOAP services, file + standard programs, Migration Cockpit for migration | IDoc (output/change pointers), OData, SOAP, RFC, business events (S/4HANA Enterprise Event Enablement to SAP Event Mesh / advanced event mesh), extracts (CDS views) | BD87/WE02/WE05, SM58, SMQ1/SMQ2, SLG1, /IWFND/ERROR_LOG, AIF (if used) |
 | Oracle EBS | Open interface tables + concurrent import programs, PL/SQL public APIs, Integrated SOA Gateway, XML Gateway | Concurrent programs/reports, Business Event System, views, XML Gateway | Interface error tables/columns, concurrent request logs, resubmission |
 | Oracle Fusion Cloud | REST APIs, SOAP services, FBDI (file-based data import), HDL (HCM), ADFdi spreadsheets | BI Publisher scheduled reports, BICC extracts, HCM Extracts, business events, REST | ESS job status/logs, import error reports, OIC tracking |
 | Sage X3 | Import templates (batch/manual), SOAP web services, REST/GraphQL APIs (version-dependent) | Export templates, web services, views | Import logs, batch server tasks |
