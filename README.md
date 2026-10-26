@@ -65,6 +65,18 @@ or call one expert directly, for example `/tiger-team:sql-release-review ./relea
 
 Requires Claude Code (tested with 2.1.292). The confidentiality guard needs `bash`, which Claude Code already uses on Windows (Git Bash).
 
+**Let the experts read their reference files without prompts.** The knowledge bases live in the plugin's install folder, outside your project, so each `Read` of a reference file asks for permission (and is refused in `claude -p`). Add this allow rule once to `~/.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": ["Read(~/.claude/plugins/cache/tiger-team/**)"]
+  }
+}
+```
+
+The path is where Claude Code caches plugins installed from the marketplace; adjust it if you installed from a local clone (`claude plugin list` shows the location).
+
 </details>
 
 ## 👥 The team
@@ -129,11 +141,18 @@ That value exists only on cross-domain topics. On a single-domain question, nine
 
 ### Measured costs
 
-| Run | Version | Experts' model | Cost |
-|---|---|---|---|
-| `quick` mission, IBM i balances through a REST API, 3 experts | 1.2.0 | session model | 3.43 USD |
-| same prompt | 1.3.0 | session model | _measuring_ |
-| same prompt, `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | 1.3.0 | Sonnet | _measuring_ |
+Same prompt each time (a `quick` mission on exposing IBM i account balances through a REST API, three experts), run headless with `claude -p`, session model Fable 5.1, reference reads allowed by the rule above unless stated.
+
+| Run | Version | Experts' model | Cost | Note |
+|---|---|---|---|---|
+| `quick`, 3 experts | 1.2.0 | session model | 3.43 USD | experts read 4 reference files |
+| `quick`, 3 experts | 1.3.0 | session model | 4.04 USD | experts now read reference sections as briefed (12 reads): more sourced facts, more tokens |
+| `quick`, 3 experts, reads refused (no allow rule) | 1.3.0 | session model | 4.32 USD | refused reads and retries cost more than the reads themselves |
+| `quick`, 3 experts, `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | 1.3.0 | Sonnet | **1.98 USD** | −51 % versus the session model, same structure and arbitration in the output |
+| full `release` mission, architect + 5 experts, handoff round, coherence review | 1.0.0 | Opus 5.5 (session) | 4.87 USD | 17 minutes, 77 model calls |
+| same prompt, architect + 4 experts | 1.3.0 | Fable 5.1 (session) | 21.48 USD | 9.5 minutes, 144 model calls: typed handoffs worked, but experts made 60 Read/Grep/Glob calls (section-by-section reads, searches for the environment sheet) and the session model is pricier — not comparable to the line above |
+
+What the numbers say: **the cost of a mission is the per-call context multiplied by the number of model calls.** Every tool call an expert makes re-sends its whole context (here 100 to 150k cached tokens per call, most of it the descriptions of every plugin loaded in the session). So reading a reference file in slices, or searching for a file that does not exist, costs more than reading the file once in full. Version 1.3.1 therefore makes experts read a named file once and never explore, and tells them whether an environment sheet exists. The two other levers are yours: run the experts on a cheaper model (−51 % measured on `quick`), and disable the plugins you do not use in the session, since their descriptions sit in every call. Each line is one run; expect ±15 % between runs.
 
 ## ⚡ Commands
 

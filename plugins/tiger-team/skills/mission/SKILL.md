@@ -27,7 +27,7 @@ Count the **domains** the topic really touches (scheduling, databases, integrati
 | 2 or 3, no deliverable needed | `quick` | one expert round in parallel, no handoff round, no coherence review | low |
 | 3 or more, or a deliverable is needed | `scoping` / `review` / `incident` / `release` | architect framing when architecture is at stake, expert round, one handoff round, coherence review when 3+ experts, deliverable | high (20 to 40 agent calls, 10 to 20 minutes, several dollars) |
 
-Never more than **4 experts** without the user asking. An expert is in the team only if the topic contains a question that its knowledge base answers; "it could be relevant" is not a reason. Tell the user the team and the cost class before launching, and go straight on.
+Every domain the request names explicitly gets its expert: dropping one of them to save a call loses the knowledge the user asked for. Beyond those, no "it could be relevant" expert, and never more than **5 experts** without the user asking. Tell the user the team and the cost class before launching, and go straight on.
 
 Nine experts exist because nine knowledge bases do not fit one context and because independent domain views disagree in useful ways; that value only exists on cross-domain topics. On a single-domain topic, one expert with its knowledge base is the right tool and the cheapest.
 
@@ -42,7 +42,7 @@ Nine experts exist because nine knowledge bases do not fit one context and becau
 
 ### `solo` mode
 
-Read the knowledge base(s) concerned: `${CLAUDE_PLUGIN_ROOT}/skills/<domain>-reference/SKILL.md` (and `pm-playbook`, `architecture-reference`), then only the sections of `references/` files that the question needs (each reference file starts with a table of contents; use `Read` with `offset` and `limit`). Apply the `discovery` protocol yourself and answer in the team-standard format. Do not call any expert.
+Read the knowledge base(s) concerned: `${CLAUDE_PLUGIN_ROOT}/skills/<domain>-reference/SKILL.md` (and `pm-playbook`, `architecture-reference`), then the one or two `references/` files the question needs, each once in full. Apply the `discovery` protocol yourself and answer in the team-standard format. Do not call any expert.
 
 ## 2. Frame the mission (all modes except `solo`)
 
@@ -67,15 +67,16 @@ Call `tiger-team:enterprise-architect` first with the mission brief. Ask for: ta
 
 ## 4. Expert round — in parallel, in isolation
 
-Send **one Agent call per selected expert, all in the same message**, so they run in parallel. Experts are isolated on purpose: none sees another's answer in this round, because their independent disagreement is what the mission buys. Each brief is self-contained (the expert never sees this conversation), written in the user's language, and names the reference sections to read so the expert does not load whole files:
+Send **one Agent call per selected expert, all in the same message**, so they run in parallel. Experts are isolated on purpose: none sees another's answer in this round, because their independent disagreement is what the mission buys. Each brief is self-contained (the expert never sees this conversation), written in the user's language, and names the exact files to read, so the expert makes few tool calls: every call re-sends its whole context, and the number of calls, not the size of a file, drives the cost.
 
 ```
 Mission: <one-line objective>        Mode: <mode>        Sector: <banking|healthcare|defense|other>
 Context: <systems, volumes, calendar, constraints — fictitious names only>
+Environment sheet: <absolute path, or "none — do not search for it">
 Environment facts: <versions, topology, tools, conventions known for this expert's domain, each with its source; "unknown" where it is>
 Architecture constraints: <from the architect, if any>
-Files to read: <absolute paths, if any>
-Reference sections to read: <e.g. "control-m.md §4 Conditions, §10 JSON" — only what this expert's questions need; "none" if the preloaded skill is enough>
+Files to read: <absolute paths of the user's files, if any>
+Reference files to read: <absolute paths under ${CLAUDE_PLUGIN_ROOT}/skills/.../references/, at most two, each read once in full; "none" if the preloaded skill is enough>
 Your questions: <3 to 6 precise questions for this expert>
 Other experts on this mission: <list>
 Answer in <language>, with the team-standard format: Summary, Analysis, Recommendations, Risks (table), Handoffs (typed lines "→ <agent-name> | <claim> | <evidence> | <needs>"), Open questions, Assumptions. 600 words maximum outside tables and code.
@@ -114,8 +115,8 @@ Then offer to write the deliverables to files. Default location when working ins
 
 ## Cost and focus rules
 
-- The smallest team that answers the question. Never call an expert "just in case".
-- Keep briefs short and precise; name reference sections instead of letting experts read whole files.
+- The smallest team that answers the question, but every domain the user named. Never call an expert "just in case".
+- Keep briefs short and precise; name the exact reference files (at most two per expert) and say whether an environment sheet exists, so experts do not explore.
 - Experts never see each other's first-round answers; handoffs are the only transmission between them, as typed objects.
 - Do not let experts call each other: routing is your job.
 - Never forward raw sensitive material to an expert; describe it.

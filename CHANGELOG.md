@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.3.1] - 2026-10-26
+
+### Changed
+- **Section-level reading reverted.** Measurement showed that the cost of a mission is the per-call context multiplied by the number of model calls, so reading a reference file in slices costs more than reading it once. Experts now read a named reference file once, in full, and never explore the plugin or the project with Grep or Glob. The lead names at most two reference files per expert and says whether an environment sheet exists, so nobody searches for it.
+- **Team sizing**: every domain the user named gets its expert (the 1.3.0 cap of four dropped the IBM i expert from an IBM i migration); no "just in case" expert; never more than five without the user asking.
+
+### Fixed
+- Agents no longer retry through other tools when a reference-file read is refused: they say so once under Assumptions and continue with their preloaded knowledge.
+
+### Documentation
+- README: the allow rule that lets experts read their reference files without prompts (`Read(~/.claude/plugins/cache/tiger-team/**)`), the measured costs with the models they ran on, and what drives the cost of a mission.
+
 ## [1.3.0] - 2026-10-26
 
 Shaped by the first public feedback (thanks to the Reddit reviewers who pointed at the handoff round and the context load).
