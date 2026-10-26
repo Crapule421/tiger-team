@@ -2,6 +2,20 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.3.0] - 2026-10-26
+
+Shaped by the first public feedback (thanks to the Reddit reviewers who pointed at the handoff round and the context load).
+
+### Changed
+- **Typed handoffs.** Experts hand off as `→ <agent-name> | <claim> | <evidence> | <needs>`; the lead routes these objects only. The handoff-round brief holds the expert's own summary and the handoffs addressed to it, never other experts' full answers, and a settled point is not reopened.
+- **Team sizing rule.** The lead counts the domains before launching: one → `solo` or a direct command; two or three → `quick`; more, or a deliverable → full mission. Never more than four experts without the user asking.
+- **New `solo` mode**: no subagent; the lead reads the knowledge base(s) concerned and answers itself.
+- **Isolation made explicit**: experts never see each other's first-round answers.
+- **Section-level reading**: agents read only the sections of a reference file they need (the files start with a table of contents); the lead names the relevant sections in each brief.
+- **Model tiering**: the seven experts no longer fix `model: inherit`, so `CLAUDE_CODE_SUBAGENT_MODEL` applies to them; the project manager and the enterprise architect keep `inherit`, so arbitration and coherence review stay on the session's model.
+- README: "Why nine experts, and when one is enough", measured costs table.
+- `tests/lint.sh` checks the model-tiering convention.
+
 ## [Unreleased]
 
 ### Documentation

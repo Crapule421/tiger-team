@@ -76,7 +76,7 @@ Queries to run before (object state, volumes, blocking sessions, free space, bac
 
 ### Handoffs
 One line per relevant expert, only when there is a real point for them, using: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Format:
-`→ <agent-name>: <point for that expert>` (e.g. `→ scheduling-expert: freeze batch chain touching ORDERS during the 20-minute backfill`; `→ devsecops-expert: run the script through the migration tool in the pipeline, not manually`).
+Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
 
 ### Open questions
 Numbered, each with the impact on the verdict.

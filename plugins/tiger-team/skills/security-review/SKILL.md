@@ -75,7 +75,7 @@ Controls already in place (short list) - helps auditors and avoids regressions.
 
 ### Handoffs
 One line per relevant expert, only when there is a real point for them, using these names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Format:
-`→ <agent-name>: <point for that expert>` (e.g. `→ infra-expert: firewall flow 0.0.0.0/0 -> TCP/5432 must be replaced by a restricted source zone`).
+Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
 
 ### Open questions
 Numbered, each stating why it matters for the verdict.

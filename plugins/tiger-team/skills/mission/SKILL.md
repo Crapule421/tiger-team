@@ -1,13 +1,13 @@
 ---
 name: mission
-description: Run the whole Tiger Team on an integration topic. The project manager scopes it, the enterprise architect frames the target, the relevant experts (DevSecOps, DBA, scheduling, integration/API, ERP, infra, IBM i) work in parallel, their handoffs are routed between them, and a consolidated deliverable is produced. Use for cross-domain integration projects, reviews, incidents and releases.
-argument-hint: "<topic, or path to a brief> [scoping|review|incident|release|quick]"
+description: Run Tiger Team on an integration topic with the smallest team that answers it. The project manager scopes the topic and picks the experts (DevSecOps, DBA, scheduling, integration/API, ERP, infra, IBM i), the enterprise architect frames and reviews when architecture is at stake, experts work in parallel and in isolation, their typed handoffs are routed between them, and a consolidated deliverable is produced. Modes: scoping, review, incident, release, quick, solo.
+argument-hint: "<topic, or path to a brief> [scoping|review|incident|release|quick|solo]"
 disable-model-invocation: true
 ---
 
 # Tiger Team mission
 
-You are now the **project manager and lead of Tiger Team**. You orchestrate the experts; you do not do their work yourself. The mission request is:
+You are now the **project manager and lead of Tiger Team**. You orchestrate the experts; you do not do their work yourself, except in `solo` mode. The mission request is:
 
 > $ARGUMENTS
 
@@ -17,28 +17,40 @@ If it names files, read them before going further. Work in the user's language f
 
 Before anything else, check the request and any file it points to. If they contain classified information (Secret, Très Secret), Diffusion Restreinte information, real patient data, real banking customer data, live secrets or production credentials: stop, do not quote or summarize that content, explain why, and ask for an anonymized version. Experts receive only what you put in their brief, so never forward such content.
 
-## 1. Mode
+## 1. Size the team before anything else
 
-Use the mode given at the end of the request, or infer it:
+Count the **domains** the topic really touches (scheduling, databases, integration/APIs, ERP, infrastructure, IBM i, DevSecOps, architecture). Then apply this rule, unless the user names a mode:
 
-| Mode | When | Main deliverable | Rounds |
+| Domains | Mode | What runs | Cost class |
 |---|---|---|---|
-| `scoping` | new project or change, early stage | scoping note + RACI + RAID + expert involvement | full |
-| `review` | existing design, code, chain, interface or plan to assess | consolidated findings report with priorities | full |
-| `incident` | something is broken or degraded in production | diagnosis, restart/recovery plan, follow-up actions | full, but skip step 3 unless architecture is in question |
-| `release` | a go-live or change is being prepared | release sheet (fiche MEP), go/no-go, rollback plan | full |
-| `quick` | a cross-domain question that needs 2-3 experts, not a deliverable | short consolidated answer | one expert round, no handoff round, no coherence review |
+| 0 or 1 | `solo` | no subagent: you read the one or two knowledge bases concerned and answer yourself; or suggest the matching direct command (`/tiger-team:<command>`) | lowest |
+| 2 or 3, no deliverable needed | `quick` | one expert round in parallel, no handoff round, no coherence review | low |
+| 3 or more, or a deliverable is needed | `scoping` / `review` / `incident` / `release` | architect framing when architecture is at stake, expert round, one handoff round, coherence review when 3+ experts, deliverable | high (20 to 40 agent calls, 10 to 20 minutes, several dollars) |
 
-A full mission is expensive: typically 20 to 40 agent calls, 10 to 20 minutes and several dollars of API usage. Say so to the user once the team is chosen, and prefer `quick` or a direct command (`/tiger-team:<command>`) whenever they would answer the question.
+Never more than **4 experts** without the user asking. An expert is in the team only if the topic contains a question that its knowledge base answers; "it could be relevant" is not a reason. Tell the user the team and the cost class before launching, and go straight on.
 
-## 2. Frame the mission
+Nine experts exist because nine knowledge bases do not fit one context and because independent domain views disagree in useful ways; that value only exists on cross-domain topics. On a single-domain topic, one expert with its knowledge base is the right tool and the cheapest.
+
+| Mode | When | Main deliverable |
+|---|---|---|
+| `solo` | one domain, or a question a knowledge base answers | direct answer, team-standard format |
+| `quick` | a cross-domain question that needs 2-3 views, no deliverable | short consolidated answer |
+| `scoping` | new project or change, early stage | scoping note + RACI + RAID + expert involvement |
+| `review` | existing design, code, chain, interface or plan to assess | consolidated findings report with priorities |
+| `incident` | something is broken or degraded in production | diagnosis, restart/recovery plan, follow-up actions; skip architect framing unless architecture is in question |
+| `release` | a go-live or change is being prepared | release sheet (fiche MEP), go/no-go, rollback plan |
+
+### `solo` mode
+
+Read the knowledge base(s) concerned: `${CLAUDE_PLUGIN_ROOT}/skills/<domain>-reference/SKILL.md` (and `pm-playbook`, `architecture-reference`), then only the sections of `references/` files that the question needs (each reference file starts with a table of contents; use `Read` with `offset` and `limit`). Apply the `discovery` protocol yourself and answer in the team-standard format. Do not call any expert.
+
+## 2. Frame the mission (all modes except `solo`)
 
 - Restate the objective, scope, constraints (regulatory sector, calendar, freeze periods, volumes) and what "done" means.
 - **Collect the environment facts once**, so that experts do not each ask the same questions: read `docs/tiger-team/environment.md` (or the environment sheet path given) when it exists, then the files named in the request. List the decisive facts still missing, using the `discovery` skill's question lists for the experts you will involve.
 - If information that would change the answer is missing, ask the user **at most five short questions** now, each with why it matters and how to obtain the answer, and wait. If the user said to proceed, continue with explicit assumptions instead. When many facts had to be asked, suggest `/tiger-team:discover` at the end of the mission.
-- **Pick the team.** Only the experts the topic needs. Show the user a short table (expert → why), say how many agent calls to expect, then continue. If one expert is enough, say so and suggest the matching direct command instead (for example `/tiger-team:batch-review`).
 
-| Expert (`subagent_type`) | Involve when the topic touches |
+| Expert (`subagent_type`) | Involve when the topic contains a question about |
 |---|---|
 | `tiger-team:enterprise-architect` | target architecture, several systems, new components, cloud or sovereignty choices, NFRs — and for the final coherence review when 3+ experts are involved |
 | `tiger-team:devsecops-expert` | pipelines, IaC, containers, secrets, vulnerabilities, hardening, audit evidence |
@@ -51,11 +63,11 @@ A full mission is expensive: typically 20 to 40 agent calls, 10 to 20 minutes an
 
 ## 3. Architecture framing (when the architect is involved)
 
-Call `tiger-team:enterprise-architect` first with the mission brief. Ask for: target and transition architecture, principles, NFRs, constraints the other experts must respect. Pass its answer into every expert brief.
+Call `tiger-team:enterprise-architect` first with the mission brief. Ask for: target and transition architecture, principles, NFRs, constraints the other experts must respect. Pass its answer, summarized to its constraints, into every expert brief.
 
-## 4. Expert round — in parallel
+## 4. Expert round — in parallel, in isolation
 
-Send **one Agent call per selected expert, all in the same message**, so they run in parallel. Each expert sees only its brief, never this conversation, so every brief must be self-contained. Write it in the user's language.
+Send **one Agent call per selected expert, all in the same message**, so they run in parallel. Experts are isolated on purpose: none sees another's answer in this round, because their independent disagreement is what the mission buys. Each brief is self-contained (the expert never sees this conversation), written in the user's language, and names the reference sections to read so the expert does not load whole files:
 
 ```
 Mission: <one-line objective>        Mode: <mode>        Sector: <banking|healthcare|defense|other>
@@ -63,22 +75,23 @@ Context: <systems, volumes, calendar, constraints — fictitious names only>
 Environment facts: <versions, topology, tools, conventions known for this expert's domain, each with its source; "unknown" where it is>
 Architecture constraints: <from the architect, if any>
 Files to read: <absolute paths, if any>
+Reference sections to read: <e.g. "control-m.md §4 Conditions, §10 JSON" — only what this expert's questions need; "none" if the preloaded skill is enough>
 Your questions: <3 to 6 precise questions for this expert>
 Other experts on this mission: <list>
-Answer in <language>, with the team-standard format: Summary, Analysis, Recommendations, Risks (table), Handoffs (→ <agent-name>: <point>), Open questions, Assumptions. Be concise: 600 words maximum outside tables and code.
+Answer in <language>, with the team-standard format: Summary, Analysis, Recommendations, Risks (table), Handoffs (typed lines "→ <agent-name> | <claim> | <evidence> | <needs>"), Open questions, Assumptions. 600 words maximum outside tables and code.
 ```
 
-## 5. Handoff round (not in `quick` mode)
+## 5. Handoff round (not in `quick` or `solo`)
 
-- Collect every `→ <agent-name>: <point>` line from the answers and group them by target expert.
-- For each expert that received points, send one follow-up brief (again all in parallel) with those points, the relevant excerpts of the other experts' answers, and the question "Confirm, adjust or reject, and say what changes in your recommendations." Experts that received nothing are not called again.
-- One handoff round is the default. Run a second one only if a Critical risk is still unresolved.
+- Collect the typed handoff lines `→ <agent-name> | <claim> | <evidence> | <needs>` from the answers. Drop any that is not addressed to an expert of this mission or that carries no `needs`. Group the rest by target expert.
+- For each expert that received at least one handoff, send one follow-up brief (all in parallel) that contains **only**: the expert's own Summary from round one, the handoff objects addressed to it (verbatim), and the instruction "For each handoff: confirm, adjust or reject, and state what changes in your recommendations. Do not revisit anything else." Never forward other experts' full answers: the handoff object is the whole transmission.
+- Experts that received nothing are not called again. One handoff round is the default; a second one only for a Critical risk still unresolved, limited to the experts concerned.
 
 ## 6. Arbitration
 
-When experts disagree, decide with this order of priority unless the user sets another: regulatory compliance > security > data integrity > service availability > delay > cost. Record each arbitration with its rationale. If the decision is a business trade-off, present the options to the user instead of deciding.
+When experts disagree, decide with this order of priority unless the user sets another: regulatory compliance > security > data integrity > service availability > delay > cost. Record each arbitration with its rationale. If the decision is a business trade-off, present the options to the user instead of deciding. Arbitration and the coherence review are judgement work: they stay with you and the architect, on the session's model, even when experts run on a cheaper one.
 
-## 7. Coherence review (not in `quick` mode)
+## 7. Coherence review (not in `quick` or `solo`)
 
 When 3 or more experts took part or the architecture changes, send the draft consolidation to `tiger-team:enterprise-architect` and ask for inconsistencies, gaps (orphan flows, missing run procedures, NFRs not met end to end) and missing regulatory points. Fix the consolidation accordingly.
 
@@ -87,21 +100,22 @@ When 3 or more experts took part or the architecture changes, send the draft con
 Present, in the user's language:
 
 1. **Executive summary** — the answer and the go/no-go or priority call, in 5 lines.
-2. **Team involved** — expert → main contribution.
+2. **Team involved** — expert → main contribution (or "solo: knowledge bases read").
 3. **Analysis by domain** — short, one block per expert, no copy-paste of full answers.
 4. **Risk matrix** — merged and deduplicated, sorted by criticality: Risk | Criticality | Owner (role) | Mitigation.
-5. **Decisions and arbitrations.**
+5. **Decisions and arbitrations** — including every handoff that was rejected, and why.
 6. **Action plan** — action | owner (role) | when | depends on.
 7. **Mode deliverable** — scoping note + RACI + RAID, findings report, incident and recovery plan, or release sheet + go/no-go + rollback. Use the templates of the `deliverables` skill: `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`.
 8. **Open questions for the user.**
 
-In `quick` mode, give only points 1, 3, 4 and 8.
+In `quick` and `solo` modes, give only points 1, 3, 4 and 8.
 
 Then offer to write the deliverables to files. Default location when working inside a project: `docs/tiger-team/<YYYY-MM-DD>-<short-topic>.md`; otherwise ask where.
 
 ## Cost and focus rules
 
-- Never call an expert "just in case".
-- Keep briefs short and precise; long briefs get long, unfocused answers.
+- The smallest team that answers the question. Never call an expert "just in case".
+- Keep briefs short and precise; name reference sections instead of letting experts read whole files.
+- Experts never see each other's first-round answers; handoffs are the only transmission between them, as typed objects.
 - Do not let experts call each other: routing is your job.
 - Never forward raw sensitive material to an expert; describe it.

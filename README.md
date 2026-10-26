@@ -108,13 +108,32 @@ The `Handoffs` section is what makes nine agents behave like a team. The DBA fla
 
 | Mode | For | You get |
 |---|---|---|
+| `solo` | a single-domain question | no subagent: the lead reads the knowledge base and answers |
+| `quick` | a cross-domain question, 2-3 domains | one expert round in parallel, short consolidated answer |
 | `scoping` | a new project or change | scoping note, RACI, RAID, experts to involve |
 | `review` | an existing design, chain, interface or plan | prioritized findings report |
 | `incident` | something broken in production | diagnosis, recovery plan, follow-up actions |
 | `release` | a go-live being prepared | release sheet, go/no-go criteria, rollback plan |
-| `quick` | a cross-domain question | one expert round, short consolidated answer |
 
-> **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage (measured: about 5 USD for the example above). A `quick` mission with three experts measured about 3.5 USD; a direct command about 1 USD. Figures depend on your model and on the other plugins loaded in your session.
+The lead sizes the team before launching: one domain → `solo` or a direct command; two or three → `quick`; more, or a deliverable → a full mission. Never more than four experts unless you ask.
+
+### Why nine experts, and when one is enough
+
+The split is by **knowledge base**, not by job title: the Control-M Automation API, SAP IDoc handling, IBM i journaling and DORA incident clocks do not fit one context window, so each expert carries its own, loaded only when it runs. The second reason is **independent judgement**: experts answer in isolation, and what the mission buys is their disagreement, surfaced by the architect's coherence review and the lead's arbitration.
+
+That value exists only on cross-domain topics. On a single-domain question, nine contexts are waste: use a direct command or `solo`. Handoffs between experts are typed objects (`→ expert | claim | evidence | needs`), routed by the lead without re-sending anyone's full answer, so the second round costs a fraction of the first and does not reopen settled points.
+
+> **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage (measured: about 5 USD for the example above on 1.0.0). A `quick` mission with three experts measured 3.4 USD on 1.2.0; a direct command about 1 to 2 USD. Figures depend on your model and on the other plugins loaded in your session.
+>
+> **Run the experts on a cheaper model.** Experts carry no fixed model, so `CLAUDE_CODE_SUBAGENT_MODEL=sonnet claude` runs them on Sonnet while the lead's arbitration and the architect's coherence review stay on the session's model, where judgement changes the answer. Measured on the same `quick` mission: see the table in [Measured costs](#measured-costs).
+
+### Measured costs
+
+| Run | Version | Experts' model | Cost |
+|---|---|---|---|
+| `quick` mission, IBM i balances through a REST API, 3 experts | 1.2.0 | session model | 3.43 USD |
+| same prompt | 1.3.0 | session model | _measuring_ |
+| same prompt, `CLAUDE_CODE_SUBAGENT_MODEL=sonnet` | 1.3.0 | Sonnet | _measuring_ |
 
 ## ⚡ Commands
 

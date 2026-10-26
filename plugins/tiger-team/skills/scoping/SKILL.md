@@ -69,7 +69,7 @@ Numbered list of decisions/arbitrations with options and the recommended option.
 Table `Risk | Criticality (Critical/High/Medium/Low) | Mitigation` — the top risks from the RAID log.
 
 ### Handoffs
-One line per expert to involve: `→ <agent-name>: <specific point for that expert>` (e.g., `→ integration-expert: confirm protocol and volume for the 12 partner flows; draft interface contracts`).
+Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
 
 ### Open questions
 Numbered, each with the person/role who can answer.

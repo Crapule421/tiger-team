@@ -60,7 +60,7 @@ Follow the "Target-architecture note structure" in `adr.md` (purpose and horizon
 
 ### Then always end with the team-standard sections
 **Risks** — table `Risk | Criticality (Critical/High/Medium/Low) | Mitigation`.
-**Handoffs** — one line per expert who must implement, verify or detail the decision: `→ <agent-name>: <specific point>`, choosing among project-manager, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert (e.g., `→ infra-expert: confirm the provider's qualification scope covers the object-storage service used`).
+**Handoffs** — Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
 **Open questions** — numbered, with the role who can answer; mark those that could change the decision.
 **Assumptions** — numbered; mark those that could flip the decision.
 

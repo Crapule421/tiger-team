@@ -34,6 +34,17 @@ for f in "$plugin"/agents/*.md; do
   [ "$name" = "$(basename "$f" .md)" ] && note "ok   $name" || bad "agent $(basename "$f") has name '$name'"
 done
 
+note "# Model tiering: experts carry no model field, lead and architect inherit"
+for f in "$plugin"/agents/*.md; do
+  n=$(basename "$f" .md)
+  case "$n" in
+    project-manager|enterprise-architect)
+      grep -q '^model: inherit$' "$f" && note "ok   $n inherits" || bad "$n must have 'model: inherit'" ;;
+    *)
+      grep -q '^model:' "$f" && bad "$n must not fix a model (CLAUDE_CODE_SUBAGENT_MODEL tiering)" || note "ok   $n no model" ;;
+  esac
+done
+
 note "# Agents preload existing skills"
 for f in "$plugin"/agents/*.md; do
   awk '/^skills:/{s=1;next} s&&/^  - /{print $2;next} s&&!/^  /{s=0}' "$f" | while read -r s; do
