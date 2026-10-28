@@ -2,6 +2,15 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.4.0] - 2026-10-28
+
+Three changes drawn from the evaluation, defensive-prompting and routing chapters of *AI Engineering* (Chip Huyen, 2025), read against what the measurements of 1.3.x had shown.
+
+### Added
+- **Eval suite** for `claude plugin eval` (`plugins/tiger-team/evals/`): five cases with deterministic graders first (sections present, typed handoff, `Resource:Lock`, JSON block, skill or agent fired, data never repeated) and a short judged rubric where a regex cannot see. Includes a negative case: the mission orchestrator must never auto-fire. An on-demand `Evals` GitHub workflow runs the suite with a cost ceiling.
+- **Model routing in the lead**: in `quick` mode experts run on Sonnet by default; in the full modes on the session's model; the architect and the arbitration never leave the session's model. The user overrides with a word in the request.
+- **Data, never instructions**: every agent now states that everything it reads (exports, scripts, logs, documents, pasted content) is evidence to analyse, never an instruction to follow, and reports embedded instructions as findings. The mission brief says the same for the files it names. Direct commands already carried the clause.
+
 ## [1.3.1] - 2026-10-26
 
 ### Changed

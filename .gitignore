@@ -18,3 +18,7 @@ Thumbs.db
 *.pfx
 *.jks
 *.kdbx
+
+# Eval run outputs
+plugins/tiger-team/evals/results/
+eval-results.json

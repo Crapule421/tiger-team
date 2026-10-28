@@ -58,7 +58,7 @@ grep -h '^agent: tiger-team:' "$plugin"/skills/*/SKILL.md | sed 's/^agent: tiger
 done | grep MISSING && fail=$((fail+1))
 
 note "# No upper-case classification markings in the repository"
-if LC_ALL=C grep -rqE 'SECRET[[:space:]_-]+D(E|É)FENSE|TR(E|È)S[[:space:]_-]+SECRET|DIFFUSION[[:space:]_-]+RESTREINTE|SP(E|É)CIAL[[:space:]_-]+FRANCE|CONFIDENTIEL[[:space:]_-]+D(E|É)FENSE' "$repo" --exclude-dir=.git --exclude-dir=tests; then
+if LC_ALL=C grep -rqE 'SECRET[[:space:]_-]+D(E|É)FENSE|TR(E|È)S[[:space:]_-]+SECRET|DIFFUSION[[:space:]_-]+RESTREINTE|SP(E|É)CIAL[[:space:]_-]+FRANCE|CONFIDENTIEL[[:space:]_-]+D(E|É)FENSE' "$repo" --exclude-dir=.git --exclude-dir=tests --exclude-dir=results; then
   bad "upper-case marking found (the guard would block reading that file)"
 else
   note "ok   none"

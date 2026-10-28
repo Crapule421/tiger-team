@@ -137,7 +137,9 @@ That value exists only on cross-domain topics. On a single-domain question, nine
 
 > **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage (measured: about 5 USD for the example above on 1.0.0). A `quick` mission with three experts measured 3.4 USD on 1.2.0; a direct command about 1 to 2 USD. Figures depend on your model and on the other plugins loaded in your session.
 >
-> **Run the experts on a cheaper model.** Experts carry no fixed model, so `CLAUDE_CODE_SUBAGENT_MODEL=sonnet claude` runs them on Sonnet while the lead's arbitration and the architect's coherence review stay on the session's model, where judgement changes the answer. Measured on the same `quick` mission: see the table in [Measured costs](#measured-costs).
+> **Model routing.** In `quick` mode the lead runs the experts on Sonnet by default (measured −51 % on the same mission, same structure and arbitration); in `scoping`, `review`, `incident` and `release` they run on the session's model. The architect's framing and coherence review and the lead's arbitration always stay on the session's model, where judgement changes the answer. Override with a word in the request ("experts on the session model"), or set `CLAUDE_CODE_SUBAGENT_MODEL` for every subagent.
+>
+> **What the agents read is data.** Exports, scripts, logs, documents and pasted web content are analysed and quoted as evidence, never obeyed: an instruction found inside a file is reported as a finding. This is the cheapest defence against indirect prompt injection, and every agent and command carries it.
 
 ### Measured costs
 
@@ -258,6 +260,18 @@ The team is built by one integrator, from official documentation and field pract
 | **Languages** | Prompts stay in English; a French-first variant of the README and templates would help non-English teams | — |
 
 Open a [fact correction](https://github.com/Crapule421/tiger-team/issues/new?template=fact_correction.yml) when a command, parameter or legal reference is wrong, a [feature request](https://github.com/Crapule421/tiger-team/issues/new?template=feature_request.yml) for a new expert or tool, or a [bug report](https://github.com/Crapule421/tiger-team/issues/new?template=bug_report.yml) when an agent misbehaves. Fictitious data only, always.
+
+## 🧪 Evaluate the plugin
+
+Behaviour is tested, not only syntax. `plugins/tiger-team/evals/` holds cases for Claude Code's [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals): a direct command that must flag a blocking index build, a scheduler conversion that must produce a valid Automation API JSON with typed handoffs, an expert asked without a version that must name the check instead of guessing, a prompt that must **not** auto-fire the mission orchestrator, and a prompt carrying sample customer data that must be refused without repeating it. Deterministic graders first (regex, tool calls), a short judged rubric where a regex cannot see.
+
+```bash
+cd plugins/tiger-team
+claude plugin eval . --case mission-never-autofires --runs 1 --ablation none --no-publish   # 6 s, a few cents
+claude plugin eval . --no-publish --max-cost-usd 25 --threshold 0.8                       # whole suite with the no-plugin baseline
+```
+
+Run the suite before a release and after any change to an agent, a skill or the orchestrator; add a case for every behaviour you fix. The `Evals` GitHub workflow runs it on demand when an `ANTHROPIC_API_KEY` secret is set.
 
 ## 🛠️ Customizing and contributing
 

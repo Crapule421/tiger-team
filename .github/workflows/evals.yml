@@ -1,0 +1,40 @@
+name: Evals
+
+# Behavioural evals cost API usage, so they run on demand only.
+# Requires an ANTHROPIC_API_KEY repository secret.
+on:
+  workflow_dispatch:
+    inputs:
+      case:
+        description: Case name glob (empty = whole suite)
+        required: false
+        default: ""
+      runs:
+        description: Runs per case
+        required: false
+        default: "1"
+
+jobs:
+  evals:
+    name: claude plugin eval
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+      - name: Run evals
+        working-directory: plugins/tiger-team
+        run: |
+          ARGS="--trust-plugin --no-publish --json ../../eval-results.json --threshold 0.8 --max-cost-usd 25 --ablation none --runs ${{ github.event.inputs.runs }} --model claude-sonnet-5-5 --judge-model claude-haiku-5-5"
+          if [ -n "${{ github.event.inputs.case }}" ]; then ARGS="$ARGS --case ${{ github.event.inputs.case }}"; fi
+          claude plugin eval . $ARGS
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: |
+            eval-results.json
+            plugins/tiger-team/evals/results/
