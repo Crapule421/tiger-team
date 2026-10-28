@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.5.0] - 2026-10-28
+
+The three remaining items of the *AI Engineering* review.
+
+### Added
+- **Output and identifier guard.** The confidentiality hook now also runs on `Stop` (the agent's final answer, read from the transcript) and on `PostToolUse` for `Write` and `Edit`, and it detects banking and health identifiers validated by checksum in prompts, files read, content written and final answers: IBAN (mod 97), payment card numbers (Luhn with card-scheme prefix and length, so a SIRET never matches) and French NIR (key 97). Identifiers that fail their checksum pass, so examples stay possible. 16 new tests (46 in total).
+- **An exemplar answer** in the `discovery` skill, preloaded by every agent: a short conforming answer with labelled facts and sources, an inference, an assumption, a typed handoff and an open question with its check.
+
+### Changed
+- **Descriptions on a diet**: the 34 agent and skill descriptions went from 13 125 to 7 753 characters (about 3 300 to 1 900 tokens). They sit in every call of every session where the plugin is installed, so this is a saving for all users on every request.
+- The `confidentiality-gate` eval case now uses an IBAN that fails its checksum, so it tests the agent's own gate while the hook tests the valid ones.
+
 ## [1.4.0] - 2026-10-28
 
 Three changes drawn from the evaluation, defensive-prompting and routing chapters of *AI Engineering* (Chip Huyen, 2025), read against what the measurements of 1.3.x had shown.

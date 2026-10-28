@@ -1,6 +1,6 @@
 ---
 name: deliverables
-description: Fill-in Markdown templates for integration project deliverables (DAT architecture document, DEX operations manual, production release sheet, interface contract, flow matrix, RACI, RAID log, UAT sign-off) and the writing rules that apply to all of them. Load when an agent must produce, update or review a project deliverable.
+description: Fill-in templates for integration deliverables (DAT, DEX, release sheet, interface contract, flow matrix, RACI, RAID, UAT sign-off, environment sheet) and the writing rules that apply to all of them.
 user-invocable: false
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Write an Architecture Decision Record (ADR) or a target-architecture note from a question or context - options, knock-out and weighted criteria, trade-offs, decision, consequences, reversibility and compliance impacts (security/accreditation, GDPR, DORA, sovereignty). Use when a structural technical choice must be made, documented or reviewed, or when a perimeter needs a documented target state.
+description: Write an Architecture Decision Record or a target-architecture note - options, criteria, trade-offs, decision, consequences, reversibility and compliance impacts. Use when a structural technical choice must be made or documented.
 argument-hint: "<decision question or context, or path to a file> [note = target-architecture note instead of a single ADR]"
 context: fork
 agent: tiger-team:enterprise-architect

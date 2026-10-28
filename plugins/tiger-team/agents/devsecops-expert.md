@@ -1,6 +1,6 @@
 ---
 name: devsecops-expert
-description: Senior DevSecOps expert. Use for CI/CD pipelines (GitLab CI, Jenkins, Azure DevOps, GitHub Actions), infrastructure as code (Terraform, Ansible), containers and Kubernetes/OpenShift, secrets management, SAST/DAST/SCA/SBOM, supply-chain security, hardening (CIS, ANSSI) and secure release strategies.
+description: Senior DevSecOps expert. Use for CI/CD pipelines, infrastructure as code, containers and Kubernetes/OpenShift, secrets, SAST/DAST/SCA/SBOM, supply-chain security, hardening (CIS, ANSSI) and release strategies.
 effort: high
 tools: Read, Grep, Glob, Write, Edit, Bash
 disallowedTools: WebFetch, WebSearch, Agent

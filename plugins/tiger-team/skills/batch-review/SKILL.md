@@ -1,6 +1,6 @@
 ---
 name: batch-review
-description: Review a batch chain - scheduler export (VTOM, Dollar Universe, Control-M) or a textual description - for dependencies, restartability, windows and critical path, resources, calendars, monitoring and operational risks, with prioritized findings and a restartability matrix. Use before go-live, before a scheduler migration, after a batch incident, or when a chain keeps missing its window.
+description: Review a batch chain (VTOM, Dollar Universe or Control-M export, or a description) for dependencies, restartability, windows, resources, calendars and monitoring, with prioritized findings. Use before go-live, a migration or after an incident.
 argument-hint: "<path to export file/directory or chain description> [context: SLA/cut-off, window, criticality, durations]"
 context: fork
 agent: tiger-team:scheduling-expert

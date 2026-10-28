@@ -1,6 +1,6 @@
 ---
 name: erp-reference
-description: ERP integration knowledge base - integration mechanisms per ERP (SAP ECC/S/4HANA, Oracle EBS/Fusion, Sage X3, Cegid, Dynamics 365 F&O/Business Central/Dataverse), inbound/outbound design rules, posting logic, master data dependencies, error handling and reprocessing, reconciliation, cut-over, and an ERP interface review checklist; references cover each product plus business processes (O2C, P2P, R2R, closing) and data migration method. Load when designing, reviewing or troubleshooting an interface or migration touching an ERP.
+description: ERP integration knowledge base - mechanisms per ERP (SAP, Oracle EBS/Fusion, Sage X3, Cegid, Dynamics 365), posting logic, master data, reprocessing, reconciliation, cut-over; references per product plus O2C/P2P/R2R and data migration.
 user-invocable: false
 ---
 

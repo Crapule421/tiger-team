@@ -1,6 +1,6 @@
 ---
 name: ibmi-reference
-description: IBM i (AS/400, iSeries) knowledge base - RPG IV/ILE and fully free RPG, CL, COBOL, DB2 for i (SQL, DDS files, journaling, commitment control), libraries and library lists, subsystems, job queues, jobs, spool, IFS, security (profiles, special/object authorities, adopted authority, exit programs), integration (data queues, MQ, JDBC/ODBC, IWS/REST, FTP/SFTP, CFT), HA, scheduling, EBCDIC/CCSID pitfalls and a code review checklist. Load it when analysing, reviewing, integrating, operating or securing IBM i applications.
+description: IBM i knowledge base - RPG ILE and free-form, CL, COBOL, Db2 for i, journaling, jobs and subsystems, spool and IFS, security, integration (data queues, MQ, JDBC, REST, CFT), HA, scheduling, CCSID pitfalls, review checklist.
 user-invocable: false
 ---
 

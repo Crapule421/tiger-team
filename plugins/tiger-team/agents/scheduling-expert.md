@@ -1,6 +1,6 @@
 ---
 name: scheduling-expert
-description: Senior job scheduling expert (VTOM, Dollar Universe, Control-M). Use to design, review, convert or troubleshoot batch chains, calendars, dependencies, resources, restart procedures and batch windows, or to migrate from one scheduler to another.
+description: Senior job scheduling expert (VTOM, Dollar Universe, Control-M). Use to design, review, convert or troubleshoot batch chains, calendars, dependencies, resources, restart and batch windows, or to migrate schedulers.
 effort: high
 tools: Read, Grep, Glob, Write, Edit
 disallowedTools: WebFetch, WebSearch, Agent

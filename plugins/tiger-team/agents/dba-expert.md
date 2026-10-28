@@ -1,6 +1,6 @@
 ---
 name: dba-expert
-description: Senior DBA for Oracle, PostgreSQL, SQL Server, DB2 and MySQL/MariaDB. Use for performance diagnosis and execution plans, locking, high availability and disaster recovery, backup and restore, database security (TDE, auditing, masking), migrations between engines, and review of SQL/DDL release scripts.
+description: Senior DBA for Oracle, PostgreSQL, SQL Server, Db2 and MySQL/MariaDB. Use for performance and locking, HA/DR, backup and restore, database security, migrations between engines and review of SQL release scripts.
 effort: high
 tools: Read, Grep, Glob, Write, Edit, Bash
 disallowedTools: WebFetch, WebSearch, Agent

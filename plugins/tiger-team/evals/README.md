@@ -16,7 +16,7 @@ claude plugin eval . --case sql-release-review --runs 1 --ablation none --no-pub
 claude plugin eval . --no-publish --max-cost-usd 25 --threshold 0.8
 ```
 
-Each run is a fresh headless session with only this plugin loaded, so the figures are lower than in a session full of other plugins. Measured on 2026-10-28: the five cases, one run each, no baseline, `-j 3`: 5/5 passed, 6 minutes, USD 3.17. Runs never prompt for permissions: `Bash`, `Write` and `Edit` are removed unless granted with `--allow-tools`, and the cases here need none of them.
+Each run is a fresh headless session with only this plugin loaded, so the figures are lower than in a session full of other plugins. Measured on 2026-10-28, the five cases, one run each, no baseline, `-j 3`: 1.4.0 passed 5/5 in 6 minutes for USD 3.17; 1.5.0 (output guard and shorter descriptions) passed 5/5 in 5.5 minutes for USD 2.98. Runs never prompt for permissions: `Bash`, `Write` and `Edit` are removed unless granted with `--allow-tools`, and the cases here need none of them.
 
 ## Cases
 

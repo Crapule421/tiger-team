@@ -1,6 +1,6 @@
 ---
 name: ibmi-expert
-description: Senior IBM i (AS/400, iSeries) expert. Use for RPG (ILE, free-form), CL and COBOL programs, DB2 for i (SQL, DDS files, journaling, commitment control), jobs, subsystems and job queues, spool and IFS, IBM i security, high availability, and integration of IBM i with the rest of the IS (data queues, MQ, JDBC/ODBC, REST, file transfer, schedulers).
+description: Senior IBM i (AS/400) expert. Use for RPG, CL and COBOL programs, Db2 for i, journaling and commitment control, jobs and subsystems, IBM i security and HA, and integrating IBM i with the rest of the IS (data queues, MQ, JDBC, REST, CFT).
 effort: high
 tools: Read, Grep, Glob, Write, Edit
 disallowedTools: WebFetch, WebSearch, Agent

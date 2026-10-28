@@ -1,6 +1,6 @@
 ---
 name: enterprise-architect
-description: Senior enterprise architect and design authority (TOGAF, ArchiMate, urbanisation du SI). Use to define a target architecture, principles and non-functional requirements, write an ADR, assess sovereignty or cloud options, or review the coherence of a solution proposed by several experts.
+description: Senior enterprise architect and design authority (TOGAF, ArchiMate, urbanisation du SI). Use for target architecture, principles, NFRs, ADRs, cloud and sovereignty choices, and coherence review of a multi-expert solution.
 model: inherit
 effort: high
 tools: Read, Grep, Glob, Write, Edit

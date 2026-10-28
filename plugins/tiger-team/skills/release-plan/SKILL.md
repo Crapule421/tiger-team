@@ -1,6 +1,6 @@
 ---
 name: release-plan
-description: Produce a production release plan (fiche MEP) - prerequisites, detailed timed run sheet with owners, communication plan, go/no-go criteria and checkpoints, verification tests, rollback plan with trigger criteria and point of no return, hypercare. Use when preparing a go-live, a cut-over (bascule) or any significant production change of an integration project.
+description: Produce a production release plan (fiche MEP) - prerequisites, timed run sheet with owners, communication, go/no-go checkpoints, verification tests, rollback with triggers and point of no return, hypercare. Use before a go-live or cut-over.
 argument-hint: "<release / cut-over description, or path to a file (scope, components, window, constraints)>"
 context: fork
 agent: tiger-team:project-manager

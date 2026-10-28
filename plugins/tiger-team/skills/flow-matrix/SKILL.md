@@ -1,6 +1,6 @@
 ---
 name: flow-matrix
-description: Build a network flow matrix (matrice des flux) and the corresponding firewall opening requests from an architecture description, with least-privilege, encryption, bastion and completeness checks (DNS, NTP, monitoring, logs, backup...). Use when designing a new system or interface, preparing firewall change requests, or reviewing an existing flow list.
+description: Build a network flow matrix and the firewall opening requests from an architecture description, with least-privilege, encryption, bastion and completeness checks (DNS, NTP, monitoring, backup). Use for a new system or a firewall change.
 argument-hint: "<architecture description, diagram text, or path to a DAT/flow list> [environments] [zones]"
 context: fork
 agent: tiger-team:infra-expert

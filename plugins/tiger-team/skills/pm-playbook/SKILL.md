@@ -1,6 +1,6 @@
 ---
 name: pm-playbook
-description: Integration project management knowledge for French-style IT projects - scoping (note de cadrage), RACI, RAID, COPIL/COPROJ governance, environments, test strategy (recette, VABF/VSR), cut-over (bascule) and rollback, go/no-go, hypercare, DEX handover, arbitration between experts, estimation heuristics and failure modes. Load when scoping, planning, steering, testing or releasing a technical or application integration project.
+description: Integration project management for French-style IT projects - scoping, RACI, RAID, governance, environments, test strategy (recette, VA/VSR), cut-over and rollback, go/no-go, hypercare, DEX handover, arbitration, estimation.
 user-invocable: false
 ---
 

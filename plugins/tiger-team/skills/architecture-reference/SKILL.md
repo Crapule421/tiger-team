@@ -1,6 +1,6 @@
 ---
 name: architecture-reference
-description: Enterprise architecture knowledge base - design authority role, architecture principles, target vs transition architectures, macro integration patterns, non-functional requirements (availability, RPO/RTO, performance, security, operability, reversibility), cloud strategy and sovereignty (SecNumCloud, reversibility), technical debt, DORA ICT risk from an architecture view, and a cross-expert coherence checklist. Load when designing or reviewing a target architecture, arbitrating structural options, or writing ADRs; references cover TOGAF/ArchiMate, French urbanisation du SI and ADR formats.
+description: Enterprise architecture knowledge base - design authority, principles, target and transition architectures, integration patterns, NFRs, cloud sovereignty, technical debt, DORA ICT risk; references on TOGAF/ArchiMate, urbanisation, ADRs.
 user-invocable: false
 ---
 

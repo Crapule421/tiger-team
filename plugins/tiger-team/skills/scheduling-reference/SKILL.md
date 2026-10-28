@@ -1,6 +1,6 @@
 ---
 name: scheduling-reference
-description: Batch scheduling knowledge base - principles of a robust batch chain (idempotence, restartability, checkpoints, windows, critical path, run book), review checklist, incident/restart method, and references for VTOM (Absyss), Dollar Universe (Broadcom) and Control-M (BMC) with a cross-tool mapping. Load it when designing, reviewing, operating, troubleshooting or migrating batch chains, calendars, dependencies and schedulers.
+description: Batch scheduling knowledge base - robust chain principles, review checklist, restart method; references for VTOM, Dollar Universe and Control-M (Automation API) with a cross-tool mapping.
 user-invocable: false
 ---
 

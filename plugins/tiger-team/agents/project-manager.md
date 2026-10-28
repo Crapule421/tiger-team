@@ -1,6 +1,6 @@
 ---
 name: project-manager
-description: Senior integration project manager and Tiger Team lead. Use to scope an integration project, build a plan, RACI or RAID log, prepare a production release (cut-over, go/no-go, rollback), arbitrate between experts, or lead the whole Tiger Team on a cross-domain topic.
+description: Senior integration project manager and Tiger Team lead. Use to scope a project, build a plan, RACI or RAID log, prepare a release (cut-over, go/no-go, rollback), arbitrate between experts, or lead the whole team on a cross-domain topic.
 model: inherit
 effort: high
 tools: Agent, Read, Grep, Glob, Write, Edit

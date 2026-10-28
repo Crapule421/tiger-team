@@ -84,6 +84,46 @@ run 2 "prompt with a marking"                  "$(prompt_json "voici le doc $DR 
 run 2 "prompt with JSON-escaped accent"        "$(prompt_json 'CONFIDENTIEL DÉFENSE')"
 run 0 "normal-case question passes"            "$(prompt_json 'comment traiter des donnees Diffusion Restreinte ?')"
 
+echo "# Identifiers validated by checksum (IBAN mod 97, card Luhn, NIR key)"
+# Values below are built so that the valid ones pass their checksum and the invalid ones fail it.
+IBAN_OK="FR76 3000 6000 0112 3456 7890 189"         # the classic documentation IBAN, checksum valid
+IBAN_KO="FR76 3000 6000 0112 3456 7890 100"         # same shape, checksum invalid
+PAN_OK="4111 1111 1111 1111"                        # Visa test number, Luhn valid
+PAN_KO="4111 1111 1111 1112"                        # Luhn invalid
+SIRET="73282932000074"                              # 14 digits, Luhn valid: not a card length, must pass
+NIR_BODY="1850578006084"
+NIR_KEY=$(awk -v b="$NIR_BODY" 'BEGIN{r=0; for(i=1;i<=length(b);i++) r=(r*10+substr(b,i,1))%97; printf "%02d", 97-r}')
+NIR_OK="$NIR_BODY$NIR_KEY"
+NIR_KO="${NIR_BODY}$(printf '%02d' $(( (10#$NIR_KEY + 1) % 100 )))"
+printf 'Customer record: IBAN %s balance 12 450 EUR\n' "$IBAN_OK" > "$tmp/iban-valid.txt"
+printf 'Example: IBAN %s (invalid, for tests)\n' "$IBAN_KO" > "$tmp/iban-invalid.txt"
+printf 'card %s\n' "$PAN_OK" > "$tmp/pan-valid.txt"
+printf 'card %s and SIRET %s\n' "$PAN_KO" "$SIRET" > "$tmp/pan-invalid.txt"
+printf 'patient NIR %s\n' "$NIR_OK" > "$tmp/nir-valid.txt"
+printf 'patient NIR %s\n' "$NIR_KO" > "$tmp/nir-invalid.txt"
+run 2 "Read file with valid IBAN"                "$(read_json "$tmp/iban-valid.txt")"
+run 0 "Read file with invalid IBAN"              "$(read_json "$tmp/iban-invalid.txt")"
+run 2 "Read file with Luhn-valid Visa number"    "$(read_json "$tmp/pan-valid.txt")"
+run 0 "Read file with invalid card and a SIRET"  "$(read_json "$tmp/pan-invalid.txt")"
+run 2 "Read file with valid NIR"                 "$(read_json "$tmp/nir-valid.txt")"
+run 0 "Read file with invalid NIR"               "$(read_json "$tmp/nir-invalid.txt")"
+run 2 "prompt with valid IBAN"                   "$(prompt_json "design the API for IBAN $IBAN_OK please")"
+run 0 "prompt with invalid IBAN"                 "$(prompt_json "design the API for IBAN $IBAN_KO please")"
+run 2 "prompt with valid NIR"                    "$(prompt_json "patient $NIR_OK admitted")"
+post_write_json() { printf '{"hook_event_name":"PostToolUse","tool_name":"Write","tool_input":{"file_path":"%s","content":"%s"},"tool_response":{}}' "$(jpath "$1")" "$2"; }
+run 2 "Write content with valid card number"     "$(post_write_json "$tmp/out.md" "Test card: $PAN_OK")"
+run 0 "Write content with invalid card number"   "$(post_write_json "$tmp/out.md" "Test card: $PAN_KO")"
+run 0 "Write of ordinary content"                "$(post_write_json "$tmp/out.md" "Release sheet v1.0 — 2026-10-28")"
+
+echo "# Final answer (Stop)"
+printf '{"type":"user","message":{"role":"user","content":"hello"}}\n{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Account IBAN %s is fine"}]}}\n' "$IBAN_OK" > "$tmp/transcript-leak.jsonl"
+printf '{"type":"assistant","message":{"role":"assistant","content":[{"type":"text","text":"Use an invalid example such as %s"}]}}\n' "$IBAN_KO" > "$tmp/transcript-clean.jsonl"
+stop_json() { printf '{"hook_event_name":"Stop","stop_hook_active":%s,"transcript_path":"%s"}' "$2" "$(jpath "$1")"; }
+run 2 "final answer repeats a valid IBAN"        "$(stop_json "$tmp/transcript-leak.jsonl" false)"
+run 0 "final answer with invalid example"        "$(stop_json "$tmp/transcript-clean.jsonl" false)"
+run 0 "no loop when the stop hook already ran"   "$(stop_json "$tmp/transcript-leak.jsonl" true)"
+run 0 "missing transcript passes"                "$(stop_json "$tmp/none.jsonl" false)"
+
 echo "# Robustness"
 run 0 "garbage input passes"                   'not json'
 run 0 "empty input passes"                     ''

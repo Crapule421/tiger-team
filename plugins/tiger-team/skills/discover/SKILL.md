@@ -1,6 +1,6 @@
 ---
 name: discover
-description: Interview the user about their organization's environment (sector, environments, change process, schedulers, databases, middleware, ERP, network, IBM i, delivery chain) and record the answers once in docs/tiger-team/environment.md, the environment sheet every Tiger Team expert reads before answering. Use at the start of an engagement, or when experts keep asking the same questions.
+description: Interview the user about their organization's environment (schedulers, databases, middleware, ERP, network, IBM i, delivery chain, governance) and record the facts once in docs/tiger-team/environment.md for every expert to read.
 argument-hint: "[domains: common|project|architecture|devsecops|dba|scheduling|integration|erp|infra|ibmi|all] [path]"
 disable-model-invocation: true
 ---

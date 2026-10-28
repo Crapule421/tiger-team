@@ -202,10 +202,11 @@ The plugin ships a hook (`plugins/tiger-team/hooks/confidentiality-guard.sh`, ba
 
 - reading, editing or searching **secret files**: `.env` (but not `.env.example`), `*.pem`, `*.key`, `*.p12`, `*.pfx`, `*.jks`, `*.keystore`, `*.kdbx`, `*.ppk`, `*.p8`, `id_rsa*`, `id_ed25519*`, `credentials.*`, `.netrc`, `.pgpass`, `.htpasswd`;
 - reading a file that carries a **French classification marking** written in upper case, as on marked documents (Secret Défense, Très Secret, Diffusion Restreinte, Spécial France, Confidentiel Défense; accents optional; UTF-8 and Latin-1);
+- **banking and health identifiers that pass their checksum**, in a prompt, in a file being read, in content written to a file and in the agent's final answer: an IBAN (mod 97), a payment card number (Luhn, with a card-scheme prefix and length, so a SIRET never matches) and a French NIR (key 97). Use invalid identifiers in your examples: they pass;
 - **Bash commands** that target secret files;
 - **prompts** that contain such a marking.
 
-It is covered by 30 tests (`tests/confidentiality-guard.test.sh`) that run in CI. Limits: it cannot see inside binary formats (PDF, Office files); if the script itself fails, the call goes through (Claude Code 2.1.295+ supports `"onFailure": "block"`); and it is a safety net against mistakes, **not** a substitute for a security policy or a homologation.
+It is covered by 46 tests (`tests/confidentiality-guard.test.sh`) that run in CI. Limits: it cannot see inside binary formats (PDF, Office files); the checksum rules catch realistic identifiers, not every personal datum (names, addresses and dates of birth are left to the agents' own gate); if the script itself fails, the call goes through (Claude Code 2.1.295+ supports `"onFailure": "block"`); and it is a safety net against mistakes, **not** a substitute for a security policy or a homologation.
 
 <details>
 <summary>Recommended settings for sensitive projects</summary>
@@ -330,7 +331,7 @@ Claude Code envoie les prompts et les fichiers lus à une API dans le cloud. L'�
 - **Santé** : aucune donnée patient réelle. Travaille sur des jeux pseudonymisés ou synthétiques (HDS, RGPD art. 9).
 - **Banque** : ni données clients, ni secrets, ni identifiants de production. Respecte la politique IA de ton entreprise.
 
-Le hook fourni bloque la lecture des fichiers de secrets et des documents qui portent un marquage de classification, les commandes Bash qui visent ces fichiers, et les prompts qui contiennent un tel marquage. C'est un filet de sécurité contre les erreurs de manipulation : il ne remplace ni une politique de sécurité ni une homologation.
+Le hook fourni bloque la lecture des fichiers de secrets et des documents qui portent un marquage de classification, les commandes Bash qui visent ces fichiers, les prompts qui contiennent un tel marquage, et les identifiants bancaires ou de santé dont la somme de contrôle est valide (IBAN, numéro de carte, NIR) dans les prompts, les fichiers lus, les fichiers écrits et la réponse finale. C'est un filet de sécurité contre les erreurs de manipulation : il ne remplace ni une politique de sécurité ni une homologation.
 
 ### Avertissement
 

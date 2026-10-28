@@ -1,6 +1,6 @@
 ---
 name: infra-expert
-description: Senior network, DNS and systems expert (Linux and Windows Server). Use for network flows and firewall rules, flow matrices, load balancers and proxies, TLS/PKI and certificates, DNS design and troubleshooting, Linux (RHEL, Debian, SUSE) and Windows Server (AD, GPO, IIS, PowerShell) administration, hardening and diagnosis.
+description: Senior network, DNS and systems expert. Use for firewall rules and flow matrices, load balancers and proxies, TLS/PKI, DNS design and troubleshooting, Linux (RHEL, Debian, SUSE) and Windows Server (AD, GPO, IIS) hardening and diagnosis.
 effort: high
 tools: Read, Grep, Glob, Write, Edit, Bash
 disallowedTools: WebFetch, WebSearch, Agent

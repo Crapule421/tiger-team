@@ -1,6 +1,6 @@
 ---
 name: integration-reference
-description: Integration knowledge base - pattern selection (sync/async, request-reply, pub/sub, file transfer, CDC, batch vs real-time), idempotence, replay, error handling and dead letters, correlation IDs, observability, versioning, interface security (OAuth2, mTLS, JWT, API keys, signing) and an interface review checklist; references cover REST/SOAP/gateways/ESB, MFT/MQ/Kafka and business formats (ISO 20022, CFONB, EDIFACT, HL7 v2, FHIR). Load when designing, specifying, reviewing or troubleshooting an application interface or data flow.
+description: Integration knowledge base - pattern selection, idempotence, replay, dead letters, correlation, versioning, interface security and review checklist; references on REST/SOAP/ESB, MFT/MQ/Kafka and business formats (ISO 20022, EDI, HL7, FHIR).
 user-invocable: false
 ---
 

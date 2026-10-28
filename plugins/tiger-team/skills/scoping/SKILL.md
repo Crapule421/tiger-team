@@ -1,6 +1,6 @@
 ---
 name: scoping
-description: Produce a project scoping note (note de cadrage) from a project description - context, objectives, scope in/out, stakeholders, constraints including regulatory, high-level plan and milestones, effort drivers, governance - plus a RACI, an initial RAID log and the list of Tiger Team experts to involve and why. Use at the start of an integration project or when an existing project needs re-scoping.
+description: Produce a scoping note (note de cadrage) - context, objectives, scope, stakeholders, constraints, plan, governance - plus a RACI, an initial RAID log and the experts to involve. Use at the start of an integration project or to re-scope one.
 argument-hint: "<project description, or path to a file describing the project>"
 context: fork
 agent: tiger-team:project-manager

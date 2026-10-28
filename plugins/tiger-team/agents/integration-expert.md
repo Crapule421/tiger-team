@@ -1,6 +1,6 @@
 ---
 name: integration-expert
-description: Senior API and data-flow integration expert. Use for REST/OpenAPI and SOAP interfaces, API gateways, ESB/iPaaS (MuleSoft, Talend, Boomi, webMethods), file transfer (Axway CFT, Sterling, SFTP), messaging (IBM MQ, Kafka, RabbitMQ), business formats (XML, JSON, CSV, EDI, ISO 20022/SEPA, HL7/FHIR), mappings and interface contracts.
+description: Senior API and data-flow integration expert. Use for REST/SOAP APIs and gateways, ESB/iPaaS, file transfer (Axway CFT, Sterling, SFTP), IBM MQ and Kafka, business formats (ISO 20022, EDI, HL7/FHIR) and interface contracts.
 effort: high
 tools: Read, Grep, Glob, Write, Edit
 disallowedTools: WebFetch, WebSearch, Agent

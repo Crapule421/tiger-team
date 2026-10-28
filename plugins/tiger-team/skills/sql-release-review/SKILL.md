@@ -1,6 +1,6 @@
 ---
 name: sql-release-review
-description: Review a SQL/DDL/DML release script (Oracle, PostgreSQL, SQL Server, Db2, MySQL/MariaDB) for idempotence, rollback, locks and duration, volumetry, transaction scope and engine-specific traps; returns annotated findings, a GO/NO-GO verdict and corrected and rollback scripts when relevant. Use before any database release reaches pre-production or production.
+description: Review a SQL release script (Oracle, PostgreSQL, SQL Server, Db2, MySQL/MariaDB) for idempotence, rollback, locks, volumetry and engine traps - annotated findings, GO/NO-GO, corrected and rollback scripts. Use before any database release.
 argument-hint: "<path to .sql script(s) or pasted script> [engine+version] [table volumes] [maintenance window]"
 context: fork
 agent: tiger-team:dba-expert

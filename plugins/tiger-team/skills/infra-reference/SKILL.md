@@ -1,6 +1,6 @@
 ---
 name: infra-reference
-description: Infrastructure knowledge base - layer-by-layer diagnosis method, infra checklists (server build, firewall change, certificate renewal, DNS change, patching, decommissioning) and an index of detailed references on network/TLS, DNS, Linux and Windows Server. Load it when diagnosing connectivity or system issues, designing or reviewing infrastructure, or preparing infra changes.
+description: Infrastructure knowledge base - layer-by-layer diagnosis, checklists (server build, firewall change, certificate renewal, DNS change, patching) and references on network/TLS, DNS, Linux and Windows Server.
 user-invocable: false
 ---
 

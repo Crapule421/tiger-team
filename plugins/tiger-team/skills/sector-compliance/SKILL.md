@@ -1,6 +1,6 @@
 ---
 name: sector-compliance
-description: Confidentiality rules for using a cloud AI assistant on sensitive projects, plus a quick map of banking, healthcare and defense regulations (GDPR, NIS2, DORA, PCI DSS, HDS, INS, IGI 1300, II 901...) and what they imply for integration work. Preloaded by every Tiger Team agent; read the sector reference file when a task touches regulated data, hosting, providers, logging, testing or incident handling.
+description: Confidentiality rules for a cloud AI assistant on sensitive projects, and a quick map of banking, healthcare and defense regulations (GDPR, NIS2, DORA, PCI DSS, HDS, INS, IGI 1300, II 901) with their implications for integration work.
 user-invocable: false
 ---
 

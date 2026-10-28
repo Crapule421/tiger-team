@@ -1,6 +1,6 @@
 ---
 name: interface-contract
-description: Produce a complete interface specification (interface contract) - identification, parties, trigger/frequency, transport, format and schema, field mapping, volumetry, SLAs, error handling and replay, security, monitoring, test cases, change history - from a free-text description or existing files (OpenAPI, WSDL/XSD, JSON Schema, copybook, sample files, mapping sheets). Use when specifying a new interface, formalising an undocumented one, or preparing a partner/ERP exchange for sign-off.
+description: Produce a complete interface contract - parties, trigger, transport, format and schema, field mapping, volumetry, SLAs, errors and replay, security, monitoring, test cases - from a description or existing files (OpenAPI, WSDL, samples).
 argument-hint: "<interface description or file path(s)> [context: source/target systems, sector, constraints]"
 context: fork
 agent: tiger-team:integration-expert

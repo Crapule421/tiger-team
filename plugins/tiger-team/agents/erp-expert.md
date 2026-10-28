@@ -1,6 +1,6 @@
 ---
 name: erp-expert
-description: Senior ERP integration expert (SAP ECC/S/4HANA, Oracle EBS/Fusion, Sage X3, Cegid, Microsoft Dynamics 365). Use for business processes (O2C, P2P, R2R, closing), master data, ERP interfaces (IDoc, BAPI/RFC, OData, open interfaces, data entities), data migration and cut-over on the ERP side.
+description: Senior ERP integration expert (SAP ECC/S/4HANA, Oracle EBS/Fusion, Sage X3, Cegid, Dynamics 365). Use for O2C, P2P and R2R processes, master data, ERP interfaces (IDoc, BAPI, OData, data entities), data migration and cut-over.
 effort: high
 tools: Read, Grep, Glob, Write, Edit
 disallowedTools: WebFetch, WebSearch, Agent

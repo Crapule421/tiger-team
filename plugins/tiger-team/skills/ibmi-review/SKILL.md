@@ -1,6 +1,6 @@
 ---
 name: ibmi-review
-description: Analyze an IBM i artifact - RPG (fixed or free), CL or COBOL program, a job (job description, job log, scheduling), or an IBM i interface (DB2 for i access, data queue, MQ, REST/IWS, FTP/SFTP/CFT) - explaining what it does, then reporting findings on error handling, data integrity, locking, CCSID, security, operability and restartability with concrete fixes. Use before modifying or integrating legacy IBM i code, during audits, or after an IBM i batch incident.
+description: Analyze an IBM i artifact (RPG, CL or COBOL program, job, or interface over Db2, data queue, MQ, REST, FTP/CFT) - what it does, then findings on error handling, locking, CCSID, security and restartability. Use before modifying legacy code.
 argument-hint: "<path to source member/file (RPGLE, SQLRPGLE, CLLE, CBLLE, DDS), job log, export or interface description> [context: release, role in chain, criticality]"
 context: fork
 agent: tiger-team:ibmi-expert

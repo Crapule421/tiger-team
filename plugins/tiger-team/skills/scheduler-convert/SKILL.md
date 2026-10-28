@@ -1,6 +1,6 @@
 ---
 name: scheduler-convert
-description: Convert a batch chain between VTOM, Dollar Universe and Control-M - object mapping table, target definition (Control-M Automation API JSON, or a structured specification for VTOM / Dollar Universe), and the list of manual points that do not convert 1:1, with a validation plan. Use when migrating schedulers or preparing a coexistence period.
+description: Convert a batch chain between VTOM, Dollar Universe and Control-M - object mapping, target definition (Control-M Automation API JSON or a structured spec), manual points that do not convert 1:1, validation plan. Use for scheduler migrations.
 argument-hint: "<source> to <target> <path to export or chain description> (tools: vtom, dollar-universe, control-m; e.g. vtom to control-m exports/APP_COMPTA.xml)"
 context: fork
 agent: tiger-team:scheduling-expert

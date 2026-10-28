@@ -1,6 +1,6 @@
 ---
 name: devsecops-reference
-description: DevSecOps knowledge base - secure CI/CD (GitLab CI, Jenkins, Azure DevOps, GitHub Actions), IaC (Terraform, Ansible), containers and Kubernetes/OpenShift, secrets management, SAST/DAST/SCA/SBOM, supply chain (SLSA), hardening (CIS, ANSSI), audit logging, release strategies and a review checklist. Load it when designing, reviewing or auditing a pipeline, IaC, image, cluster or delivery process.
+description: DevSecOps knowledge base - secure CI/CD, IaC, containers and Kubernetes/OpenShift, secrets, SAST/DAST/SCA/SBOM, supply chain (SLSA), hardening (CIS, ANSSI), audit logging, release strategies and review checklist.
 user-invocable: false
 ---
 

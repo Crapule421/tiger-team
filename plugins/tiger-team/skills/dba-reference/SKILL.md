@@ -1,6 +1,6 @@
 ---
 name: dba-reference
-description: DBA knowledge base for Oracle, PostgreSQL, SQL Server, Db2 LUW and MySQL/MariaDB - performance diagnosis, locking, HA/DR, backup/PITR, security/GDPR, Oracle-to-PostgreSQL migration pitfalls, release script best practices and a review checklist. Load it when diagnosing a database issue, designing HA/backup, preparing or reviewing a SQL release, or planning a migration.
+description: DBA knowledge base for Oracle, PostgreSQL, SQL Server, Db2 LUW and MySQL/MariaDB - performance, locking, HA/DR, backup/PITR, security, Oracle-to-PostgreSQL migration, release-script practices and review checklist.
 user-invocable: false
 ---
 

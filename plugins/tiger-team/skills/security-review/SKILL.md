@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: Security review of a CI/CD pipeline file, IaC (Terraform, Ansible), Dockerfile, Kubernetes/OpenShift manifest or configuration file - findings with severity, file:line evidence and concrete fix. Use before merging infrastructure/pipeline changes, during audits, or when hardening a delivery chain.
+description: Security review of a pipeline file, IaC, Dockerfile, Kubernetes/OpenShift manifest or configuration - findings with severity, file:line evidence and a concrete fix. Use before merging infrastructure or pipeline changes.
 argument-hint: "<file path, directory, or pasted content> [context: environment, criticality, regulation]"
 context: fork
 agent: tiger-team:devsecops-expert

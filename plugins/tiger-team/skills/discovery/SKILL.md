@@ -1,6 +1,6 @@
 ---
 name: discovery
-description: How a Tiger Team expert learns the customer's real environment before answering (which facts matter per domain, where to find them, what to ask, how to obtain them) and the factual discipline that keeps answers free of invented details (Fact / Inference / Assumption, version-qualified statements, "I don't know, here is how to check"). Preloaded by every Tiger Team agent.
+description: How an expert learns the customer's environment before answering (decisive facts per domain, where to find them, how to obtain them) and the factual discipline (Fact / Inference / Assumption, version-qualified, no invented identifiers).
 user-invocable: false
 ---
 
@@ -77,6 +77,39 @@ Network zones and segmentation model, firewall vendor and change process (lead t
 ### 3.9 ibmi-expert
 IBM i release and PTF/TR level; partitions and their roles; HA product and replication scope; library and environment structure (dev/test/prod libraries, library lists); journaling and commitment-control policy; security level (`QSECURITY`) and authority model; scheduler used (native, VTOM/Dollar Universe/Control-M agent); interfaces in place (ODBC/JDBC, data queues, MQ, FTP/SFTP/CFT, REST); CCSID of jobs and files; source control and deployment practice for IBM i objects; backup strategy (SAVSYS, SAVLIB, BRMS). Obtain: `DSPPTF`, `WRKSYSVAL QSECURITY`, `DSPLIBL`, `WRKJRNA`, `WRKSBSD`, `WRKACTJOB`, `WRKJOBSCDE`, `DSPOBJD` on the objects concerned.
 
-## 4. When the user answers "I don't know"
+## 4. What a conforming answer looks like
+
+A short example, fictitious, from the DBA expert asked to add an index on a large PostgreSQL table whose version is unknown. Imitate its shape, not its content: labelled facts with sources, an inference named as such, an assumption made explicit, a typed handoff, an open question with its check.
+
+```
+## Summary
+Build the index with CREATE INDEX CONCURRENTLY, outside any transaction, during a low-write window; expect two table scans and a lock that lets reads and writes continue. Rollback: DROP INDEX CONCURRENTLY.
+
+## Analysis
+- Fact (dba-reference §6): CONCURRENTLY takes a SHARE UPDATE EXCLUSIVE lock, so writes continue; it cannot run inside a transaction block.
+- Fact (brief): the table holds about 200 million rows and is written 24/7.
+- Inference: with that write rate the build will wait for older transactions to finish; a long-running report during the build would stall it.
+- Assumption: PostgreSQL 13 or later; behaviour described here is unchanged since 12 but the version was not given.
+
+## Recommendations
+1. Check free disk space for the index size plus sort space; raise maintenance_work_mem for the session.
+2. Run with lock_timeout set, in psql without --single-transaction; on failure, drop the INVALID index and retry.
+
+## Risks
+| Risk | Criticality | Mitigation |
+|---|---|---|
+| Build stalls behind a long transaction | Medium | schedule outside reporting hours; monitor pg_stat_activity |
+
+## Handoffs
+→ scheduling-expert | the index build must not overlap the nightly chain's UPDATE step | brief (24/7 writes), dba-reference §6 | provide the batch window and the job that touches the table
+
+## Open questions
+1. PostgreSQL version — decides whether the advice applies unchanged. Obtain: `SELECT version();`
+
+## Assumptions
+1. PostgreSQL 13 or later. 2. No replication lag constraint stated.
+```
+
+## 5. When the user answers "I don't know"
 
 Record it as an Open question with the exact check to run, propose the safest assumption, and make the dependent recommendation conditional. Do not downgrade the whole answer: give what can be decided now and what waits for the fact.

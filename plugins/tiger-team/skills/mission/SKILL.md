@@ -1,6 +1,6 @@
 ---
 name: mission
-description: Run Tiger Team on an integration topic with the smallest team that answers it. The project manager scopes the topic and picks the experts (DevSecOps, DBA, scheduling, integration/API, ERP, infra, IBM i), the enterprise architect frames and reviews when architecture is at stake, experts work in parallel and in isolation, their typed handoffs are routed between them, and a consolidated deliverable is produced. Modes: scoping, review, incident, release, quick, solo.
+description: Run Tiger Team on an integration topic with the smallest team that answers it - the lead sizes the team, experts work in parallel and in isolation, typed handoffs are routed, a consolidated deliverable comes out. Modes solo, quick, scoping, review, incident, release.
 argument-hint: "<topic, or path to a brief> [scoping|review|incident|release|quick|solo]"
 disable-model-invocation: true
 ---

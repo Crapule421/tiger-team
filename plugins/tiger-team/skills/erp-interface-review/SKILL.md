@@ -1,6 +1,6 @@
 ---
 name: erp-interface-review
-description: Functional and technical review of an inbound or outbound ERP interface (SAP, Oracle EBS/Fusion, Sage X3, Cegid, Dynamics 365) - business process impact, master data dependencies, posting logic, error handling and reprocessing, reconciliation, security, volumetry and cut-over - with a verdict, findings and recommendations. Use before validating an ERP interface design, when an ERP flow causes incidents or reconciliation gaps, or before go-live/cut-over.
+description: Review an inbound or outbound ERP interface (SAP, Oracle, Sage X3, Cegid, Dynamics 365) - process impact, master data, posting logic, error handling, reconciliation, cut-over - with a verdict and findings. Use before validating or going live.
 argument-hint: "<interface description, spec or file path(s)> [context: ERP + version, direction, process, volumes]"
 context: fork
 agent: tiger-team:erp-expert
