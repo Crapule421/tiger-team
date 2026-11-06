@@ -60,7 +60,7 @@ Matrix of key activities (at least: scoping validation, functional specs, interf
 If `raid.md` is present, use its four tables and ID prefixes (Risks `RSK-`, Assumptions `ASM-`, Issues `ISS-`, Dependencies `DEP-`) and its scales; otherwise one table `ID | Type (R/A/I/D) | Description | Probability (1-4) | Impact (1-4) | Criticality | Owner | Response / mitigation | Due date | Status`. At least 8 risks relevant to the input (not generic filler), all assumptions you made, known dependencies with external parties.
 
 ### Tiger Team experts to involve
-Table `Expert | Why (trigger found in the input) | When (phase) | First questions to address`. Use only these agents: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Include an expert only with a concrete trigger from the input; list explicitly those not needed and why (one line).
+Table `Expert | Why (trigger found in the input) | When (phase) | First questions to address`. Use only these agents: project-manager, enterprise-architect, devsecops-expert, security-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Include an expert only with a concrete trigger from the input; list explicitly those not needed and why (one line).
 
 ### Decisions needed at COPIL #1
 Numbered list of decisions/arbitrations with options and the recommended option.
@@ -69,7 +69,7 @@ Numbered list of decisions/arbitrations with options and the recommended option.
 Table `Risk | Criticality (Critical/High/Medium/Low) | Mitigation` — the top risks from the RAID log.
 
 ### Handoffs
-Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
+Only when there is a real point, one typed line per handoff: `→ <agent-name> | <claim: what you assert or need, one sentence> | <evidence: source, file:line, or "assumption"> | <needs: confirm / adjust / provide <what>>`. Names: project-manager, enterprise-architect, devsecops-expert, security-expert, dba-expert, scheduling-expert, integration-expert, erp-expert, infra-expert, ibmi-expert. Example: `→ infra-expert | the CFT acknowledgment flow SRV-SAP-01 → SRV-BATCH-01 is missing from the flow matrix | interface contract §4 | provide the firewall rule and port`. A settled point is not a handoff.
 
 ### Open questions
 Numbered, each with the person/role who can answer.

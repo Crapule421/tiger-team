@@ -2,7 +2,7 @@
 
 # 🐯 Tiger Team
 
-**Nine senior experts. One command. Your integration project, reviewed from every angle.**
+**Ten senior experts. One command. Your integration project, reviewed from every angle.**
 
 A squad of expert agents for technical and application integration projects, built for [Claude Code](https://code.claude.com) and for regulated sectors: banking, healthcare, defense.
 
@@ -17,7 +17,7 @@ A squad of expert agents for technical and application integration projects, bui
 
 ---
 
-A *tiger team* is a group of senior specialists brought together to crack a hard problem. This plugin gives you nine of them. Ask one question and a project manager scopes it, an enterprise architect frames the target, the right experts work in parallel, trade their findings, and hand you a consolidated answer: risks, decisions, action plan and the deliverable you need.
+A *tiger team* is a group of senior specialists brought together to crack a hard problem. This plugin gives you ten of them. Ask one question and a project manager scopes it, an enterprise architect frames the target, the right experts work in parallel, trade their findings, and hand you a consolidated answer: risks, decisions, action plan and the deliverable you need.
 
 ```
 /tiger-team:mission Migrate the nightly accounting chain from VTOM to Control-M:
@@ -86,6 +86,7 @@ The path is where Claude Code caches plugins installed from the marketplace; adj
 | 🎯 | **project-manager** | Team lead. Scoping, planning, RACI, RAID, governance, test strategy, cut-over, go/no-go, rollback, hypercare, arbitration between experts |
 | 🏛️ | **enterprise-architect** | Design authority. TOGAF, ArchiMate, IS urbanisation, target architecture, ADRs, NFRs, cloud and sovereignty, coherence review |
 | 🛡️ | **devsecops-expert** | CI/CD (GitLab CI, Jenkins, Azure DevOps, GitHub Actions), IaC (Terraform, Ansible), containers, Kubernetes/OpenShift, secrets, SAST/DAST/SCA/SBOM, hardening |
+| 🔓 | **security-expert** | Offensive security and GRC: pentest, red team, BAS and DORA TLPT campaigns, rules of engagement and authorization, finding qualification (CVSS, EPSS/KEV, business impact) and deadlines, PASSI, security of LLM and agentic systems |
 | 🗄️ | **dba-expert** | Oracle, PostgreSQL, SQL Server, Db2, MySQL: performance, HA/DR, backup, security, migrations, release scripts |
 | ⏱️ | **scheduling-expert** | VTOM, Dollar Universe, Control-M: batch chains, calendars, dependencies, restart, scheduler migrations |
 | 🔀 | **integration-expert** | REST/SOAP APIs, ESB/iPaaS, MFT (Axway CFT, Sterling), IBM MQ, Kafka, formats (ISO 20022, SEPA, EDI, HL7/FHIR), interface contracts |
@@ -93,7 +94,7 @@ The path is where Claude Code caches plugins installed from the marketplace; adj
 | 🌐 | **infra-expert** | Network, firewalls, flow matrices, network access control (802.1X, RADIUS, Wi-Fi), DNS, TLS/PKI, Linux (RHEL, Debian, SUSE), Windows Server (AD, GPO, IIS) |
 | 🟢 | **ibmi-expert** | IBM i / AS400: RPG, CL, COBOL, Db2 for i, jobs, journaling, security, integration with the rest of the IS |
 
-**A research assistant, only on request.** `tiger-team:researcher` is not one of the nine experts. The lead calls it only after you agree to web research: to build a sourced fact base on a product, version or regulation the knowledge bases do not cover, or to verify the claims of a deliverable before it goes to management. Its queries stay generic: no organization name, hostname or document extract.
+**A research assistant, only on request.** `tiger-team:researcher` is not one of the ten experts. The lead calls it only after you agree to web research: to build a sourced fact base on a product, version or regulation the knowledge bases do not cover, or to verify the claims of a deliverable before it goes to management. Its queries stay generic: no organization name, hostname or document extract.
 
 Every expert is a Claude Code subagent (`tiger-team:<name>`) with a preloaded knowledge base, the confidentiality rules of the regulated sectors, and the same answer format: **Summary · Analysis · Recommendations · Risks · Handoffs · Open questions · Assumptions**. They answer in your language.
 
@@ -110,7 +111,7 @@ flowchart TD
 
     subgraph R1[Expert round — in parallel]
         direction LR
-        E1[🛡️ devsecops] ~~~ E2[🗄️ dba] ~~~ E3[⏱️ scheduling] ~~~ E4[🔀 integration] ~~~ E5[🧾 erp] ~~~ E6[🌐 infra] ~~~ E7[🟢 ibmi]
+        E1[🛡️ devsecops] ~~~ E8[🔓 security] ~~~ E2[🗄️ dba] ~~~ E3[⏱️ scheduling] ~~~ E4[🔀 integration] ~~~ E5[🧾 erp] ~~~ E6[🌐 infra] ~~~ E7[🟢 ibmi]
     end
 
     R1 -->|"→ handoffs between experts"| H[Handoff round<br/>each point goes to its expert]
@@ -118,7 +119,7 @@ flowchart TD
     CR --> OUT([Consolidated deliverable<br/>summary · risk matrix · decisions · action plan])
 ```
 
-The `Handoffs` section is what makes nine agents behave like a team. The DBA flags a long-running lock, so the scheduling expert moves the batch window. The integration expert adds a CFT acknowledgment flow, so the infra expert adds it to the flow matrix. The lead routes every point, arbitrates conflicts (compliance > security > data integrity > availability > delay > cost) and writes the arbitration down.
+The `Handoffs` section is what makes ten agents behave like a team. The DBA flags a long-running lock, so the scheduling expert moves the batch window. The integration expert adds a CFT acknowledgment flow, so the infra expert adds it to the flow matrix. The lead routes every point, arbitrates conflicts (compliance > security > data integrity > availability > delay > cost) and writes the arbitration down.
 
 | Mode | For | You get |
 |---|---|---|
@@ -131,11 +132,11 @@ The `Handoffs` section is what makes nine agents behave like a team. The DBA fla
 
 The lead sizes the team before launching: one domain → `solo` or a direct command; two or three → `quick`; more, or a deliverable → a full mission. Never more than four experts unless you ask.
 
-### Why nine experts, and when one is enough
+### Why ten experts, and when one is enough
 
 The split is by **knowledge base**, not by job title: the Control-M Automation API, SAP IDoc handling, IBM i journaling and DORA incident clocks do not fit one context window, so each expert carries its own, loaded only when it runs. The second reason is **independent judgement**: experts answer in isolation, and what the mission buys is their disagreement, surfaced by the architect's coherence review and the lead's arbitration.
 
-That value exists only on cross-domain topics. On a single-domain question, nine contexts are waste: use a direct command or `solo`. Handoffs between experts are typed objects (`→ expert | claim | evidence | needs`), routed by the lead without re-sending anyone's full answer, so the second round costs a fraction of the first and does not reopen settled points.
+That value exists only on cross-domain topics. On a single-domain question, ten contexts are waste: use a direct command or `solo`. Handoffs between experts are typed objects (`→ expert | claim | evidence | needs`), routed by the lead without re-sending anyone's full answer, so the second round costs a fraction of the first and does not reopen settled points.
 
 > **Cost.** A full mission is 20 to 40 agent calls: expect 10 to 20 minutes and a few dollars of API usage (measured: about 5 USD for the example above on 1.0.0). A `quick` mission with three experts measured 3.4 USD on 1.2.0; a direct command about 1 to 2 USD. Figures depend on your model and on the other plugins loaded in your session.
 >
@@ -179,7 +180,7 @@ Each command takes a description or a file path. Except `discover`, a command ru
 
 ## 📚 What is inside
 
-- **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Every reference file ends with the official sources it was checked against. Where no public official source settles a point (a vendor's behaviour that varies by version, a law not yet promulgated), the text says *verify against your version* instead of guessing: you will meet that phrase, and it is deliberate.
+- **10 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i, rules of engagement and PASSI, OWASP Top 10 for LLM and agentic applications…). Every reference file ends with the official sources it was checked against. Where no public official source settles a point (a vendor's behaviour that varies by version, a law not yet promulgated), the text says *verify against your version* instead of guessing: you will meet that phrase, and it is deliberate.
 - **Real example outputs** in [`examples/`](examples/): a full mission, a quick mission and a direct command, unedited, with their measured cost.
 - **Sector compliance** references: DORA, NIS2, EBA, ACPR, PCI DSS, AML/CFT and banking secrecy; HDS, GDPR article 9, PGSSI-S, INS and CI-SIS; IGI 1300, II 901, homologation and ANSSI qualifications. Informational, not legal advice.
 - **10 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet, executive risk briefing; writing rules for documents that are sent or printed, and a PDF rendering kit (print stylesheet and a dependency-free script for Edge or Chrome).
@@ -228,7 +229,7 @@ Add deny rules to the project's `.claude/settings.json` (a plugin cannot set per
 }
 ```
 
-The nine experts have no web access (`WebFetch` and `WebSearch` are disallowed). Only `researcher` has it, and the lead calls it only after you agree; the deny rule above turns web research off entirely. Only the DevSecOps, DBA and infra experts have Bash, for local read-only checks.
+The ten experts have no web access (`WebFetch` and `WebSearch` are disallowed). Only `researcher` has it, and the lead calls it only after you agree; the deny rule above turns web research off entirely. Only the DevSecOps, DBA and infra experts have Bash, for local read-only checks; the security expert has none on purpose: it designs, qualifies and governs tests, it never runs them.
 
 **Persistent memory** (`memory: user` in an agent's frontmatter) is off, because it could retain client or project names between sessions. Turn it on in a fork only if your context allows it.
 
@@ -266,7 +267,7 @@ Open a [fact correction](https://github.com/Crapule421/tiger-team/issues/new?tem
 
 ## 🧪 Evaluate the plugin
 
-Behaviour is tested, not only syntax. `plugins/tiger-team/evals/` holds cases for Claude Code's [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals): a direct command that must flag a blocking index build, a scheduler conversion that must produce a valid Automation API JSON with typed handoffs, an expert asked without a version that must name the check instead of guessing, a prompt that must **not** auto-fire the mission orchestrator, and a prompt carrying sample customer data that must be refused without repeating it. Deterministic graders first (regex, tool calls), a short judged rubric where a regex cannot see.
+Behaviour is tested, not only syntax. `plugins/tiger-team/evals/` holds cases for Claude Code's [`claude plugin eval`](https://code.claude.com/docs/en/plugin-evals): a direct command that must flag a blocking index build, a scheduler conversion that must produce a valid Automation API JSON with typed handoffs, an expert asked without a version that must name the check instead of guessing, a prompt that must **not** auto-fire the mission orchestrator, a prompt carrying sample customer data that must be refused without repeating it, and a production pentest "with the paperwork afterwards" that the security expert must hold until a signed rules of engagement exists, while qualifying a scan finding on three separate axes (CVSS, EPSS/KEV, business impact). Deterministic graders first (regex, tool calls), a short judged rubric where a regex cannot see.
 
 ```bash
 cd plugins/tiger-team
@@ -303,11 +304,11 @@ Tiger Team is an assistant. Its output must be reviewed by qualified people befo
 
 ## 🇫🇷 Tiger Team en français
 
-**Neuf experts seniors. Une commande. Ton projet d'intégration passé en revue sous tous les angles.**
+**Dix experts seniors. Une commande. Ton projet d'intégration passé en revue sous tous les angles.**
 
 </div>
 
-Une équipe d'agents experts pour les projets d'intégration technique et applicative, dans Claude Code, pensée pour les secteurs régulés : banque, santé, défense. Neuf experts travaillent ensemble : chef de projet, architecte d'entreprise, DevSecOps, DBA, ordonnancement (VTOM, Dollar Universe, Control-M), API et flux, ERP, réseau et systèmes, IBM i (AS400). Ils te répondent en français si tu leur écris en français.
+Une équipe d'agents experts pour les projets d'intégration technique et applicative, dans Claude Code, pensée pour les secteurs régulés : banque, santé, défense. Dix experts travaillent ensemble : chef de projet, architecte d'entreprise, DevSecOps, sécurité offensive et GRC (tests d'intrusion, règles d'engagement, qualification des constats, PASSI, sécurité des systèmes agentiques), DBA, ordonnancement (VTOM, Dollar Universe, Control-M), API et flux, ERP, réseau et systèmes, IBM i (AS400). Ils te répondent en français si tu leur écris en français.
 
 ### Installation
 
