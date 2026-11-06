@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [1.7.0] - 2026-11-06
 
 A mission answering a request for an internal penetration testing platform showed that no expert covered offensive security or governance: rules of engagement, campaign governance, legal frame, the internal / external / PASSI choice and finding qualification were improvised, and the coherence review found missing RoE rubrics, mission taxonomy, indicators and agentic security.
 
