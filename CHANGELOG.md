@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+Lessons from a real mission that produced a decision file for a proof of concept: the user had to correct invented calendar dates, a file written as if the user were the requester while a manager carries it, expert answers full of AI writing tics (187 bold spans, dash separators, middle dots, arrows) that forced a full rewrite, and an "équipe" that suggested people. The coherence review also found uncovered requirements late, and points raised for experts who were not on the mission had to be turned into actions by hand.
+
+### Added
+- **`style-guide` skill**, preloaded by every agent and referenced by the team-standard response format. It completes the 1.6.0 writing style of the deliverables, whose sentence rules it extends to every answer, without repeating it: characters banned from prose (em dash and spaced en dash as separators, middle dot, arrows, "≈", emoji), at most one or two bold spans per section and no bold labels, prose rather than bullets that split one idea, neutral voice for a file someone else carries, headings in the user's language with the French names of the team-standard sections, a glossary of anglicisms (handoff, design authority, kill switch, safe checks, pull/push and others) and French typography.
+- **Requirement traceability** in the mission: when the input is a requirements statement or a call for tenders, the lead extracts `REQ-` IDs at framing, passes each expert the IDs of its domain, keeps a matrix requirement to section and puts it in the deliverable's annex. The architect's coherence review checks it.
+- **Two eval cases**: `no-invented-dates` (milestones without dates stay in relative weeks with costs per year, neutral posture) and `style-no-ai-tics` (no dash separator, middle dot, arrow, "≈" or bold label, at most two bold spans per section).
+
+### Changed
+- **Framing** (mission section 2 and `discovery`): the lead asks who carries the request and who decides; a file carried by a manager is written neutrally ("la décision attendue porte sur…"). These rules and the date rule hold in every mode, `solo` included.
+- **Dates**: no calendar date the source or the user did not give. Plans use weeks relative to the launch decision (S0, S1 to S6…), costs are shown per year after the decision, and the ISO 8601 rule of the deliverables applies to dates that are given. The PM playbook no longer asks the team to set the first COPIL date.
+- **Handoffs to experts not on the mission** become actions of the action plan, owned by the matching role, instead of being dropped.
+- **Deliverables** present the "expertise covered" by domain instead of a "team involved"; attribution stays one discreet line, the method line of the writing style, never a team, the plugin's name or the agents' names.
+- **Language**: headings follow the user's language, which removes the contradiction between "English headings" in the writing rules and "answer in the user's language" in the mission.
+- Dash separators, middle dots, arrows and "≈" removed from the prose of the mission, `discovery`, the PM playbook and the agents, so the prompts no longer model the tics they forbid.
+
 ## [1.6.0] - 2026-11-06
 
 Lessons from a full mission on network access control (802.1X on Cisco Meraki) for a French finance company: the team had no knowledge of the topic, no way to check current facts, and no way to deliver a document a committee could read.

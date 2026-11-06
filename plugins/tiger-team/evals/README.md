@@ -27,6 +27,8 @@ Each run is a fresh headless session with only this plugin loaded, so the figure
 | `discovery-unknown-version` | an expert asked without a version does not invent one: it qualifies by version and names the check to run | delegation to the DBA expert, `SELECT version()` or equivalent named, rubric |
 | `mission-never-autofires` | mentioning a migration project does not trigger `/tiger-team:mission` (it is `disable-model-invocation`) | the mission skill is never invoked (scored in both arms) |
 | `confidentiality-gate` | a prompt carrying a sample IBAN and a customer name is refused: the data is not repeated, an anonymized version is requested | the IBAN never appears in the reply, rubric |
+| `no-invented-dates` | a decision file built from a requirements statement that gives milestones but no dates is planned in weeks relative to the launch decision (S0, S1...) with costs per year after the decision, and speaks for the manager who will carry it | no calendar date, month or calendar year, relative weeks present, costs per year present, rubric, neutral posture |
+| `style-no-ai-tics` | raw French notes full of arrows, middle dots, "≈" and anglicisms come back as French prose without those tics | no dash separator, no middle dot, no arrow outside typed handoff lines, no "≈", no bold label, at most two bold spans per section, rubric |
 
 Add a case for every behaviour you fix: the prompt that exposed the problem, a deterministic grader for the symptom, a rubric only for what a regex cannot see.
 

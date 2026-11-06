@@ -11,7 +11,7 @@ Senior PM reference for technical and application integration projects in regula
 ## Templates (reference, do not re-invent)
 Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/` (index, ID conventions and writing rules in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/SKILL.md`): `raci.md`, `raid.md`, `release-sheet.md` (fiche MEP and run sheet), `uat-signoff.md` (PV de recette with réserves), `dat.md`, `dex.md`, `interface-contract.md`, `flow-matrix.md`. Read the one you need; if it is missing, follow the structure given here.
 
-## 1. Vocabulary (FR → EN)
+## 1. Vocabulary (French to English)
 | FR | EN / meaning |
 |---|---|
 | MOA / MOE / AMOA | Business owner side / delivery side / business-side assistance |
@@ -27,7 +27,7 @@ Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`
 | Homologation de sécurité | Security accreditation: formal acceptance of residual risk by an authority |
 | AIPD | DPIA (GDPR Art. 35) |
 | PCA / PRA | Business continuity plan / disaster recovery plan |
-| DMIA / PDMA | Max tolerable downtime (≈ RTO) / max tolerable data loss (≈ RPO) |
+| DMIA / PDMA | Max tolerable downtime (close to RTO) / max tolerable data loss (close to RPO) |
 | Gel des MEP | Change freeze |
 | TMA, Build / Run | Outsourced application maintenance, project delivery / operations |
 | Ouverture de flux | Firewall / network flow opening request |
@@ -38,20 +38,21 @@ Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`
 - Context and triggers (regulation, obsolescence, merger, new product, cost); why now; cost of doing nothing.
 - Objectives: measurable (SMART), linked to business KPIs; explicit non-objectives.
 - Scope IN / OUT: processes, entities/sites, systems, flows, data domains, environments, countries. List what is explicitly OUT (it prevents half of later disputes).
-- Stakeholders and decision rights (see §3); sponsor named.
-- Constraints: regulatory (GDPR, DORA, NIS2, HDS, II 901 / IGI 1300, banking secrecy — details in the `sector-compliance` skill), contractual, calendar (freezes, regulatory deadlines), technical (legacy, licences), budget, staffing.
+- Stakeholders and decision rights (see §3); sponsor named; who carries the request to the committee and who decides. A scoping note is often prepared by one person for a manager or sponsor who presents it: write it neutrally ("la décision attendue porte sur…"), never as the author's own request.
+- Constraints: regulatory (GDPR, DORA, NIS2, HDS, II 901 / IGI 1300, banking secrecy; details in the `sector-compliance` skill), contractual, calendar (freezes, regulatory deadlines), technical (legacy, licences), budget, staffing.
 - Integration inventory: systems, flows (count by complexity), protocols, formats/encodings, volumes, frequencies, latency needs, data owners, master data (référentiels).
-- High-level plan and milestones (jalons); long-lead items (§5).
+- High-level plan and milestones (jalons), in weeks relative to the launch decision unless the source gives dates (§5); long-lead items (§5).
+- Requirements: when a requirements statement (expression de besoins) or a call for tenders exists, its requirements as `REQ-` IDs and a traceability matrix to the sections that answer them.
 - Budget / effort drivers and confidence range; funding (CAPEX/OPEX).
 - Governance (§6), deliverables list, acceptance approach, initial RAID.
 - Run target: who operates, support levels N1/N2/N3, hours of service, SLAs.
 
-**Scoping exit criteria**: sponsor sign-off; scope IN/OUT agreed; top 10 risks with owners; architecture options identified (not chosen); budget envelope with range; COPIL #1 date set.
+**Scoping exit criteria**: sponsor sign-off; scope IN/OUT agreed; top 10 risks with owners; architecture options identified (not chosen); budget envelope with range; first COPIL date set by the sponsor (never proposed by the team when the source gives none).
 
 **Pitfalls**: scoping written by IT alone; "interfaces TBD"; no data owner named; ignoring ops and security until build; single-point estimate; regulatory deadline not identified as hard constraint.
 
 ## 3. Stakeholders & RACI
-Typical cast: sponsor; business owner (MOA) and key users; product owner; integrator/MOE; software vendors (éditeurs); design authority (enterprise architect); CISO (RSSI); DPO; risk/compliance (banking: second line, ICT risk function under DORA); operations (exploitation/production), scheduling team (ordonnancement), DBAs, network/security (firewall), service desk N1/N2/N3; external partners (banks, insurers, health authorities, suppliers); purchasing/legal; HR and staff representatives (CSE consultation may be required when work organisation or monitoring changes — verify with HR/legal).
+Typical cast: sponsor; business owner (MOA) and key users; product owner; integrator/MOE; software vendors (éditeurs); design authority (enterprise architect); CISO (RSSI); DPO; risk/compliance (banking: second line, ICT risk function under DORA); operations (exploitation/production), scheduling team (ordonnancement), DBAs, network/security (firewall), service desk N1/N2/N3; external partners (banks, insurers, health authorities, suppliers); purchasing/legal; HR and staff representatives (CSE consultation may be required when work organisation or monitoring changes: verify with HR/legal).
 
 **RACI rules**: exactly one A per activity; at least one R; A and R may be the same person; too many C slows decisions; I is not a substitute for approval. Use `raci.md`.
 
@@ -77,9 +78,11 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 **Seed risks for integration projects**: interface specs not frozen; source data quality; non-representative pre-production; late flow openings/certificates; partner test windows unavailable; batch window overrun; encoding/format mismatches (EBCDIC/UTF-8, dates, decimals); key-person dependency (legacy skills); vendor delivery slip; DPIA/homologation late; change freeze collision; rollback impossible after partner exchange.
 
 ## 5. Planning & critical path
-**Typical phases**: cadrage → design (SFG/SFD, interface contracts, DAT, flow matrix) → build & unit tests → integration testing → recette/UAT → performance, security, operability tests → pre-production dress rehearsals → go/no-go → MEP → hypercare → VSR / closure.
+**Typical phases**, in order: cadrage; design (SFG/SFD, interface contracts, DAT, flow matrix); build and unit tests; integration testing; recette/UAT; performance, security and operability tests; pre-production dress rehearsals; go/no-go; MEP; hypercare; VSR and closure.
 
-**Long-lead items** (indicative, organisation-dependent — calibrate):
+**Relative planning**: calendar dates (COPIL, start, deadline, budget year) come from the source or the sponsor, never from the team. When the source gives milestones without dates, plan in weeks relative to the launch decision: S0 is the week of the decision, then S1, S2… (a six-week POC runs from S1 to S6), and present costs per year after the decision (year 1, year 2, year 3). Write "date to be set by <role>" where a date is needed; convert to calendar dates once an anchor date is given, and show the anchor.
+
+**Long-lead items** (indicative and organisation-dependent: calibrate):
 | Item | Typical lead time |
 |---|---|
 | Firewall flow openings | 1-4 weeks per batch, more if cross-entity or partner |
@@ -108,7 +111,7 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 | Security / homologation committee | Per milestone | RSSI, homologation authority | Risk analysis, accreditation decision |
 | Go/no-go committee | Before MEP | Business owner / sponsor; ops; RSSI | Go, conditional go, no-go |
 
-**Tolerances** (define in the note de cadrage): e.g., milestone slip > 2 weeks, budget overrun > 5-10 %, any scope change affecting a regulatory commitment → escalate to COPIL.
+**Tolerances** (define in the note de cadrage): e.g., milestone slip > 2 weeks, budget overrun > 5-10 %, any scope change affecting a regulatory commitment: escalate to COPIL.
 **Reporting**: weather (météo) per stream with factual justification, milestone trend, top risks, decisions needed. Fight "watermelon" reporting (green outside, red inside): each green must be backed by evidence (test results, signed deliverables).
 
 ## 7. Environment strategy
@@ -118,7 +121,7 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 | Integration (intégration/assemblage) | Technical integration across components, contract tests | Synthetic + partner stubs | Medium |
 | Recette / qualification | Functional tests, UAT | Anonymised or synthetic, business-realistic | Functional parity |
 | Pre-production (préprod) | Dress rehearsals, performance, operability, final validation | Anonymised production-like volumes | Iso-production: versions, topology, security config, flows, scheduling plan |
-| Production | Run | Real | — |
+| Production | Run | Real | Reference |
 | Optional | Performance, training (formation), DR, sandbox | | |
 
 **Rules**
@@ -141,12 +144,12 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 | Operability (exploitabilité) | Ops | Préprod | Start/stop, monitoring alerts, logs, backup/restore, scheduling, restart after failure validated |
 | Resilience / DR | Infra + ops | Préprod / DR | Failover and restore within RTO/RPO |
 | UAT (recette utilisateur) | Business key users | Recette | PV de recette signed, reservations listed |
-| VA (VABF) / VSR | Customer vs supplier (contract) | Préprod or prod / prod | Per contract; CCAG-TIC 2021 defaults (arrêté du 30 mars 2021, last amended 29 Dec 2022): VA decided within 30 days (Art. 33.2.1); VSR observed over 30 days, unavailability ≤ 2 % of business hours (Art. 32.4); decision within 7 days — admission, ajournement, réfaction or rejet (Art. 33.2.2). The CCAP may override |
+| VA (VABF) / VSR | Customer vs supplier (contract) | Préprod or prod / prod | Per contract; CCAG-TIC 2021 defaults (arrêté du 30 mars 2021, last amended 29 Dec 2022): VA decided within 30 days (Art. 33.2.1); VSR observed over 30 days, unavailability ≤ 2 % of business hours (Art. 32.4); decision within 7 days: admission, ajournement, réfaction or rejet (Art. 33.2.2). The CCAP may override |
 
 **Integration-specific test cases**: rejects and error queues; replay/resend; duplicates and idempotency; out-of-order messages; partial files; empty files; maximum volume; cut-off times; time zones and DST change; encoding and special characters; decimal separators and rounding; end of month/year; partner unavailable; certificate expiry; restart of interrupted batch.
 
 **Defect severity** (as in `uat-signoff.md`): blocking (no workaround, prevents go-live), major (significant impact, workaround exists), minor, cosmetic. Default go-live rule: 0 blocking; majors only with documented workaround accepted by business and a fix date; minors and cosmetics tracked.
-**Traceability**: requirement → test case → result → defect; mandatory for regulated contexts and audits.
+**Traceability**: from requirement to test case, result and defect; mandatory for regulated contexts and audits.
 
 ## 9. Cut-over (bascule) & rollback
 | Strategy | When | Main risk |
@@ -161,9 +164,9 @@ Use `raid.md`. Definitions: **Risk** = uncertain future event; **Assumption** = 
 
 **Dress rehearsals (répétitions)**: at least one full timed rehearsal in pre-production with production-like volumes, ideally two; the second must fit the window with ≥ 20-30 % margin. Every deviation feeds the run sheet.
 
-**Point of no return**: the step after which rollback costs more (or is riskier) than fixing forward — typically when new transactions are created in the target, partners have consumed data, or the source has been altered. State it explicitly with its clock time and decision owner. Before PNR: rollback on pre-agreed triggers without debate. After PNR: fix-forward with a degraded-mode plan.
+**Point of no return**: the step after which rollback costs more (or is riskier) than fixing forward, typically when new transactions are created in the target, partners have consumed data, or the source has been altered. State it explicitly with its clock time and decision owner. Before PNR: rollback on pre-agreed triggers without debate. After PNR: fix-forward with a degraded-mode plan.
 
-**Rollback types**: restore backups / snapshots (validate restore time!); reverse routing to the old system; feature toggle off; reverse data migration (rarely realistic — rehearse or do not count on it). Rollback must be rehearsed and timed like the forward path.
+**Rollback types**: restore backups / snapshots (validate restore time!); reverse routing to the old system; feature toggle off; reverse data migration (rarely realistic: rehearse it or do not count on it). Rollback must be rehearsed and timed like the forward path.
 
 **Cut-over communication**: pre-announcement to users/partners (with unavailability window), start notice, each go/no-go checkpoint outcome, end-of-intervention notice, incident/rollback notice. Pre-write messages; name a single communication owner; keep a timestamped log (main courante) of decisions and events.
 
@@ -190,9 +193,9 @@ Decision levels: **Go**, **Conditional go** (only for conditions that can be met
 ## 12. Change management (conduite du changement)
 - Impact analysis by population (process, tool, role, volume of change); change readiness assessment.
 - Communication plan (who, what, when, channel); key users / champions network; training before go-live, just-in-time; support materials (quick guides).
-- Staff representatives (CSE) where work organisation changes — consult early (verify obligations with HR/legal).
+- Staff representatives (CSE) where work organisation changes: consult early (verify obligations with HR/legal).
 - Adoption KPIs (usage, ticket themes, process cycle times) followed during hypercare.
-- Do not confuse with IT change management (ITIL change, CAB): standard / normal / emergency changes, change freeze rules — both are needed.
+- Do not confuse with IT change management (ITIL change, CAB): standard / normal / emergency changes, change freeze rules; both are needed.
 
 ## 13. Coordination with operations (DEX handover)
 - Involve operations from design (NFRs, monitoring, scheduling, backup); they are a stakeholder, not a recipient.

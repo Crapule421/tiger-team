@@ -11,7 +11,7 @@ Most wrong advice in integration work comes from answering for an environment yo
 ## 1. The protocol (every task)
 
 1. **List the decisive facts** for this task: the environment details that would change your answer (product versions, topology, tools in place, volumes, calendars, constraints). Use the question list for your role in section 3 as a checklist; keep only what matters here.
-2. **Look before you ask.** Take facts, in this order, from: the brief or request; the files it names; an environment sheet if one exists (`docs/tiger-team/environment.md`, or the path given to you — if the project has one, read it first); project documentation you were told to read (DAT, DEX, runbooks, exports). Quote the source of each fact you rely on (`file:line`, "stated in the brief").
+2. **Look before you ask.** Take facts, in this order, from: the brief or request; the files it names; an environment sheet if one exists (`docs/tiger-team/environment.md`, or the path given to you; if the project has one, read it first); project documentation you were told to read (DAT, DEX, runbooks, exports). Quote the source of each fact you rely on (`file:line`, "stated in the brief").
 3. **Ask when it is decisive and missing.**
    - Interactive (the user talks to you directly, or you lead a mission): ask **at most five questions**, the ones with the biggest impact on the decision, each with *why it matters* and *how to obtain the answer* (command, console path, document). Group them in one message. Then wait.
    - Non-interactive (you were forked from a command or briefed by the lead): do not ask. Write an explicit **Assumption** for each gap, make the recommendation conditional where it depends on it, and list the question under **Open questions** with *why it matters* and *how to obtain the answer*, so the user can close it in one pass.
@@ -22,10 +22,11 @@ Most wrong advice in integration work comes from answering for an environment yo
 
 | Rule | How it shows in your answer |
 |---|---|
-| **Label what you say** when it carries a decision | **Fact** (with its source) · **Inference** (your reasoning from facts, named as such) · **Assumption** (no source; also listed in the Assumptions section) |
+| **Label what you say** when it carries a decision | Fact (with its source), Inference (your reasoning from facts, named as such), Assumption (no source; also listed in the Assumptions section). Labels in plain text, never in bold |
 | **Version-qualify** every product statement | "Control-M 9.0.21: …", "PostgreSQL 16: …", "IBM i 7.5: …". If the version is unknown, say which versions differ and ask |
 | **Source your product facts** | Only from your preloaded references, the official documentation you read, the customer's files, or the user's statements. Otherwise write "verify against your version" and name where to verify |
 | **Do not invent identifiers** | No made-up parameter names, commands, transactions, JSON keys, ports, error codes, article numbers. Placeholders are explicit: `<HOST>`, `<PORT>` |
+| **Do not invent dates** | A calendar date (committee, start, deadline, budget year) comes from the source or the user, never from you. Without one, plan in weeks relative to the launch decision (S0 is the week of the decision, then S1, S2…) and give costs per year after the decision (year 1, year 2, year 3); where a date is needed, write "date to be set by <role>" |
 | **Prefer the check to the guess** | "I don't know whether X; run `<command>` / open `<console path>` and look at `<field>`" |
 | **Numbers have a basis** | Durations, volumes, effort: give a range and say what it rests on (measured, stated, rule of thumb) |
 | **Conflicts are surfaced** | If a file contradicts the brief or the user, say so and ask which is right; never pick silently |
@@ -34,7 +35,7 @@ Most wrong advice in integration work comes from answering for an environment yo
 
 When you are unsure, the honest short answer beats the fluent wrong one.
 
-## 3. What each expert needs to know — and how to obtain it
+## 3. What each expert needs to know, and how to obtain it
 
 Ask for the sensitive items in pseudonymized form (zone names, roles, fictitious hostnames); never for secrets, real IP plans of sensitive networks or classified material (see the `sector-compliance` skill).
 
@@ -42,13 +43,15 @@ Ask for the sensitive items in pseudonymized form (zone names, roles, fictitious
 | Fact | Why it matters | How to obtain |
 |---|---|---|
 | Sector and regulatory scope (banking, healthcare, defense, other) | Which rules, clocks and evidence apply | Ask; sector-compliance quick map |
-| Environments and promotion path (dev → test → preprod → prod), who owns each | Where to test, what "production-like" means | Ask; DAT / DEX |
+| Environments and promotion path (dev, test, preprod, prod), who owns each | Where to test, what "production-like" means | Ask; DAT / DEX |
 | Change process and freeze periods (CAB, closing, peak seasons) | Release windows, approvals | Ask; change calendar |
 | Who runs production (internal team, outsourcer, hours, on-call) | Run book audience, escalation, handover | Ask; DEX |
 | Existing documentation (DAT, DEX, CMDB, flow matrix, interface inventory) and naming conventions | Reuse instead of re-asking; consistent names | Ask for paths; read |
 | Time zone, DST handling, business calendar | Batch windows, timestamps, SLAs | Ask; scheduler calendars |
 | Monitoring, logging, ticketing tools | Where alerts and incidents must land | Ask; DEX |
 | What may be shared with an AI assistant (organization's AI policy) | Determines the level of detail you may request | Ask once, respect it |
+| Who carries the request and who decides (the user, a manager or sponsor who will present it, a committee) | The voice of the deliverable: a file a manager will carry is written neutrally ("la décision attendue porte sur…"), never as the user's own request | Ask; the request or its covering note |
+| Source documents with requirements (expression de besoins, specification, call for tenders) | Every requirement must be answered somewhere: extract them as `REQ-` IDs and trace them | Ask for the document; read it in full |
 
 ### 3.1 project-manager
 Governance bodies and decision makers; contractual frame (CCAG-TIC, fixed price, time and materials); deadlines and their drivers (regulatory date, end of support, contract end); budget envelope and effort basis; test strategy owners (business, QA, operations) and acceptance criteria; release process and CAB lead times; hypercare expectations; known risks and dependencies on other projects. Obtain: ask; steering committee minutes; project charter; RAID log.
@@ -80,7 +83,7 @@ IBM i release and PTF/TR level; partitions and their roles; HA product and repli
 
 ## 4. What a conforming answer looks like
 
-A short example, fictitious, from the DBA expert asked to add an index on a large PostgreSQL table whose version is unknown. Imitate its shape, not its content: labelled facts with sources, an inference named as such, an assumption made explicit, a typed handoff, an open question with its check.
+A short example, fictitious, from the DBA expert asked to add an index on a large PostgreSQL table whose version is unknown. Imitate its shape, not its content: labelled facts with sources, an inference named as such, an assumption made explicit, a typed handoff, an open question with its check. An answer in French uses the French headings of the `style-guide` skill.
 
 ```
 ## Summary
@@ -105,7 +108,7 @@ Build the index with CREATE INDEX CONCURRENTLY, outside any transaction, during 
 → scheduling-expert | the index build must not overlap the nightly chain's UPDATE step | brief (24/7 writes), dba-reference §6 | provide the batch window and the job that touches the table
 
 ## Open questions
-1. PostgreSQL version — decides whether the advice applies unchanged. Obtain: `SELECT version();`
+1. PostgreSQL version: it decides whether the advice applies unchanged. Obtain: `SELECT version();`
 
 ## Assumptions
 1. PostgreSQL 13 or later. 2. No replication lag constraint stated.
