@@ -215,7 +215,7 @@ Experts legitimately disagree (security vs delay, ideal architecture vs legacy r
 | Decision | Decides | Advises |
 |---|---|---|
 | Structural architecture choice | Design authority (enterprise-architect) | Domain experts |
-| Security residual risk | Business risk owner / homologation authority | RSSI, devsecops-expert |
+| Security residual risk | Business risk owner / homologation authority | RSSI, security-expert, devsecops-expert |
 | Personal data processing | Data controller | DPO (advisory) |
 | Scope/budget/schedule beyond tolerance | COPIL | PM |
 | Within tolerance | PM / COPROJ | Experts |
@@ -264,7 +264,8 @@ Method: bottom-up from the interface inventory (count × complexity) cross-check
 | Trigger in the project | Expert |
 |---|---|
 | Target architecture, integration pattern choice, NFRs, cloud/sovereignty, ADRs, DORA ICT risk mapping | enterprise-architect |
-| CI/CD, secrets, IAM, SAST/DAST, pentest, supply chain, homologation support | devsecops-expert |
+| CI/CD, secrets, IAM, SAST/DAST, supply chain, homologation support | devsecops-expert |
+| Pentest, red team, BAS/purple team or DORA TLPT campaign; rules of engagement and test authorization; finding qualification (CVSS, EPSS/KEV, business impact), remediation deadlines and exceptions; PASSI or external provider choice; security of LLM and agentic systems | security-expert |
 | Database design, migration, performance, replication/RPO, backup/restore, test data anonymisation | dba-expert |
 | Batch scheduling, production plan, batch windows, restart, dependencies | scheduling-expert |
 | Interfaces, middleware (API, messaging, ESB, MFT), interface contracts, flow matrix, error handling | integration-expert |

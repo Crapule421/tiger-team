@@ -21,7 +21,7 @@ If the request names a real organization (the user's employer, a client, a partn
 
 ## 1. Size the team before anything else
 
-Count the **domains** the topic really touches (scheduling, databases, integration/APIs, ERP, infrastructure, IBM i, DevSecOps, architecture). Then apply this rule, unless the user names a mode:
+Count the **domains** the topic really touches (scheduling, databases, integration/APIs, ERP, infrastructure, IBM i, DevSecOps, offensive security and GRC, architecture). Then apply this rule, unless the user names a mode:
 
 | Domains | Mode | What runs | Cost class |
 |---|---|---|---|
@@ -31,7 +31,7 @@ Count the **domains** the topic really touches (scheduling, databases, integrati
 
 Every domain the request names explicitly gets its expert: dropping one of them to save a call loses the knowledge the user asked for. Beyond those, no "it could be relevant" expert, and never more than **5 experts** without the user asking. Tell the user the team and the cost class before launching, and go straight on.
 
-Nine experts exist because nine knowledge bases do not fit one context and because independent domain views disagree in useful ways; that value only exists on cross-domain topics. On a single-domain topic, one expert with its knowledge base is the right tool and the cheapest.
+Ten experts exist because ten knowledge bases do not fit one context and because independent domain views disagree in useful ways; that value only exists on cross-domain topics. On a single-domain topic, one expert with its knowledge base is the right tool and the cheapest.
 
 | Mode | When | Main deliverable |
 |---|---|---|
@@ -56,6 +56,7 @@ Read the knowledge base(s) concerned: `${CLAUDE_PLUGIN_ROOT}/skills/<domain>-ref
 |---|---|
 | `tiger-team:enterprise-architect` | target architecture, several systems, new components, cloud or sovereignty choices, NFRs — and for the final coherence review when 3+ experts are involved |
 | `tiger-team:devsecops-expert` | pipelines, IaC, containers, secrets, vulnerabilities, hardening, audit evidence |
+| `tiger-team:security-expert` | penetration tests, red team, BAS and TLPT campaigns, rules of engagement and authorization, finding qualification (CVSS, EPSS/KEV, business impact) and remediation deadlines, PASSI, security of LLM and agentic systems |
 | `tiger-team:dba-expert` | databases, SQL scripts, performance, HA/DR, backups, data migration |
 | `tiger-team:scheduling-expert` | VTOM, Dollar Universe, Control-M, batch chains, windows, restart |
 | `tiger-team:integration-expert` | APIs, ESB/iPaaS, MFT/CFT, MQ/Kafka, formats, mappings, interface contracts |

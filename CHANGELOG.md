@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+A mission answering a request for an internal penetration testing platform showed that no expert covered offensive security or governance: rules of engagement, campaign governance, legal frame, the internal / external / PASSI choice and finding qualification were improvised, and the coherence review found missing RoE rubrics, mission taxonomy, indicators and agentic security.
+
+### Added
+- **`security-expert` agent** (offensive security and GRC), without Bash on purpose: it designs, qualifies and governs tests and never runs them. It requires a signed rules of engagement before any test and qualifies findings on three separate axes.
+- **`security-reference` knowledge base**: mission taxonomy (discovery to TLPT), the four axes of a campaign, methodologies (PTES, NIST SP 800-115, OWASP WSTG/ASVS/API Top 10, MITRE ATT&CK/D3FEND, CIS), finding qualification (CVSS 3.1/4.0, EPSS and CISA KEV, business impact) with a priority matrix, deadlines and exceptions, campaign lifecycle, RACI and indicators. Two reference files: `rules-of-engagement.md` (20 mandatory RoE rubrics, authorization model, third-party target checklist, Code pénal art. 323-1 to 323-3-1, PASSI, internal / external / PASSI matrix, DORA TLPT, AD and Entra tooling, fragile targets) and `agentic-security.md` (OWASP Top 10 for LLM and agentic applications, ANSSI generative AI guide, MITRE ATLAS, NIST AI RMF, autonomy levels N0 to N4, policy engine independent of the LLM, prompt injection through tool outputs, emergency stop, fifteen acceptance test cases).
+- **Eval case `security-roe-and-qualification`**.
+
+### Changed
+- The expert is listed in the mission, the lead's team table, the PM playbook routing table, the scoping and command handoff name lists, the discovery question lists (section 3.10), and the hand-off lists of the DevSecOps, infra and architect agents. Pentest routing moves from the DevSecOps row to the security expert in the PM playbook.
+
 ## [1.6.0] - 2026-11-06
 
 Lessons from a full mission on network access control (802.1X on Cisco Meraki) for a French finance company: the team had no knowledge of the topic, no way to check current facts, and no way to deliver a document a committee could read.
