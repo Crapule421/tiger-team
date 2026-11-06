@@ -90,8 +90,10 @@ The path is where Claude Code caches plugins installed from the marketplace; adj
 | ⏱️ | **scheduling-expert** | VTOM, Dollar Universe, Control-M: batch chains, calendars, dependencies, restart, scheduler migrations |
 | 🔀 | **integration-expert** | REST/SOAP APIs, ESB/iPaaS, MFT (Axway CFT, Sterling), IBM MQ, Kafka, formats (ISO 20022, SEPA, EDI, HL7/FHIR), interface contracts |
 | 🧾 | **erp-expert** | SAP, Oracle EBS/Fusion, Sage X3, Cegid, Dynamics 365: O2C, P2P, R2R, ERP interfaces, data migration |
-| 🌐 | **infra-expert** | Network, firewalls, flow matrices, DNS, TLS/PKI, Linux (RHEL, Debian, SUSE), Windows Server (AD, GPO, IIS) |
+| 🌐 | **infra-expert** | Network, firewalls, flow matrices, network access control (802.1X, RADIUS, Wi-Fi), DNS, TLS/PKI, Linux (RHEL, Debian, SUSE), Windows Server (AD, GPO, IIS) |
 | 🟢 | **ibmi-expert** | IBM i / AS400: RPG, CL, COBOL, Db2 for i, jobs, journaling, security, integration with the rest of the IS |
+
+**A research assistant, only on request.** `tiger-team:researcher` is not one of the nine experts. The lead calls it only after you agree to web research: to build a sourced fact base on a product, version or regulation the knowledge bases do not cover, or to verify the claims of a deliverable before it goes to management. Its queries stay generic: no organization name, hostname or document extract.
 
 Every expert is a Claude Code subagent (`tiger-team:<name>`) with a preloaded knowledge base, the confidentiality rules of the regulated sectors, and the same answer format: **Summary · Analysis · Recommendations · Risks · Handoffs · Open questions · Assumptions**. They answer in your language.
 
@@ -180,7 +182,7 @@ Each command takes a description or a file path. Except `discover`, a command ru
 - **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Every reference file ends with the official sources it was checked against. Where no public official source settles a point (a vendor's behaviour that varies by version, a law not yet promulgated), the text says *verify against your version* instead of guessing: you will meet that phrase, and it is deliberate.
 - **Real example outputs** in [`examples/`](examples/): a full mission, a quick mission and a direct command, unedited, with their measured cost.
 - **Sector compliance** references: DORA, NIS2, EBA, ACPR, PCI DSS, AML/CFT and banking secrecy; HDS, GDPR article 9, PGSSI-S, INS and CI-SIS; IGI 1300, II 901, homologation and ANSSI qualifications. Informational, not legal advice.
-- **9 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet.
+- **10 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet, executive risk briefing; writing rules for documents that are sent or printed, and a PDF rendering kit (print stylesheet and a dependency-free script for Edge or Chrome).
 - **Discovery protocol**: what each expert must know about your environment, how to obtain it (commands, console paths, documents), and the factual discipline every answer follows.
 - **A confidentiality guard** (below).
 
@@ -226,7 +228,7 @@ Add deny rules to the project's `.claude/settings.json` (a plugin cannot set per
 }
 ```
 
-The Tiger Team agents already have no web access (`WebFetch` and `WebSearch` are disallowed), and only the DevSecOps, DBA and infra experts have Bash, for local read-only checks.
+The nine experts have no web access (`WebFetch` and `WebSearch` are disallowed). Only `researcher` has it, and the lead calls it only after you agree; the deny rule above turns web research off entirely. Only the DevSecOps, DBA and infra experts have Bash, for local read-only checks.
 
 **Persistent memory** (`memory: user` in an agent's frontmatter) is off, because it could retain client or project names between sessions. Turn it on in a fork only if your context allows it.
 
