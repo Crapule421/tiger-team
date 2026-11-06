@@ -17,6 +17,8 @@ If it names files, read them before going further. Work in the user's language f
 
 Before anything else, check the request and any file it points to. If they contain classified information (Secret, Très Secret), Diffusion Restreinte information, real patient data, real banking customer data, live secrets or production credentials: stop, do not quote or summarize that content, explain why, and ask for an anonymized version. Experts receive only what you put in their brief, so never forward such content.
 
+If the request names a real organization (the user's employer, a client, a partner), keep it out of every brief: experts and the researcher work with a placeholder (`the Company`, `CLIENT_A`) unless the name itself changes the answer, and then say so. When the deliverable will carry the real name, ask the user once whether the organization's AI policy allows it.
+
 ## 1. Size the team before anything else
 
 Count the **domains** the topic really touches (scheduling, databases, integration/APIs, ERP, infrastructure, IBM i, DevSecOps, architecture). Then apply this rule, unless the user names a mode:
@@ -58,8 +60,18 @@ Read the knowledge base(s) concerned: `${CLAUDE_PLUGIN_ROOT}/skills/<domain>-ref
 | `tiger-team:scheduling-expert` | VTOM, Dollar Universe, Control-M, batch chains, windows, restart |
 | `tiger-team:integration-expert` | APIs, ESB/iPaaS, MFT/CFT, MQ/Kafka, formats, mappings, interface contracts |
 | `tiger-team:erp-expert` | SAP, Oracle, Sage X3, Cegid, Dynamics 365, business processes, ERP interfaces |
-| `tiger-team:infra-expert` | network flows, firewalls, DNS, certificates, Linux/Windows servers |
+| `tiger-team:infra-expert` | network flows, firewalls, network access control (802.1X, Wi-Fi), DNS, certificates, Linux/Windows servers |
 | `tiger-team:ibmi-expert` | IBM i / AS400 programs, jobs, DB2 for i, IBM i integration |
+| `tiger-team:researcher` | not an expert: builds a sourced fact base from the web, or verifies claims (sections 2b and 7b), only with the user's consent |
+
+## 2b. Web research and fact base (opt-in)
+
+The experts have no web access, by design. When the knowledge bases do not cover a product, version or regulation the answer depends on (check the reference index of the skills concerned), or when the facts may have changed since their review date, propose web research to the user in one line, naming what would be searched. Run it only on an explicit yes, or when the request itself asks for current or web sources.
+
+- Call `tiger-team:researcher`, one call per topic, in parallel with the architect framing. Its brief holds generic questions only (product, version, regulation, published incident): never the organization's name, hostnames, IP plans, internal documents or anything stopped by the confidentiality gate.
+- The researcher writes a fact base to `docs/tiger-team/facts/<YYYY-MM-DD>-<topic>.md` (ask where when no project folder exists) and returns its key facts, the points it could not confirm and the contradictions between sources.
+- Name that file in the brief of every expert who needs it ("Files to read"): it is their source for those facts, and anything outside it stays "verify".
+- Without consent, go on with the knowledge bases and mark the uncovered facts "verify" in the deliverable.
 
 ## 3. Architecture framing (when the architect is involved)
 
@@ -98,7 +110,21 @@ When experts disagree, decide with this order of priority unless the user sets a
 
 ## 7. Coherence review (not in `quick` or `solo`)
 
-When 3 or more experts took part or the architecture changes, send the draft consolidation to `tiger-team:enterprise-architect` and ask for inconsistencies, gaps (orphan flows, missing run procedures, NFRs not met end to end) and missing regulatory points. Fix the consolidation accordingly.
+When 3 or more experts took part or the architecture changes, send the draft consolidation to `tiger-team:enterprise-architect` and ask for inconsistencies, gaps (orphan flows, missing run procedures, NFRs not met end to end) and missing regulatory points. Name these checks explicitly, because they are the ones most often missed:
+
+- a repair or provisioning path for anything the change blocks (new, reimaged or expired devices, accounts, certificates);
+- run procedures, their owners and the yearly run cost of each option;
+- rule order wherever rules are evaluated first-match (firewall, RADIUS, routing);
+- every component that talks to another has a flow in the matrix;
+- for regulated entities, the second line (compliance, permanent control, risk) and internal audit appear in the RACI;
+- third parties (cloud services, integrators, vendors) and their contractual frame;
+- every claim labelled Fact is a fact in the sources, not an inference.
+
+Fix the consolidation accordingly.
+
+## 7b. Verify before you publish
+
+When the deliverable goes to management, to an auditor or outside the team, or rests on figures (costs, fines, statistics, dates of laws, product limits), extract the 10 to 25 claims it depends on. With the user's consent to web research, send them to a **new** `tiger-team:researcher` call that has not seen the experts' answers, asking for a verdict per claim (exact, inaccurate, imprecise, not verifiable) with the primary source read. Correct or remove every claim that is not confirmed, list those a human must still check, and put the verdict table in the deliverable's annex. Without consent, mark these claims "verify" instead of presenting them as facts.
 
 ## 8. Consolidated answer
 
@@ -112,10 +138,11 @@ Present, in the user's language:
 6. **Action plan** — action | owner (role) | when | depends on.
 7. **Mode deliverable** — scoping note + RACI + RAID, findings report, incident and recovery plan, or release sheet + go/no-go + rollback. Use the templates of the `deliverables` skill: `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`.
 8. **Open questions for the user.**
+9. **Verification status** — when section 7b ran: claims confirmed, corrected, removed, and those a human must check.
 
 In `quick` and `solo` modes, give only points 1, 3, 4 and 8.
 
-Then offer to write the deliverables to files. Default location when working inside a project: `docs/tiger-team/<YYYY-MM-DD>-<short-topic>.md`; otherwise ask where.
+Then offer to write the deliverables to files. Default location when working inside a project: `docs/tiger-team/<YYYY-MM-DD>-<short-topic>.md`; otherwise ask where. For a document that will be sent or printed, apply the writing style and the PDF rendering of the `deliverables` skill.
 
 ## Cost and focus rules
 

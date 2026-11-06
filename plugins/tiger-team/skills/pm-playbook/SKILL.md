@@ -238,6 +238,8 @@ Patterns: "compliant minimum now, target later" with ADR + debt register + dated
 | Contingency at scoping | 15-25 %, more with legacy unknowns or new vendors |
 | Estimate accuracy at scoping | Present a range (e.g., -30 % / +50 %), never a single number |
 | Hypercare | 2-6 weeks, ≥ 1 business cycle |
+| Infrastructure rollout by site (network access control, segmentation, PKI) | Fixed lots (inventory, design, hygiene, engine build, pilot) plus a per-site cost: rule of thumb from one scoping, 3-6 person-days per additional site for the low-impact wave and the lock-down; derive the per-site figure from the pilot before committing |
+| Run cost of each option | Yearly FTE, licences and support, estimated per option and fed into the TCO criterion of the ADR; for an on-premises NAC engine, a scoping estimate of 0.3-0.8 FTE per year (exceptions, certificate incidents, upgrades, reviews) to calibrate |
 
 Method: bottom-up from the interface inventory (count × complexity) cross-checked top-down by analogy; make drivers explicit (flows, systems, environments, partners, migration volume, regulatory deliverables).
 

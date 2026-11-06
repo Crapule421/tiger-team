@@ -35,7 +35,9 @@ _Adapt to the project; use roles, map names in a separate, access-restricted sta
 | BO | Business owner | | _Owns requirements and acceptance_ |
 | EA | Enterprise / solution architect | | |
 | SEC | Security (RSSI or delegate) | | |
-| DPO | Data protection / compliance | | |
+| DPO | Data protection | | |
+| CONF | Compliance, permanent control, risk (second line) | | _Regulated entities: add a column; consulted on residual-risk acceptance, third parties and logging, accountable for the entity's regulatory status_ |
+| AUD | Internal audit (third line) | | _Regulated entities: add a column; informed of risk acceptances and evidence, never R or A on delivery_ |
 | DSO | DevSecOps | | |
 | DBA | Database administration | | |
 | SCH | Job scheduling | | |
@@ -82,5 +84,7 @@ _Pre-filled with a typical split for an integration project: review every row wi
 - [ ] No role is A on everything (bottleneck) or only I everywhere (useless in the matrix).
 - [ ] Every R has the capacity and the access needed for the activity.
 - [ ] Security, data protection and operations are consulted **before** design decisions, not informed after.
+- [ ] Regulated entities (banking, insurance, healthcare): the second line (CONF) is consulted on residual-risk acceptance, third parties and logging, and internal audit (AUD) is informed.
+- [ ] The architecture decision and the purchase are separate rows: the architect is accountable for the first, the sponsor for the second; a vendor or integrator is consulted, never responsible, on choosing its own product.
 - [ ] Vendor responsibilities match the contract (statement of work, SLAs).
 - [ ] Matrix reviewed at each phase change and after any organizational change.
