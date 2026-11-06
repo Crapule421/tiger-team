@@ -1,6 +1,6 @@
 ---
 name: deliverables
-description: Fill-in templates for integration deliverables (DAT, DEX, release sheet, interface contract, flow matrix, RACI, RAID, UAT sign-off, environment sheet) and the writing rules that apply to all of them.
+description: Fill-in templates for integration deliverables (DAT, DEX, release sheet, interface contract, flow matrix, RACI, RAID, UAT sign-off, environment sheet, risk briefing), the writing rules that apply to all of them and a PDF rendering kit.
 user-invocable: false
 ---
 
@@ -21,6 +21,7 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 | Track risks, assumptions, issues, dependencies | `raid.md` | project-manager | all | Whole project, reviewed weekly |
 | Record acceptance of a delivery | `uat-signoff.md` | project-manager | business owner, testers | End of each acceptance campaign |
 | Record the organization's environment facts once, for every expert to read | `environment-sheet.md` | project-manager (via `/tiger-team:discover`) | all | Start of the engagement, kept current |
+| Tell a steering committee what happens if a measure is not taken, and what to decide | `risk-briefing.md` | project-manager | devsecops, enterprise-architect, researcher for the facts | Framing, before the go decision |
 
 ## How to instantiate a template
 
@@ -43,6 +44,26 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 - **Language**: English headings; keep French terms in parentheses when they are the contractual or regulatory name (MEP, PV de recette, réserves).
 - Each filled document stays reviewable: tables over prose, one fact per row, no marketing language.
 
+## Writing style (documents sent or printed)
+
+- **Headings name the content** ("Reference costs and sanctions", "Coûts et sanctions de référence"), never a slogan. No label or kicker above a heading; number chapters only when the text refers to them.
+- **No stand-alone big numbers**: a figure sits in a table with its unit, year and source.
+- **Plain sentences**: one idea per sentence, active voice, each idea said once. No em dashes, no "not X but Y" contrasts, no colon reveals, no rhetorical questions.
+- **French deliverables**: French words where they exist (observation, blocage partiel, blocage complet, procédure d'exploitation, actions immédiates, demande entre experts, vérification des faits); keep product, protocol and attribute names as they are.
+- **Notation** defined once at the start: [F] sourced fact, [I] inference or design choice, [AV] to verify (in English: [F], [I], [V]).
+- **Author and method**: the author is the person the user names. State AI assistance in the method line and that human review is required before external distribution.
+- **Organization branding** only on the user's request: colours and fonts from the organization's public charter or the user's instructions, its official logo unchanged (colours and proportions). Use colour for meaning (brand marks, critical status), not decoration.
+
+## Rendering to PDF
+
+For a document sent by mail or printed, write it as HTML with `scripts/print-base.css` (A4, cover, tables, status chips, notes, landscape pages for wide diagrams; brand colours and fonts are CSS variables at its top), then run:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/skills/deliverables/scripts/print-pdf.mjs" <document.html> <document.pdf> [--landscape] [--footer "<left text>"]
+```
+
+The script needs Node.js 22 or later and a Chromium-based browser (Edge or Chrome; set `BROWSER_PATH` if it is not found). It waits for web fonts, numbers the pages ("page n of N") and embeds fonts and vector graphics. Look at every page once: diagram text of at least 6.5 pt when printed (otherwise put the diagram on a landscape page), no table row alone on a page, no empty page; fix in one batch and render again.
+
 ## Template index
 
 - `templates/dat.md` — Technical Architecture Document (Dossier d'Architecture Technique) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/dat.md`
@@ -53,4 +74,5 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 - `templates/raci.md` — RACI matrix (Matrice RACI) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raci.md`
 - `templates/raid.md` — RAID log (Registre des risques, hypothèses, problèmes et dépendances) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raid.md`
 - `templates/uat-signoff.md` — UAT sign-off (Procès-verbal de recette): scope, campaign summary, defects, reservations, decision, signatures — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/uat-signoff.md`
+- `templates/risk-briefing.md` — Executive risk briefing (Note de risques, support de COPIL): situation, documented cases, requirements, regulatory status, costs and sanctions, scenarios, target, path and effort, decisions, verification annex — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/risk-briefing.md`
 - `templates/environment-sheet.md` — Environment sheet (Fiche d'environnement): facts about the organization's environment per domain, with sources and open points; lives in `docs/tiger-team/environment.md` — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/environment-sheet.md`

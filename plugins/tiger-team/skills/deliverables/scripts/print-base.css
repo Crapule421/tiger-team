@@ -1,0 +1,74 @@
+/* Print stylesheet for Tiger Team deliverables rendered with print-pdf.mjs.
+   Set the brand variables from the organization's public charter or the user's instructions.
+   Structure: <section class="cover">, then <main> with one <section> per chapter. */
+:root {
+  --brand: #1F3A5F;        /* cover panel, chapter numbers, accountable "A" in a RACI */
+  --heading: #1F3A5F;      /* headings, table headers, decision nodes */
+  --ink: #222222;          /* body text */
+  --ink-2: #5A5A5A;        /* secondary text, at least 4.5:1 on white */
+  --line: #DDDFE2;
+  --surface: #F4F5F6;
+  --crit: #9B1C1C; --crit-tint: #FBEDED; --crit-line: #E8B9B9;
+  --warn: #7A4E0E; --warn-tint: #FBF1DF; --warn-line: #EED5A6;
+  --info: #1F3A5F; --info-tint: #E8EEF4; --info-line: #B9C9DA;
+  --ok: #2C6B47;   --ok-tint: #E5F2EA;   --ok-line: #B9DCC7;
+  --sans: system-ui, "Segoe UI", Arial, sans-serif;  /* load the brand font with a <link> in the page */
+  --mono: Consolas, "Courier New", monospace;         /* code and identifiers only */
+}
+@page { size: A4; margin: 16mm 15mm 18mm 15mm; }
+@page wide { size: A4 landscape; margin: 13mm 15mm 15mm 15mm; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #fff; }
+body { font-family: var(--sans); color: var(--ink); font-size: 9.5pt; line-height: 1.5;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact; font-variant-numeric: tabular-nums; }
+p, ul, ol { margin: 0 0 6px; max-width: 168mm; }
+ul, ol { padding-left: 5mm; }
+h1, h2, h3, h4 { color: var(--heading); margin: 0; line-height: 1.2; text-wrap: balance; }
+h2 { font-size: 17pt; font-weight: 800; margin-bottom: 8px; }
+h2 .n { color: var(--brand); margin-right: 2mm; }
+h3 { font-size: 11.5pt; margin: 14px 0 6px; break-after: avoid; }
+h4 { font-size: 10pt; margin: 10px 0 4px; break-after: avoid; }
+code, .mono { font-family: var(--mono); font-size: .86em; }
+main > section { break-before: page; }
+.muted { color: var(--ink-2); } .small { font-size: 8.4pt; }
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; font-size: 8.3pt; line-height: 1.4; margin: 4px 0 10px; }
+thead { display: table-header-group; }
+th { text-align: left; vertical-align: bottom; color: var(--heading); background: var(--surface);
+  border-bottom: 1.5px solid var(--heading); padding: 5px 6px; }
+td { vertical-align: top; padding: 4px 6px; border-bottom: 1px solid var(--line); }
+tr { break-inside: avoid; }
+td.num, th.num { text-align: right; white-space: nowrap; }
+
+/* Status chips and fact notation */
+.chip { display: inline-block; font-size: 7.4pt; font-weight: 600; padding: 0 5px; border: 1px solid; border-radius: 3px; white-space: nowrap; }
+.chip.crit { color: var(--crit); background: var(--crit-tint); border-color: var(--crit-line); }
+.chip.high { color: var(--warn); background: var(--warn-tint); border-color: var(--warn-line); }
+.chip.mid  { color: var(--info); background: var(--info-tint); border-color: var(--info-line); }
+.chip.ok   { color: var(--ok);   background: var(--ok-tint);   border-color: var(--ok-line); }
+.tag { font-size: 7.4pt; font-weight: 700; color: var(--ink-2); }
+.tag::before { content: "["; } .tag::after { content: "]"; }
+
+/* Notes: blue for information, red only for critical points */
+.note  { background: var(--info-tint); border-radius: 4px; padding: 9px 12px; margin: 8px 0; break-inside: avoid; }
+.alert { background: var(--crit-tint); border: 1px solid var(--crit-line); border-radius: 4px; padding: 9px 12px; margin: 8px 0; break-inside: avoid; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 7mm; }
+
+/* Diagrams: inline SVG; wide ones on their own landscape page */
+figure { margin: 6px 0; break-inside: avoid; }
+figure svg { display: block; width: 100%; height: auto; }
+figcaption { font-size: 8pt; color: var(--ink-2); margin-top: 4px; }
+.landscape { page: wide; break-before: page; break-after: page; }
+.landscape svg { max-height: 160mm; }
+
+/* Cover */
+.cover { break-after: page; display: flex; flex-direction: column; min-height: 258mm; }
+.cover .logo { height: 13mm; width: auto; align-self: flex-start; margin-bottom: 9mm; }
+.cover .panel { background: var(--brand); color: #fff; border-radius: 3px; padding: 16mm 13mm 13mm; min-height: 92mm;
+  display: flex; flex-direction: column; justify-content: flex-end; }
+.cover h1 { color: #fff; font-size: 29pt; font-weight: 800; line-height: 1.08; max-width: 150mm; }
+.cover .sub { color: #fff; opacity: .9; font-size: 12.5pt; margin-top: 5mm; max-width: 150mm; }
+.cover table { margin-top: 10mm; }
+.cover table td:first-child { width: 42mm; font-weight: 700; color: var(--heading); }
+.cover .disclaimer { margin-top: auto; font-size: 8pt; color: var(--ink-2); max-width: 170mm; }

@@ -2,6 +2,22 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [1.6.0] - 2026-11-06
+
+Lessons from a full mission on network access control (802.1X on Cisco Meraki) for a French finance company: the team had no knowledge of the topic, no way to check current facts, and no way to deliver a document a committee could read.
+
+### Added
+- **Network access control reference** (`infra-reference/references/network-access-control.md`): EAP methods compared (EAP-TLS, PEAP-MSCHAPv2, EAP-TTLS, TEAP, MAB, identity PSK), host modes, fallback VLANs and fail-open per population, RFC 3580 and RFC 5176 attributes, port profiles, enterprise and guest SSIDs, rogue APs, a zone model, policy engine choice with a knock-out criterion, rollout by tiers, the provisioning and repair path, resilience, runbooks, SIEM use cases, twelve acceptance scenarios and Cisco Meraki notes checked against the vendor documentation. The infra expert and the discovery protocol now cover the topic.
+- **`researcher` agent**, outside the nine experts and only with the user's consent: builds a sourced fact base (Confirmed / Partial / Not found, with URLs) on products and regulations the knowledge bases do not cover, or verifies the claims of a deliverable without having seen the experts' answers. Generic queries only: no organization name, hostname or document extract.
+- **Mission steps 2b and 7b**: opt-in web research before the expert round, and verification of the claims a deliverable rests on before it goes to management, with the verdict table in an annex. In the measured mission, verification corrected four of twenty-two claims.
+- **Executive risk briefing template** (`risk-briefing.md`, support de COPIL), **writing style rules** for documents that are sent or printed, and a **PDF rendering kit** (`deliverables/scripts/print-base.css` and `print-pdf.mjs`: Edge or Chrome through DevTools, no npm dependency, page numbers, web fonts embedded, landscape pages for wide diagrams).
+
+### Changed
+- **Coherence review** names the checks most often missed: repair or provisioning path, run procedures and yearly run cost, first-match rule order, orphan flows, second line and internal audit in the RACI, third parties, facts that are really inferences.
+- **Confidentiality gate**: a real organization named in the request stays out of the briefs (placeholder), and the user is asked about the organization's AI policy when the deliverable carries the name.
+- **Banking reference**: French finance companies (sociétés de financement) and DORA (ACPR FAQ Q-A3: not bound until the "résilience" bill is adopted; the arrêté of 3 November 2014 applies), a map of Delegated Regulation (EU) 2024/1774 art. 13 network controls, NIS2 transposition status as of November 2026.
+- **RACI template**: second line (compliance, permanent control, risk) and internal audit roles; architecture decision and purchase on separate rows. **PM playbook**: estimation by site for infrastructure rollouts and a run-cost line per option.
+
 ## [1.5.0] - 2026-10-28
 
 The three remaining items of the *AI Engineering* review.
