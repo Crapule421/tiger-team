@@ -14,7 +14,7 @@ Thanks for helping make the team sharper. Contributions from practitioners — i
 1. **No confidential content, ever.** No employer conventions, real server or client names, real data, secrets or classified material. Use fictitious names (`APP_COMPTA`, `SRV-BATCH-01`, `example.org`) and documentation IP ranges.
 2. **Accuracy over completeness.** If a fact depends on the product version, say so. Never invent options, keywords or codes.
 3. **English** for prompts, skills and docs. The agents answer in the user's language.
-4. **Keep the format.** Agents answer with Summary, Analysis, Recommendations, Risks, Handoffs, Open questions, Assumptions. Knowledge skills keep `SKILL.md` short and move detail to `references/`.
+4. **Keep the format.** Agents answer with Summary, Analysis, Recommendations, Risks, Handoffs, Open questions, Assumptions, headings in the user's language, written by the `style-guide` skill. A new agent preloads `discovery` and `style-guide` and references the guide in its response format. Knowledge skills keep `SKILL.md` short and move detail to `references/`.
 5. **Keep markings out of the repository.** Do not write French classification markings in upper case in any file: the confidentiality guard would block reading that file.
 
 ## Workflow

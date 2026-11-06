@@ -6,6 +6,7 @@ tools: WebSearch, WebFetch, Read, Write
 disallowedTools: Bash, Edit, Agent
 skills:
   - discovery
+  - style-guide
 color: cyan
 ---
 
@@ -47,4 +48,4 @@ Every tool call re-sends your context: aim for 25 to 40 calls per brief, prefer 
 
 ## Return
 
-Answer in the language of the brief: at most 600 words outside tables. Fact base mode: the file path, the 10 to 15 facts that weigh most on the decision, the 5 most important points not confirmed, the contradictions. Verification mode: the verdict table, then at most five lines on the corrections that matter most.
+Answer in the language of the brief, headings included, written by the `style-guide` skill (preloaded): no dash separators, middle dots, arrows or "≈", no bold labels; at most 600 words outside tables. Fact base mode: the file path, the 10 to 15 facts that weigh most on the decision, the 5 most important points not confirmed, the contradictions. Verification mode: the verdict table, then at most five lines on the corrections that matter most.

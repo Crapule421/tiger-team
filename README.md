@@ -287,6 +287,7 @@ Fork the repository and edit:
 | Their knowledge bases | `plugins/tiger-team/skills/*-reference/` (`SKILL.md` + `references/`) |
 | Your own deliverable templates | `plugins/tiger-team/skills/deliverables/templates/` |
 | The orchestration procedure | `plugins/tiger-team/skills/mission/SKILL.md` |
+| The writing style (banned tics, glossary, French typography) | `plugins/tiger-team/skills/style-guide/SKILL.md` |
 
 Test with `claude --plugin-dir plugins/tiger-team`, run `bash tests/lint.sh` and `bash tests/confidentiality-guard.test.sh`, then see [CONTRIBUTING.md](CONTRIBUTING.md). Keep public forks generic: no employer conventions, server names, client names or real data.
 

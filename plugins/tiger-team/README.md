@@ -20,7 +20,7 @@ Full documentation, example outputs and roadmap: https://github.com/Crapule421/t
 | Folder | Content |
 |---|---|
 | `agents/` | the 10 experts and the research assistant (system prompt, tools, preloaded skills) |
-| `skills/` | `mission` (orchestrator), `discover` (environment interview), 11 expert commands, 10 knowledge bases with `references/`, `sector-compliance`, `deliverables` templates, `discovery` protocol |
+| `skills/` | `mission` (orchestrator), `discover` (environment interview), 11 expert commands, 10 knowledge bases with `references/`, `sector-compliance`, `deliverables` templates, `discovery` protocol, `style-guide` (writing rules for every answer and deliverable) |
 | `hooks/` | `confidentiality-guard.sh`: blocks secret files, documents carrying French classification markings, Bash commands targeting secret files, and prompts containing a marking. Reads only the tool call it checks; stores and sends nothing |
 
 ## Data handling
