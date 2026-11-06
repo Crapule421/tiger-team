@@ -135,3 +135,24 @@ Non-production data policy: `<masked / synthetic / copies>`. Who executes produc
 | # | Missing fact | Why it matters | How to obtain | Owner | Due |
 |---|---|---|---|---|---|
 | | | | | | |
+
+## 12. Document branding (charte graphique)
+
+_Optional. Read by `deliverables/scripts/print-pdf.mjs` to print deliverables in the organization's charter. Fill it only on the user's request, from the organization's public charter or the user's instructions; keep the official logo unchanged. Paths are relative to this file and must be local: the renderer downloads nothing without consent. An empty or `<placeholder>` value keeps the default._
+
+| Token | Value | Source / date |
+|---|---|---|
+| `brand` | `<#hex: cover panel, chapter numbers>` | |
+| `heading` | `<#hex: headings, table headers>` | |
+| `ink` | `<#hex: body text>` | |
+| `ink-2` | `<#hex: secondary text, contrast 4.5:1 on white at least>` | |
+| `surface` | `<#hex: table header and Gantt section background>` | |
+| `crit` | `<#hex: critical status>` | |
+| `gantt-bar` | `<#hex: Gantt steps>` | |
+| `gantt-crit` | `<#hex: Gantt critical path>` | |
+| `sans` | `<body font stack, e.g. "Brand Sans", Arial, sans-serif>` | |
+| `head` | `<heading font stack>` | |
+| `font-css` | `<local stylesheet with @font-face rules, e.g. brand/fonts.css>` | |
+| `logo` | `<local SVG (preferred) or PNG, e.g. brand/logo.svg>` | |
+| `footer` | `<left footer text, e.g. organization, department, sensitivity>` | |
+| `lang` | `<en / fr: page numbers and Gantt labels>` | |

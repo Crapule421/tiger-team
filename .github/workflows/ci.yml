@@ -15,3 +15,8 @@ jobs:
         run: bash tests/lint.sh
       - name: Confidentiality guard tests
         run: bash tests/confidentiality-guard.test.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: PDF kit unit tests
+        run: node --test tests/print-kit.test.mjs

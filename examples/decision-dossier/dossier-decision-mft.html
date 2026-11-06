@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="reference" content="DEC-MFT-001">
+<title>Dossier de décision, plateforme d&#x27;échange de fichiers</title>
+<link rel="stylesheet" href="../../plugins/tiger-team/skills/deliverables/scripts/print-base.css">
+</head>
+<body>
+<section class="cover">
+<img class="logo" data-brand="logo" alt="">
+<div class="panel"><h1>Dossier de décision, plateforme d&#x27;échange de fichiers avec les partenaires</h1><p class="sub">Remplacement de la passerelle d&#x27;échange de fichiers avec les partenaires. Demande de décision au comité de pilotage SI</p></div>
+<table>
+
+<tbody>
+<tr>
+<td>Projet</td>
+<td>Remplacement de la passerelle d'échange de fichiers (MFT)</td>
+</tr>
+<tr>
+<td>Référence</td>
+<td>DEC-MFT-001</td>
+</tr>
+<tr>
+<td>Version et statut</td>
+<td>0.3, en relecture</td>
+</tr>
+<tr>
+<td>Rédacteur</td>
+<td>Chef de projet MFT</td>
+</tr>
+<tr>
+<td>Méthode</td>
+<td>Rédigé avec l'aide d'une IA ; tous les montants sont produits par <code>chiffrage.mjs</code> ; relecture humaine requise</td>
+</tr>
+<tr>
+<td>Destinataires</td>
+<td>Comité de pilotage des systèmes d'information (COPIL SI)</td>
+</tr>
+<tr>
+<td>Instance et date de décision</td>
+<td>COPIL SI, date à fixer (S0)</td>
+</tr>
+<tr>
+<td>Répond à</td>
+<td>Expression de besoins EB-MFT-2026-01, version 1.2, direction des opérations</td>
+</tr>
+<tr>
+<td>Documents liés</td>
+<td>Chiffrage CST-MFT-001 (annexe A), registre RAID-MFT, DAT-MFT-001 à rédiger</td>
+</tr>
+<tr>
+<td>Sensibilité</td>
+<td>Interne</td>
+</tr>
+</tbody>
+</table>
+<p class="disclaimer">Exemple fictif qui illustre les gabarits decision-dossier et cost-estimate de Tiger Team. La société, les partenaires, les montants et les devis sont inventés. Rédigé avec l&#x27;aide d&#x27;une IA ; relecture humaine requise avant toute diffusion.</p>
+</section>
+<main>
+
+<h2 id="ch-1"><span class="n">0</span>Suivi du document</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>Version</th>
+<th>Date</th>
+<th>Auteur</th>
+<th>Modifications</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.1</td>
+<td>2026-10-20</td>
+<td>Chef de projet</td>
+<td>Premier jet</td>
+</tr>
+<tr>
+<td>0.2</td>
+<td>2026-10-30</td>
+<td>Chef de projet</td>
+<td>Options chiffrées avec une base de capacité unique</td>
+</tr>
+<tr>
+<td>0.3</td>
+<td>2026-11-06</td>
+<td>Chef de projet</td>
+<td>Revue de cohérence, annexe de chiffrage</td>
+</tr>
+</tbody>
+</table>
+<p>Notation : <span class="tag">F</span> fait sourcé, <span class="tag">I</span> déduction ou choix de conception, <span class="tag">AV</span> à vérifier. Montants en k€ HT. Les semaines sont comptées à partir de la décision (S0) ; S6 désigne la fin de la sixième semaine après la décision.</p>
+<h2 id="ch-2"><span class="n">1</span>Décision demandée</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>N°</th>
+<th>Décision</th>
+<th>Engagé maintenant</th>
+<th>Non engagé</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Retenir l'option A, plateforme MFT gérée hébergée dans l'UE, et lancer la préparation, le socle et le pilote (S1 à S16)</td>
+<td>99,2 k€ HT de décaissé (74,4 à 133,9) et 47,7 k€ de temps interne valorisé</td>
+<td>Migration et décommissionnement, 67,4 k€ HT de décaissé, soumis à la décision de go migration en S16</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Autoriser le dépôt des demandes d'ouverture de flux dès S1, avant la levée des conditions suspensives</td>
+<td>Temps interne uniquement</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td>Approuver les critères de go migration de la section 5</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Le support de l'éditeur de la passerelle actuelle s'arrête 46 semaines après la date visée pour la décision <span class="tag">AV</span> (confirmation écrite demandée, Q3). Le planning laisse 8 semaines de marge. Chaque semaine de retard de la décision consomme cette marge ; au-delà, un support étendu coûterait 35 k€ HT pour un an (devis fictif).</p>
+<h2 id="ch-3"><span class="n">2</span>Le besoin</h2>
+<p>La direction des opérations échange chaque jour des fichiers avec 140 partenaires : fournisseurs, transporteurs et banques. La passerelle actuelle arrive en fin de support, ne transmet aucune alerte au SIEM et impose une rotation manuelle des clés. L'expression de besoins EB-MFT-2026-01 demande huit exigences impératives et deux souhaitables (section 10). Hors périmètre : les échanges internes entre applications, qui restent sur le bus existant. Sans décision, la passerelle fonctionne sans correctif de sécurité après S46 <span class="tag">I</span>.</p>
+<h2 id="ch-4"><span class="n">3</span>Options</h2>
+<table class="dense keep">
+<thead>
+<tr>
+<th>Option</th>
+<th>Contenu</th>
+<th style="text-align:right">Décaissé engagé maintenant</th>
+<th style="text-align:right">Coût complet sur 3 ans</th>
+<th>Exigences impératives couvertes</th>
+<th>Risque principal</th>
+<th>Réversibilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A, recommandée</td>
+<td>Plateforme MFT gérée (SaaS, UE), agent interne, migration en 3 vagues</td>
+<td style="text-align:right">99,2</td>
+<td style="text-align:right">498,8 (374,1 à 673,4)</td>
+<td>7 sur 8, 1 partielle</td>
+<td>Lenteur des partenaires à échanger leurs certificats</td>
+<td>Moyenne, clause de réversibilité</td>
+</tr>
+<tr>
+<td>B</td>
+<td>Montée de version du produit actuel sur site</td>
+<td style="text-align:right">229,9</td>
+<td style="text-align:right">525,7 (394,3 à 709,7)</td>
+<td>6 sur 8, 2 partielles</td>
+<td>Charge interne et une seule instance</td>
+<td>Élevée</td>
+</tr>
+<tr>
+<td>0. Report d'un an</td>
+<td>Support étendu de la passerelle actuelle</td>
+<td style="text-align:right">35,0</td>
+<td style="text-align:right">non comparable, le remplacement reste à faire</td>
+<td>5 sur 8, 2 partielles, 1 non couverte</td>
+<td>Aucune alerte de sécurité vers le SIEM</td>
+<td>Élevée</td>
+</tr>
+</tbody>
+</table>
+<table class="keep">
+<thead>
+<tr>
+<th>Critère</th>
+<th style="text-align:right">Poids</th>
+<th style="text-align:right">A</th>
+<th style="text-align:right">B</th>
+<th style="text-align:right">0</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Couverture des exigences impératives</td>
+<td style="text-align:right">30 %</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">2</td>
+</tr>
+<tr>
+<td>Risque résiduel après mesures</td>
+<td style="text-align:right">25 %</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td>Coût complet sur 3 ans</td>
+<td style="text-align:right">20 %</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">4</td>
+</tr>
+<tr>
+<td>Délai de mise en service</td>
+<td style="text-align:right">10 %</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">1</td>
+</tr>
+<tr>
+<td>Réversibilité</td>
+<td style="text-align:right">5 %</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">5</td>
+</tr>
+<tr>
+<td>Exploitabilité, charge de run</td>
+<td style="text-align:right">10 %</td>
+<td style="text-align:right">4</td>
+<td style="text-align:right">2</td>
+<td style="text-align:right">2</td>
+</tr>
+<tr>
+<td><strong>Score pondéré</strong></td>
+<td style="text-align:right"></td>
+<td style="text-align:right"><strong>4,25</strong></td>
+<td style="text-align:right"><strong>3,25</strong></td>
+<td style="text-align:right"><strong>2,20</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Les poids ont été validés par le sponsor avant la notation. Les trois options sont chiffrées avec les mêmes paramètres (annexe A, section A.1).</p>
+<h2 id="ch-5"><span class="n">4</span>Recommandation</h2>
+<p>Nous recommandons l'option A. Elle couvre sept exigences impératives sur huit, la huitième (conservation des journaux pendant un an) passant par le SIEM. Elle engage 99,2 k€ HT avant la preuve du pilote, contre 229,9 k€ HT pour l'option B, dont la licence se paie dès le départ. Sur trois ans, son coût complet est inférieur de 26,9 k€ à celui de B, car l'exploitation demande 0,4 ETP au lieu de 0,7. Le décaissé net des coûts évités est équivalent : 235,6 k€ pour A et 236,0 k€ pour B. Un échec du pilote en S16 ramènerait vers l'option B, avec 99,2 k€ HT engagés.</p>
+<h2 id="ch-6"><span class="n">5</span>Trajectoire en semaines après la décision</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>Phase</th>
+<th>Semaines</th>
+<th>Contenu</th>
+<th>Critère de sortie ou décision</th>
+<th style="text-align:right">Décaissé HT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Préparation</td>
+<td>S1–S6</td>
+<td>Contrats SaaS et intégrateur, analyse de risque, avis du DPO, demandes de flux</td>
+<td>Conditions suspensives C1 à C3 levées</td>
+<td style="text-align:right">23,5</td>
+</tr>
+<tr>
+<td>Socle et pilote</td>
+<td>S7–S16</td>
+<td>Configuration, agent interne, raccordement au SIEM, test d'intrusion, dix partenaires pilotes</td>
+<td>Décision de go migration : dix partenaires en production pendant deux semaines sans incident majeur, aucune vulnérabilité critique ouverte</td>
+<td style="text-align:right">75,7</td>
+</tr>
+<tr>
+<td>Migration des partenaires</td>
+<td>S17–S34</td>
+<td>130 partenaires en trois vagues de six semaines</td>
+<td>140 partenaires sur la nouvelle plateforme</td>
+<td style="text-align:right">60,5</td>
+</tr>
+<tr>
+<td>Décommissionnement</td>
+<td>S35–S38</td>
+<td>Arrêt de l'ancienne passerelle, archivage des journaux, destruction des clés</td>
+<td>Ancienne passerelle arrêtée avant S46</td>
+<td style="text-align:right">6,9</td>
+</tr>
+<tr>
+<td>Exploitation</td>
+<td>à partir de S39</td>
+<td>Abonnement, support de l'intégrateur, 0,4 ETP interne</td>
+<td></td>
+<td style="text-align:right">48,0 par an</td>
+</tr>
+</tbody>
+</table>
+<div class="landscape">
+<h3>Planning directeur, en semaines à partir de la décision</h3>
+<pre class="gantt-weeks">
+to: 52
+section Avant la décision
+Réponses aux questions Q1 à Q4          : -4, 0
+Décision de lancement                    : milestone, 0
+section Préparation
+Contrats SaaS et intégrateur             : 0, 6
+Analyse de risque et avis du DPO         : 1, 5
+Ouvertures de flux réseau                : crit, 1, 8
+Conditions suspensives levées            : milestone, 6
+section Socle et pilote
+Configuration, agent interne, SIEM       : 6, 12
+Test d&#x27;intrusion de la plateforme        : 11, 13
+Dix partenaires pilotes                  : 12, 16
+Décision de go migration                 : milestone, crit, 16
+section Migration des partenaires
+Échange des certificats avec les partenaires : crit, 12, 30
+Vague 1, 40 partenaires                  : 16, 22
+Vague 2, 45 partenaires                  : 22, 28
+Vague 3, 45 partenaires                  : 28, 34
+section Décommissionnement et exploitation
+Arrêt de l&#x27;ancienne passerelle           : 34, 38
+Exploitation courante                    : 38, 52
+Fin du support de l&#x27;ancienne passerelle  : milestone, crit, 46
+caption: Le chemin critique passe par les ouvertures de flux puis par l&#x27;échange des certificats avec les partenaires. La fin du support de l&#x27;ancienne passerelle (S46) laisse 8 semaines de marge après son arrêt.
+</pre>
+</div>
+<h2 id="ch-7"><span class="n">6</span>Coûts</h2>
+<p>Synthèse du chiffrage CST-MFT-001 (annexe A). Les montants sont repris tels que produits par <code>chiffrage.mjs</code>.</p>
+<table class="keep">
+<thead>
+<tr>
+<th>Paramètre</th>
+<th>Valeur</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Base de capacité</td>
+<td>209 jours ouvrés par ETP et par an × 80 % de disponibilité = 167,2 jours productifs</td>
+</tr>
+<tr>
+<td>Coût d'une journée interne</td>
+<td>88 k€ chargés ÷ 209 jours = 421 €</td>
+</tr>
+<tr>
+<td>Prestation (TJM HT)</td>
+<td>Intégrateur 720 €, expert de l'éditeur 1 050 €</td>
+</tr>
+<tr>
+<td>Précision à ce stade</td>
+<td>-25 % / +35 % sur les totaux</td>
+</tr>
+</tbody>
+</table>
+<table class="keep">
+<thead>
+<tr>
+<th>Option A, k€ HT</th>
+<th style="text-align:right">Année 1</th>
+<th style="text-align:right">Année 2</th>
+<th style="text-align:right">Année 3</th>
+<th style="text-align:right">Total sur 3 ans (fourchette)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Décaissé</td>
+<td style="text-align:right">205,4</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right">301,4 (226,0 à 406,9)</td>
+</tr>
+<tr>
+<td>Temps interne valorisé</td>
+<td style="text-align:right">127,0</td>
+<td style="text-align:right">35,2</td>
+<td style="text-align:right">35,2</td>
+<td style="text-align:right">197,4</td>
+</tr>
+<tr>
+<td>Coût complet</td>
+<td style="text-align:right">332,4</td>
+<td style="text-align:right">83,2</td>
+<td style="text-align:right">83,2</td>
+<td style="text-align:right">498,8 (374,1 à 673,4)</td>
+</tr>
+<tr>
+<td>Décaissé évité (ancienne passerelle)</td>
+<td style="text-align:right">7,8</td>
+<td style="text-align:right">29,0</td>
+<td style="text-align:right">29,0</td>
+<td style="text-align:right">65,8</td>
+</tr>
+</tbody>
+</table>
+<p>Les années courent à partir de la décision : l'année 1 va de S1 à S52. Trois leviers d'économie sont détaillés en annexe A.6 ; le principal, un renfort interne pendant la migration, réduirait le décaissé de 60,5 k€.</p>
+<h2 id="ch-8"><span class="n">7</span>Conditions du go</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>N°</th>
+<th>Condition</th>
+<th>Type</th>
+<th>Responsable</th>
+<th>Échéance</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C1</td>
+<td>Avis favorable du RSSI sur l'analyse de risque du service SaaS</td>
+<td>Suspensive</td>
+<td>RSSI</td>
+<td>S5</td>
+<td>Ouverte</td>
+</tr>
+<tr>
+<td>C2</td>
+<td>Clauses de réversibilité et de localisation dans l'UE signées</td>
+<td>Suspensive</td>
+<td>Achats et juridique</td>
+<td>S6</td>
+<td>Ouverte</td>
+</tr>
+<tr>
+<td>C3</td>
+<td>Avis du DPO sur les fichiers contenant des données personnelles</td>
+<td>Suspensive</td>
+<td>DPO</td>
+<td>S5</td>
+<td>Ouverte</td>
+</tr>
+<tr>
+<td>C4</td>
+<td>Critères de go migration approuvés (section 5)</td>
+<td>Avant la décision</td>
+<td>Sponsor</td>
+<td>S0</td>
+<td>Ouverte</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>Partenaires de la vague 1 engagés sur l'échange des certificats</td>
+<td>Avant le go migration</td>
+<td>Responsable des échanges partenaires</td>
+<td>S14</td>
+<td>Ouverte</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ch-9"><span class="n">8</span>Risques</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>ID</th>
+<th>Risque (cause → événement → conséquence)</th>
+<th>Criticité</th>
+<th>Réponse</th>
+<th>Responsable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RSK-012</td>
+<td>Partenaires lents à échanger leurs certificats → vagues retardées → arrêt de l'ancienne passerelle après S46</td>
+<td>Élevée</td>
+<td>Campagne d'échange dès S12, double fonctionnement jusqu'à S38, support étendu en repli</td>
+<td>Responsable des échanges partenaires</td>
+</tr>
+<tr>
+<td>RSK-014</td>
+<td>Ouvertures de flux tardives → pilote décalé</td>
+<td>Élevée</td>
+<td>Demandes déposées en S1 (décision 2), suivi hebdomadaire</td>
+<td>Infrastructure</td>
+</tr>
+<tr>
+<td>RSK-021</td>
+<td>Charge interne à 97 % pendant la migration → retard des vagues</td>
+<td>Élevée</td>
+<td>Renfort interne (levier A.6) ou vague 3 décalée de quatre semaines</td>
+<td>Chef de projet</td>
+</tr>
+<tr>
+<td>RSK-017</td>
+<td>Indisponibilité du service SaaS → échanges bloqués</td>
+<td>Moyenne</td>
+<td>Engagement de disponibilité de 99,9 %, file d'attente de 72 h sur l'agent interne</td>
+<td>Exploitation</td>
+</tr>
+<tr>
+<td>RSK-019</td>
+<td>Dépendance à l'éditeur SaaS → coût de sortie élevé</td>
+<td>Moyenne</td>
+<td>Clause de réversibilité, export trimestriel des configurations</td>
+<td>Achats</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ch-10"><span class="n">9</span>Questions à lever</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>N°</th>
+<th>Question</th>
+<th>Ce que la réponse change</th>
+<th>Qui répond</th>
+<th>Nécessaire avant</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1</td>
+<td>Le pic de 9 000 fichiers par jour inclut-il la clôture annuelle ?</td>
+<td>Palier d'abonnement de l'option A</td>
+<td>Direction des opérations</td>
+<td>La décision</td>
+</tr>
+<tr>
+<td>Q2</td>
+<td>Des fichiers de paie passent-ils par la passerelle ?</td>
+<td>Avis du DPO (C3) et sensibilité des journaux</td>
+<td>Direction des ressources humaines</td>
+<td>La décision</td>
+</tr>
+<tr>
+<td>Q3</td>
+<td>La fin du support en S46 est-elle confirmée par écrit par l'éditeur ?</td>
+<td>Marge du planning et urgence de la décision</td>
+<td>Achats</td>
+<td>La décision</td>
+</tr>
+<tr>
+<td>Q4</td>
+<td>Le SIEM accepte-t-il le format de journaux de la plateforme ?</td>
+<td>Couverture de EB-05 et EB-10</td>
+<td>SOC</td>
+<td>S7</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ch-11"><span class="n">10</span>Correspondance avec l&#x27;expression de besoins</h2>
+<table class="dense keep">
+<thead>
+<tr>
+<th>Exigence</th>
+<th>Libellé court</th>
+<th>Priorité</th>
+<th>Option A</th>
+<th>Option B</th>
+<th>Option 0</th>
+<th>Où c'est traité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EB-01</td>
+<td>SFTP et AS2 avec les partenaires</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Section 5</td>
+</tr>
+<tr>
+<td>EB-02</td>
+<td>140 partenaires, 9 000 fichiers par jour en pointe</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Q1</td>
+</tr>
+<tr>
+<td>EB-03</td>
+<td>Chiffrement en transit et au repos, rotation des clés</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Partielle</td>
+<td>DAT à venir</td>
+</tr>
+<tr>
+<td>EB-04</td>
+<td>Accusés de réception AS2 et preuve de dépôt</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>DAT à venir</td>
+</tr>
+<tr>
+<td>EB-05</td>
+<td>Alertes vers le SIEM</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Partielle</td>
+<td>Non</td>
+<td>Q4</td>
+</tr>
+<tr>
+<td>EB-06</td>
+<td>Disponibilité de 99,5 % en heures ouvrées, RPO de 15 min</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Partielle</td>
+<td>Partielle</td>
+<td>RSK-017</td>
+</tr>
+<tr>
+<td>EB-07</td>
+<td>Hébergement dans l'UE, réversibilité</td>
+<td>Impérative</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>C2</td>
+</tr>
+<tr>
+<td>EB-08</td>
+<td>API pour l'ERP</td>
+<td>Souhaitable</td>
+<td>Oui</td>
+<td>Non</td>
+<td>Non</td>
+<td>DAT à venir</td>
+</tr>
+<tr>
+<td>EB-09</td>
+<td>Portail d'enrôlement des partenaires</td>
+<td>Souhaitable</td>
+<td>Oui</td>
+<td>Non</td>
+<td>Non</td>
+<td>Section 5</td>
+</tr>
+<tr>
+<td>EB-10</td>
+<td>Conservation des journaux pendant un an</td>
+<td>Impérative</td>
+<td>Partielle</td>
+<td>Oui</td>
+<td>Oui</td>
+<td>Q4, 90 jours natifs puis SIEM</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ch-12"><span class="n">11</span>Prochaines étapes</h2>
+<table class="keep">
+<thead>
+<tr>
+<th>Action</th>
+<th>Responsable</th>
+<th>Échéance</th>
+<th>Dépend de</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Obtenir la confirmation écrite de la fin du support</td>
+<td>Achats</td>
+<td>Avant la décision</td>
+<td></td>
+</tr>
+<tr>
+<td>Répondre aux questions Q1, Q2 et Q4</td>
+<td>Chef de projet</td>
+<td>Avant la décision</td>
+<td></td>
+</tr>
+<tr>
+<td>Présenter le dossier au COPIL SI</td>
+<td>Sponsor</td>
+<td>S0</td>
+<td>Q1 à Q3</td>
+</tr>
+<tr>
+<td>Déposer les demandes d'ouverture de flux</td>
+<td>Infrastructure</td>
+<td>S1</td>
+<td>Décision 2</td>
+</tr>
+<tr>
+<td>Lancer l'analyse de risque du service SaaS</td>
+<td>RSSI</td>
+<td>S1</td>
+<td>Décision 1</td>
+</tr>
+</tbody>
+</table>
+<div class="page-break"></div>
+<h2 id="ch-13">Annexe A. Chiffrage CST-MFT-001</h2>
+<p>Produit par <code>chiffrage.mjs</code> à partir des paramètres A.1. Stade : cadrage, précision -25 % / +35 %.</p>
+<h3>A.1 Paramètres</h3>
+<table class="keep">
+<thead>
+<tr>
+<th>ID</th>
+<th>Paramètre</th>
+<th>Valeur</th>
+<th>Source</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>Jours ouvrés par ETP et par an</td>
+<td>209</td>
+<td>RH, accord d'entreprise fictif</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>Disponibilité pour le projet</td>
+<td>80 %</td>
+<td>Équipe MFT, hors run et support</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>Jours productifs par ETP et par an</td>
+<td>167,2 (P1 × P2)</td>
+<td>Calculé</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>Coût annuel chargé d'un ETP interne</td>
+<td>88 k€</td>
+<td>Contrôle de gestion</td>
+</tr>
+<tr>
+<td>P5</td>
+<td>Coût d'une journée interne</td>
+<td>421 € (P4 ÷ P1)</td>
+<td>Calculé</td>
+</tr>
+<tr>
+<td>P6</td>
+<td>TJM HT</td>
+<td>Intégrateur 720 €, expert de l'éditeur 1 050 €</td>
+<td>Contrat cadre, devis fictif</td>
+</tr>
+<tr>
+<td>P7</td>
+<td>Pilotage</td>
+<td>12 % de l'effort</td>
+<td>Playbook PM</td>
+</tr>
+<tr>
+<td>P9</td>
+<td>Fourchette</td>
+<td>-25 % / +35 %</td>
+<td>Stade cadrage</td>
+</tr>
+<tr>
+<td>P10</td>
+<td>Années</td>
+<td>Année 1 = S1 à S52 après la décision</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h3>A.2 Charge interne et capacité, option A</h3>
+<p>Deux ETP internes sont affectés au projet.</p>
+<table class="keep">
+<thead>
+<tr>
+<th>Phase</th>
+<th>Semaines</th>
+<th style="text-align:right">Jours internes (pilotage inclus)</th>
+<th style="text-align:right">Jours disponibles</th>
+<th style="text-align:right">Charge</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Préparation</td>
+<td>S1–S6</td>
+<td style="text-align:right">35,8</td>
+<td style="text-align:right">38,6</td>
+<td style="text-align:right">93 %</td>
+</tr>
+<tr>
+<td>Socle et pilote</td>
+<td>S7–S16</td>
+<td style="text-align:right">61,6</td>
+<td style="text-align:right">64,3</td>
+<td style="text-align:right">96 %</td>
+</tr>
+<tr>
+<td>Migration des partenaires</td>
+<td>S17–S34</td>
+<td style="text-align:right">112,0</td>
+<td style="text-align:right">115,8</td>
+<td style="text-align:right">97 %</td>
+</tr>
+<tr>
+<td>Décommissionnement</td>
+<td>S35–S38</td>
+<td style="text-align:right">22,4</td>
+<td style="text-align:right">25,7</td>
+<td style="text-align:right">87 %</td>
+</tr>
+</tbody>
+</table>
+<h3>A.3 Coût par phase, option A</h3>
+<table class="dense keep">
+<thead>
+<tr>
+<th>Phase</th>
+<th style="text-align:right">Prestation</th>
+<th style="text-align:right">Achats</th>
+<th style="text-align:right">Contingence</th>
+<th style="text-align:right">Décaissé</th>
+<th style="text-align:right">Jours internes</th>
+<th style="text-align:right">Temps interne valorisé</th>
+<th style="text-align:right">Coût complet</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Préparation</td>
+<td style="text-align:right">8,4</td>
+<td style="text-align:right">12,0</td>
+<td style="text-align:right">10 %</td>
+<td style="text-align:right">23,5</td>
+<td style="text-align:right">35,8</td>
+<td style="text-align:right">16,6</td>
+<td style="text-align:right">40,1</td>
+</tr>
+<tr>
+<td>Socle et pilote</td>
+<td style="text-align:right">42,9</td>
+<td style="text-align:right">15,0</td>
+<td style="text-align:right">20 %</td>
+<td style="text-align:right">75,7</td>
+<td style="text-align:right">61,6</td>
+<td style="text-align:right">31,1</td>
+<td style="text-align:right">106,8</td>
+</tr>
+<tr>
+<td>Migration des partenaires</td>
+<td style="text-align:right">43,2</td>
+<td style="text-align:right">0,0</td>
+<td style="text-align:right">25 %</td>
+<td style="text-align:right">60,5</td>
+<td style="text-align:right">112,0</td>
+<td style="text-align:right">58,9</td>
+<td style="text-align:right">119,4</td>
+</tr>
+<tr>
+<td>Décommissionnement</td>
+<td style="text-align:right">3,6</td>
+<td style="text-align:right">2,0</td>
+<td style="text-align:right">15 %</td>
+<td style="text-align:right">6,9</td>
+<td style="text-align:right">22,4</td>
+<td style="text-align:right">10,8</td>
+<td style="text-align:right">17,8</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td style="text-align:right">98,1</td>
+<td style="text-align:right"></td>
+<td style="text-align:right"></td>
+<td style="text-align:right"><strong>166,6</strong></td>
+<td style="text-align:right">231,8</td>
+<td style="text-align:right">117,5</td>
+<td style="text-align:right"><strong>284,1</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>A.4 Coût sur trois ans après la décision, option A</h3>
+<table class="keep">
+<thead>
+<tr>
+<th>k€ HT</th>
+<th style="text-align:right">Année 1</th>
+<th style="text-align:right">Année 2</th>
+<th style="text-align:right">Année 3</th>
+<th style="text-align:right">Total sur 3 ans</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Décaissé projet</td>
+<td style="text-align:right">166,6</td>
+<td style="text-align:right">0,0</td>
+<td style="text-align:right">0,0</td>
+<td style="text-align:right">166,6</td>
+</tr>
+<tr>
+<td>Décaissé récurrent (abonnement, support)</td>
+<td style="text-align:right">38,8</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right">134,8</td>
+</tr>
+<tr>
+<td><strong>Décaissé</strong></td>
+<td style="text-align:right">205,4</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right">48,0</td>
+<td style="text-align:right"><strong>301,4</strong> (226,0 à 406,9)</td>
+</tr>
+<tr>
+<td>Temps interne valorisé, projet</td>
+<td style="text-align:right">117,5</td>
+<td style="text-align:right">0,0</td>
+<td style="text-align:right">0,0</td>
+<td style="text-align:right">117,5</td>
+</tr>
+<tr>
+<td>Temps interne valorisé, exploitation</td>
+<td style="text-align:right">9,5</td>
+<td style="text-align:right">35,2</td>
+<td style="text-align:right">35,2</td>
+<td style="text-align:right">79,9</td>
+</tr>
+<tr>
+<td><strong>Coût complet</strong></td>
+<td style="text-align:right">332,4</td>
+<td style="text-align:right">83,2</td>
+<td style="text-align:right">83,2</td>
+<td style="text-align:right"><strong>498,8</strong> (374,1 à 673,4)</td>
+</tr>
+<tr>
+<td>Décaissé évité</td>
+<td style="text-align:right">7,8</td>
+<td style="text-align:right">29,0</td>
+<td style="text-align:right">29,0</td>
+<td style="text-align:right">65,8</td>
+</tr>
+<tr>
+<td><strong>Décaissé net</strong></td>
+<td style="text-align:right">197,6</td>
+<td style="text-align:right">19,0</td>
+<td style="text-align:right">19,0</td>
+<td style="text-align:right"><strong>235,6</strong></td>
+</tr>
+</tbody>
+</table>
+<h3>A.5 Options comparées</h3>
+<table class="keep">
+<thead>
+<tr>
+<th>Option</th>
+<th style="text-align:right">Décaissé engagé maintenant</th>
+<th style="text-align:right">Décaissé sur 3 ans</th>
+<th style="text-align:right">Coût complet sur 3 ans (fourchette)</th>
+<th style="text-align:right">Décaissé récurrent, année 2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td style="text-align:right">99,2</td>
+<td style="text-align:right">301,4</td>
+<td style="text-align:right">498,8 (374,1 à 673,4)</td>
+<td style="text-align:right">48,0</td>
+</tr>
+<tr>
+<td>B</td>
+<td style="text-align:right">229,9</td>
+<td style="text-align:right">286,9</td>
+<td style="text-align:right">525,7 (394,3 à 709,7)</td>
+<td style="text-align:right">19,0</td>
+</tr>
+<tr>
+<td>0. Report d'un an</td>
+<td style="text-align:right">35,0</td>
+<td style="text-align:right">35,0 puis A décalé d'un an</td>
+<td style="text-align:right">non comparable</td>
+<td style="text-align:right"></td>
+</tr>
+</tbody>
+</table>
+<h3>A.6 Leviers d'économie, option A</h3>
+<table class="keep">
+<thead>
+<tr>
+<th>Levier</th>
+<th style="text-align:right">Décaissé sur 3 ans</th>
+<th style="text-align:right">Coût complet sur 3 ans</th>
+<th>Condition ou contrepartie</th>
+<th>Qui décide</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Renfort d'un ETP interne d'une autre équipe pendant la migration, à la place des 60 jours de l'intégrateur</td>
+<td style="text-align:right">-60,5</td>
+<td style="text-align:right">-22,4</td>
+<td>Disponibilité de l'équipe prêteuse de S17 à S34</td>
+<td>Sponsor</td>
+</tr>
+<tr>
+<td>Engagement de trois ans sur l'abonnement (-10 %)</td>
+<td style="text-align:right">-12,1</td>
+<td style="text-align:right">-12,1</td>
+<td>Sortie avant trois ans plus coûteuse</td>
+<td>Achats</td>
+</tr>
+<tr>
+<td>Réutilisation des machines virtuelles existantes pour l'agent interne</td>
+<td style="text-align:right">-7,2</td>
+<td style="text-align:right">-7,2</td>
+<td>Capacité disponible confirmée par l'infrastructure</td>
+<td>Infrastructure</td>
+</tr>
+</tbody>
+</table>
+</main>
+</body>
+</html>
