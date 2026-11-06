@@ -31,6 +31,7 @@ _Scope: banks, payment and e-money institutions, investment firms established in
 - Regulation on digital operational resilience for the financial sector, **applicable since 17 January 2025**, directly applicable (no transposition). Companion Directive (EU) 2022/2556 amends sectoral directives.
 - Scope (art. 2): credit institutions, payment and e-money institutions, investment firms, crypto-asset service providers, CSDs, CCPs, trading venues, insurers and reinsurers, among others. Proportionality principle (art. 4); simplified ICT risk framework for certain smaller entities (art. 16).
 - French competent authorities: ACPR for banks and insurers, AMF for entities under its supervision; ECB involvement for significant institutions under the SSM. Verify the reporting channel for your entity.
+- **French finance companies (sociétés de financement, CMF art. L. 511-1 II)** are not credit institutions and are not listed in DORA art. 2(1). The ACPR DORA FAQ (question Q-A3) states that, as long as the "résilience" bill is not adopted, they are not required to apply DORA from 17 January 2025. The bill is meant to extend DORA to them (a one-year deferral was announced for small and non-complex ones: verify the adopted text). Meanwhile the arrêté of 3 November 2014 applies to them (art. 1), including the organisation of ICT risk management (art. 3 f) and title VI bis, art. 270-1 to 270-5). Credit institutions of the same group apply DORA directly. Practical stance: use DORA and its RTS as the target framework ("anticipated compliance") and have group compliance confirm the entity's status (REGAFI category).
 
 | Pillar | Articles | Core obligations |
 |---|---|---|
@@ -53,13 +54,14 @@ _Scope: banks, payment and e-money institutions, investment firms established in
 - Detection (art. 10): monitor failures, latency, volumes and anomalies on flows. Logs must allow incident classification: transactions failed or delayed, clients affected, duration, data lost.
 - Response and recovery (art. 11-12): RTO/RPO per function; when restoring backups on the entity's own systems, use ICT systems **physically and logically segregated from the source system** (art. 12(3)); periodic restore tests (art. 12(2)); replay and reconciliation procedures for flows after an outage (idempotence keys, sequence control, control totals).
 - Testing (art. 24-25): include interfaces in vulnerability scanning, end-to-end, performance and failover tests.
+- Network and access controls (Delegated Reg. (EU) 2024/1774, art. 13(1)): segregation and segmentation by criticality (a); mapping of all network connections and data flows (b); a separate, dedicated network for administering ICT assets (c); **network access controls that prevent and detect connections by any unauthorised device or system, or by endpoints that do not meet the entity's security requirements** (d); encryption of network connections, wireless included, according to data classification (e); yearly review of the network security architecture (i); ability to isolate subnetworks and network components (j); secure baseline configuration and hardening of all network components (k). Firewall rules reviewed at least every six months for systems supporting critical or important functions (art. 13(2)). Access control and strong authentication: art. 21. Entities under the simplified framework (DORA art. 16) follow title III of the same Regulation instead: verify which applies. An 802.1X / NAC project is the evidence for art. 13(1)(d): see `infra-reference/references/network-access-control.md`.
 - Incident run books include the DORA clock and name who decides the "major" classification (the entity, not the integrator alone).
 
 ## 3. NIS2: Directive (EU) 2022/2555
 
 ### Facts
 
-- Replaces NIS1 (Directive (EU) 2016/1148). Transposition deadline: 17 October 2024. **French transposition**: the bill "résilience des infrastructures critiques et renforcement de la cybersécurité" (transposing REC, NIS2 and the DORA directive, designating ANSSI as national authority) was adopted by the Senate on 12 March 2025 and voted in the Assemblée nationale special committee on 10 September 2025; it was **not promulgated at the time of this review (October 2026)**; decrees and ANSSI référentiels will follow promulgation: **verify current status**.
+- Replaces NIS1 (Directive (EU) 2016/1148). Transposition deadline: 17 October 2024. **French transposition**: the bill "résilience des infrastructures critiques et renforcement de la cybersécurité" (transposing REC, NIS2 and the DORA directive, designating ANSSI as national authority) was adopted by the Senate on 12 March 2025 and voted in the Assemblée nationale special committee on 10 September 2025; it was **not promulgated at the time of this review (November 2026)**, a public sitting in the Assemblée nationale being scheduled for 9 November 2026; decrees and ANSSI référentiels will follow promulgation: **verify current status**.
 - Essential and important entities, by sector (Annexes I and II) and size. Banking and financial market infrastructures are Annex I sectors. **Managed ICT service providers (MSP, MSSP)** are also covered: an integrator or managed-service provider may itself be in scope.
 - Management bodies approve and oversee the measures and can be held liable (art. 20).
 - Minimum measures (art. 21(2)): risk analysis and IS security policies; incident handling; business continuity (backup, disaster recovery, crisis management); supply-chain security; security in acquisition, development and maintenance, incl. vulnerability handling and disclosure; effectiveness assessment; cyber hygiene and training; cryptography and encryption; HR security, access control, asset management; MFA or continuous authentication, secured communications.
@@ -229,9 +231,11 @@ One event can trigger several notifications: the DEX must name the decision-make
 - https://eur-lex.europa.eu/eli/reg/2024/1624/oj/eng — AMLR, Reg. (EU) 2024/1624, application dates
 - https://www.swift.com/standards/iso-20022/iso-20022-faqs/implementation — SWIFT: end of MT/MX coexistence for payment instructions
 - https://www.assemblee-nationale.fr/dyn/17/dossiers/DLR5L17N50731 — NIS2 transposition bill: legislative status
+- https://eur-lex.europa.eu/eli/reg_del/2024/1774/oj/eng — Delegated Reg. (EU) 2024/1774, ICT risk management framework (art. 13 network security, art. 21 access control)
+- https://acpr.banque-france.fr/fr/reglementation/focus-sur-la-reglementation/transverse/digital-operational-resilience-act-dora/faq-sur-la-directive-et-le-reglement-dora — ACPR DORA FAQ (Q-A3: sociétés de financement)
 
 ---
 
-Last reviewed: 2026-10
+Last reviewed: 2026-11
 
 _Disclaimer: this file is a practitioner's summary for integration projects. It is not legal advice and may be incomplete or out of date. Always verify the current official texts and obtain validation from your compliance, legal, DPO and security functions._

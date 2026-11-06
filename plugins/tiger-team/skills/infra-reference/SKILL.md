@@ -1,6 +1,6 @@
 ---
 name: infra-reference
-description: Infrastructure knowledge base - layer-by-layer diagnosis, checklists (server build, firewall change, certificate renewal, DNS change, patching) and references on network/TLS, DNS, Linux and Windows Server.
+description: Infrastructure knowledge base - layer-by-layer diagnosis, checklists (server build, firewall change, certificate renewal, DNS change, patching) and references on network/TLS, network access control (802.1X), DNS, Linux and Windows Server.
 user-invocable: false
 ---
 
@@ -11,6 +11,7 @@ Scope: on-premises and hybrid infrastructure supporting integration projects in 
 ## References (read on demand)
 
 - `references/network.md` - read when the topic involves TCP/IP, subnetting, VLANs, routing, NAT, firewalls/flow matrices, load balancers (F5, HAProxy), reverse proxies, VPN, TLS/PKI/certificates, or network troubleshooting tools and common ports - full path `${CLAUDE_PLUGIN_ROOT}/skills/infra-reference/references/network.md`
+- `references/network-access-control.md` - read when the topic involves keeping unmanaged devices off wired or Wi-Fi networks: 802.1X, EAP methods, MAB, RADIUS/NAC engines (ISE, ClearPass, NPS, cloud NAC), fallback VLANs, CoA, enterprise and guest SSIDs, rogue APs, rollout by tiers, provisioning path, Cisco Meraki notes - full path `${CLAUDE_PLUGIN_ROOT}/skills/infra-reference/references/network-access-control.md`
 - `references/dns.md` - read when the topic involves name resolution, zones and records, TTL/caching, split-horizon, BIND, Windows/AD-integrated DNS, Infoblox, DNSSEC, DNS troubleshooting or a DNS migration - full path `${CLAUDE_PLUGIN_ROOT}/skills/infra-reference/references/dns.md`
 - `references/linux.md` - read when the topic involves RHEL/Debian/Ubuntu/SUSE administration: systemd, journald, users/sudo/SSH, SELinux/AppArmor, LVM/filesystems, performance, cron vs scheduler agents, hardening (ANSSI BP-028/CIS), patching - full path `${CLAUDE_PLUGIN_ROOT}/skills/infra-reference/references/linux.md`
 - `references/windows.md` - read when the topic involves Windows Server: AD DS, GPO, DNS/DHCP, IIS, services and gMSA, scheduled tasks, PowerShell remoting, event logs, failover clustering, hardening, patching - full path `${CLAUDE_PLUGIN_ROOT}/skills/infra-reference/references/windows.md`
