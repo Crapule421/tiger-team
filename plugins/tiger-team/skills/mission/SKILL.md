@@ -136,7 +136,7 @@ Present, in the user's language:
 4. **Risk matrix** — merged and deduplicated, sorted by criticality: Risk | Criticality | Owner (role) | Mitigation.
 5. **Decisions and arbitrations** — including every handoff that was rejected, and why.
 6. **Action plan** — action | owner (role) | when | depends on.
-7. **Mode deliverable** — scoping note + RACI + RAID, findings report, incident and recovery plan, or release sheet + go/no-go + rollback. Use the templates of the `deliverables` skill: `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`.
+7. **Mode deliverable** — scoping note + RACI + RAID (plus a decision dossier and its cost estimate when the scoping ends on a go decision or answers a requirements statement), findings report, incident and recovery plan, or release sheet + go/no-go + rollback. Use the templates of the `deliverables` skill: `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/`.
 8. **Open questions for the user.**
 9. **Verification status** — when section 7b ran: claims confirmed, corrected, removed, and those a human must check.
 

@@ -1,6 +1,6 @@
 ---
 name: deliverables
-description: Fill-in templates for integration deliverables (DAT, DEX, release sheet, interface contract, flow matrix, RACI, RAID, UAT sign-off, environment sheet, risk briefing), the writing rules that apply to all of them and a PDF rendering kit.
+description: Fill-in templates for integration deliverables (DAT, DEX, release sheet, interface contract, flow matrix, RACI, RAID, UAT sign-off, environment sheet, risk briefing, decision dossier, cost estimate), the writing rules that apply to all of them and a PDF rendering kit.
 user-invocable: false
 ---
 
@@ -22,6 +22,8 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 | Record acceptance of a delivery | `uat-signoff.md` | project-manager | business owner, testers | End of each acceptance campaign |
 | Record the organization's environment facts once, for every expert to read | `environment-sheet.md` | project-manager (via `/tiger-team:discover`) | all | Start of the engagement, kept current |
 | Tell a steering committee what happens if a measure is not taken, and what to decide | `risk-briefing.md` | project-manager | devsecops, enterprise-architect, researcher for the facts | Framing, before the go decision |
+| Answer a requirements statement with options, costs and a go decision to take | `decision-dossier.md` | project-manager | enterprise-architect for the options, every expert involved for effort and risks, researcher for verification | Framing, before each go decision |
+| Cost the options: the single source of every figure in the dossier | `cost-estimate.md` | project-manager | every expert involved for effort per work package | Framing, redone at each gate |
 
 ## How to instantiate a template
 
@@ -56,13 +58,20 @@ Templates follow French integration-project practice (DAT, DEX, fiche MEP, PV de
 
 ## Rendering to PDF
 
-For a document sent by mail or printed, write it as HTML with `scripts/print-base.css` (A4, cover, tables, status chips, notes, landscape pages for wide diagrams; brand colours and fonts are CSS variables at its top), then run:
+For a document sent by mail or printed, write it as HTML with `scripts/print-base.css` (A4, cover, tables, status chips, notes, named landscape pages for wide tables and diagrams, Gantt charts; brand colours and fonts are CSS variables at its top), then run:
 
 ```bash
-node "${CLAUDE_PLUGIN_ROOT}/skills/deliverables/scripts/print-pdf.mjs" <document.html> <document.pdf> [--landscape] [--footer "<left text>"]
+node "${CLAUDE_PLUGIN_ROOT}/skills/deliverables/scripts/print-pdf.mjs" <document.html> <document.pdf> [--footer "<left text>"] [--header "<right text>"] [--env <environment.md>] [--landscape]
 ```
 
-The script needs Node.js 22 or later and a Chromium-based browser (Edge or Chrome; set `BROWSER_PATH` if it is not found). It waits for web fonts, numbers the pages ("page n of N") and embeds fonts and vector graphics. Look at every page once: diagram text of at least 6.5 pt when printed (otherwise put the diagram on a landscape page), no table row alone on a page, no empty page; fix in one batch and render again.
+The script needs Node.js 22 or later and Edge, Chrome or Chromium (131 or later for the header and the page numbers in the margins; set `BROWSER_PATH` if it is not found). It installs and downloads nothing: if Node or the browser is missing, tell the user what to install.
+
+- **Page structure**: `<section class="cover">` (logo, `.panel` with the `h1` and a `.sub` line, the document control table, a `.disclaimer`), then `<main>`: one `<section>` per chapter for a page each, or chapters straight in `<main>` to let them flow. `<meta name="reference" content="DEC-...">` puts the document ID next to "page n of N"; `<html lang="fr">` gives "page n sur N". `<div class="landscape">` puts a part on its own landscape page (`@page wide`), with the same header and footer; `.keep` keeps a short table on one page, `.page-break` forces a break, `table.dense` suits eight columns or more.
+- **Charter**: the tokens of section 12 of the environment sheet (`docs/tiger-team/environment.md`, found from the document's folder upwards, or `--env`; `--no-env` ignores it): colours named like the CSS variables (`brand`, `heading`, `ink`, `ink-2`, `surface`, `line`, `crit`, `warn`, `info`, `ok`, `gantt-bar`, `gantt-crit`), font stacks (`sans`, `head`, `mono`), a local `font-css` (its font files are embedded), a local `logo` (SVG, PNG or JPEG: header of every page except the cover, and every `<img data-brand="logo">`), `footer` (default for `--footer`), `lang`. Without tokens, the neutral charter of `print-base.css` applies, as before.
+- **Gantt in weeks relative to the decision** (Mermaid needs calendar dates): a `<pre class="gantt-weeks">` block, drawn by the script. Rows `section <name>`, `<label> : <start>, <end>`, `<label> : crit, <start>, <end>`, `<label> : milestone, <week>`; weeks counted from the decision (0), negative before it. Options, one per line: `from`, `to`, `tick` (default 4), `bands` (`Label: week | Label: week`), `prefix` (S or W, from the language), `origin`, `caption`, `label-width`. A syntax error stops the script before the browser starts.
+- **No download without consent**: images, logo and fonts must be local files. A remote image, font or stylesheet in the page or in a linked local stylesheet stops the script with the list (exit code 3): ask the user to download it, or to agree to `--allow-network`. The browser also runs with remote requests blocked and name resolution disabled.
+
+Look at every page once: diagram text of at least 6.5 pt when printed (otherwise put the diagram on a landscape page), no table row alone on a page, no empty page; fix in one batch and render again.
 
 ## Template index
 
@@ -74,5 +83,7 @@ The script needs Node.js 22 or later and a Chromium-based browser (Edge or Chrom
 - `templates/raci.md` — RACI matrix (Matrice RACI) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raci.md`
 - `templates/raid.md` — RAID log (Registre des risques, hypothèses, problèmes et dépendances) — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/raid.md`
 - `templates/uat-signoff.md` — UAT sign-off (Procès-verbal de recette): scope, campaign summary, defects, reservations, decision, signatures — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/uat-signoff.md`
+- `templates/decision-dossier.md` — Decision dossier (Dossier de décision, business case): decision requested, options with cost and coverage, recommendation, trajectory in weeks after the decision with a `gantt-weeks` chart, costs, conditions of the go, risks, questions to resolve, mapping to the requirements statement, checks before sending — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/decision-dossier.md`
+- `templates/cost-estimate.md` — Cost estimate (Chiffrage): one parameter table (capacity basis, internal day cost, day rates), effort and load by phase, cash-out and full cost by phase with steering and contingency, range, three-year cost by year after the decision, savings levers, options compared — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/cost-estimate.md`
 - `templates/risk-briefing.md` — Executive risk briefing (Note de risques, support de COPIL): situation, documented cases, requirements, regulatory status, costs and sanctions, scenarios, target, path and effort, decisions, verification annex — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/risk-briefing.md`
 - `templates/environment-sheet.md` — Environment sheet (Fiche d'environnement): facts about the organization's environment per domain, with sources and open points; lives in `docs/tiger-team/environment.md` — full path `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/environment-sheet.md`

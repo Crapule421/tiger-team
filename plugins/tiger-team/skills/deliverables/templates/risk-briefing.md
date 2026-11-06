@@ -78,6 +78,8 @@ _One diagram of the target, readable when printed (text at 6.5 pt or more, lands
 | Project effort | `<range in person-days per option, management and contingency included>` |
 | Yearly run | `<FTE per year, licences and support to quote>` |
 
+_Effort and run figures come from the cost estimate (`cost-estimate.md`): one capacity basis, cash-out apart from full cost. When the committee must then choose between options and commit a budget, follow with a decision dossier (`decision-dossier.md`), which links back to this briefing for the risks of not acting._
+
 ## 10. Decisions requested
 
 | No. | Decision | Recommendation |

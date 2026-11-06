@@ -182,7 +182,29 @@ Each command takes a description or a file path. Except `discover`, a command ru
 - **9 knowledge bases**, one per expert, with detailed reference files loaded on demand (Control-M Automation API, Dollar Universe, VTOM, SAP IDoc/BAPI/OData, ISO 20022 and SEPA, HL7 and FHIR, Axway CFT, Terraform, PostgreSQL, Oracle, IBM i…). Every reference file ends with the official sources it was checked against. Where no public official source settles a point (a vendor's behaviour that varies by version, a law not yet promulgated), the text says *verify against your version* instead of guessing: you will meet that phrase, and it is deliberate.
 - **Real example outputs** in [`examples/`](examples/): a full mission, a quick mission and a direct command, unedited, with their measured cost.
 - **Sector compliance** references: DORA, NIS2, EBA, ACPR, PCI DSS, AML/CFT and banking secrecy; HDS, GDPR article 9, PGSSI-S, INS and CI-SIS; IGI 1300, II 901, homologation and ANSSI qualifications. Informational, not legal advice.
-- **10 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet, executive risk briefing; writing rules for documents that are sent or printed, and a PDF rendering kit (print stylesheet and a dependency-free script for Edge or Chrome).
+- **12 deliverable templates**: DAT, DEX, release sheet (fiche MEP), interface contract, flow matrix, RACI, RAID, UAT sign-off (PV de recette), environment sheet, executive risk briefing, decision dossier (dossier de décision, business case) and cost estimate (chiffrage), with a costing model in the PM playbook: one capacity basis, cash-out apart from full cost, contingency per phase, -25 % / +35 % at scoping, three-year cost by year after the decision. Writing rules for documents that are sent or printed, and a PDF rendering kit with no npm dependency (below).
+
+### Branded PDF
+
+<p align="center">
+  <img src="docs/assets/decision-dossier-example.png" alt="Four pages of a fictitious decision dossier rendered to PDF: cover in the organization's colours, decision and options, a Gantt chart in weeks after the decision on a landscape page, and the cost annex" width="900">
+</p>
+
+`print-pdf.mjs` prints an HTML deliverable written with `print-base.css` to an A4 PDF in your organization's charter: cover, logo and title at the top of each page, footer with "page n of N", named landscape pages for wide tables, and Gantt charts in **weeks relative to the decision** (S0 / W0), which Mermaid cannot draw. The charter (colours, fonts, logo, footer) is declared once in section 12 of the environment sheet. [Example: HTML](examples/decision-dossier/dossier-decision-mft.html) · [PDF](docs/assets/decision-dossier-example.pdf), fictitious company.
+
+```bash
+node plugins/tiger-team/skills/deliverables/scripts/print-pdf.mjs docs/decision/DEC-001.html DEC-001.pdf
+```
+
+Prerequisites, installed by you (the script installs nothing and has no npm dependency):
+
+| Need | Version | Install |
+|---|---|---|
+| Microsoft Edge, Google Chrome or Chromium | 131 or later (header and page numbers in the margins) | already on most Windows and macOS machines; `BROWSER_PATH` if not found |
+| Node.js | 22 or later | [nodejs.org](https://nodejs.org/) or your package manager |
+
+**Nothing is downloaded without your consent.** Images, logo and fonts must be local files. If the page or the charter points to a remote image, font or stylesheet, the script lists it and stops (exit code 3) unless you add `--allow-network`; the browser also runs with remote requests blocked.
+
 - **Discovery protocol**: what each expert must know about your environment, how to obtain it (commands, console paths, documents), and the factual discipline every answer follows.
 - **A confidentiality guard** (below).
 
@@ -287,7 +309,7 @@ Fork the repository and edit:
 | Your own deliverable templates | `plugins/tiger-team/skills/deliverables/templates/` |
 | The orchestration procedure | `plugins/tiger-team/skills/mission/SKILL.md` |
 
-Test with `claude --plugin-dir plugins/tiger-team`, run `bash tests/lint.sh` and `bash tests/confidentiality-guard.test.sh`, then see [CONTRIBUTING.md](CONTRIBUTING.md). Keep public forks generic: no employer conventions, server names, client names or real data.
+Test with `claude --plugin-dir plugins/tiger-team`, run `bash tests/lint.sh`, `bash tests/confidentiality-guard.test.sh` and `node --test tests/print-kit.test.mjs` (PDF kit), then see [CONTRIBUTING.md](CONTRIBUTING.md). Keep public forks generic: no employer conventions, server names, client names or real data.
 
 ## ⚠️ Disclaimer
 
@@ -322,6 +344,8 @@ claude plugin install tiger-team@tiger-team
 - **Un seul expert** : les 11 commandes du tableau ci-dessus, par exemple `/tiger-team:scheduler-convert` pour convertir une chaîne VTOM en Control-M, ou `/tiger-team:flow-matrix` pour une matrice de flux.
 - **Ton environnement, une fois pour toutes** : `/tiger-team:discover` t'interroge sur ton infrastructure (ordonnanceur et version, bases, middleware, ERP, réseau, IBM i, chaîne de livraison) et écrit `docs/tiger-team/environment.md`. Chaque expert le lit avant de répondre. Les experts demandent avant de supposer : en conversation, au plus cinq questions précises avec la raison et la façon d'obtenir la réponse ; en commande, des hypothèses explicites et la liste des vérifications à faire. Ce qu'ils affirment est étiqueté **Fait** avec sa source, **Déduction** ou **Hypothèse**.
 - **Session pilotée par le chef de projet** : `claude --agent tiger-team:project-manager`.
+- **Dossier de décision et chiffrage** : les gabarits `decision-dossier.md` et `cost-estimate.md` répondent à une expression de besoins avec des options chiffrées, une recommandation et une trajectoire en semaines après la décision. Le chiffrage repose sur une base de capacité unique et sépare le décaissé du coût complet.
+- **PDF à la charte de ton entreprise** : `node plugins/tiger-team/skills/deliverables/scripts/print-pdf.mjs <livrable.html> <livrable.pdf>` imprime une page HTML écrite avec `print-base.css` : couverture, logo, pagination « page n sur N », pages en paysage et Gantt en semaines relatives (S0). La charte (couleurs, polices, logo) se déclare dans la section 12 de la fiche d'environnement. Prérequis à installer toi-même : Node.js 22+ et Edge, Chrome ou Chromium 131+. Le script ne télécharge rien sans ton accord : une image ou une police distante l'arrête, sauf avec `--allow-network`.
 
 Une mission complète représente 20 à 40 appels d'agents, soit 10 à 20 minutes et quelques dollars d'API. Pour une question qui ne concerne qu'un domaine, une commande directe coûte beaucoup moins.
 

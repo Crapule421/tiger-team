@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+Lessons from a mission whose main deliverable was a decision dossier answering a requirements statement: the plugin had no template for it, the costing was built by hand and the coherence review found three different internal capacity bases in the same dossier, which understated the cash-out. The user also needed PDFs in the company's charter to attach to a mail.
+
+### Added
+- **Decision dossier template** (`decision-dossier.md`, dossier de décision, business case): decision requested with what is and is not committed, options with cost and coverage, weighted scoring, recommendation, trajectory in weeks relative to the decision, costs, conditions of the go, risks, questions to resolve, mapping to the requirements statement, checks before sending. It links to the executive risk briefing for the risks of not acting instead of repeating them.
+- **Cost estimate template** (`cost-estimate.md`, chiffrage) and a **costing model** in the PM playbook (§15b): one capacity basis (working days × availability) written once, internal time valued apart from vendor days at the day rate, cash-out apart from full cost, steering as a percentage, contingency per phase, -25 % / +35 % at scoping, three-year cost by year after the decision, savings levers, recompute never retype. The run cost of each option (§15) feeds its run lines and the ADR's TCO criterion.
+- **PDF kit, extended** (`print-pdf.mjs`, new helper module `print-kit.mjs`, `print-base.css`; still no npm dependency): brand tokens (palette, fonts, logo, footer, language) read from a new section 12 of the environment sheet; logo and title in the header of every page except the cover, document ID and "page n of N" (or "page n sur N") in the footer through CSS margin boxes, on portrait and named landscape pages alike; `<pre class="gantt-weeks">` blocks drawn as Gantt charts in weeks relative to the decision (S0 / W0), which Mermaid cannot do; `--header`, `--env`, `--no-env`.
+- **Example** (`examples/decision-dossier/`): a fictitious filled dossier with its cost annex, its calculation file (`chiffrage.mjs`), charter and print page, rendered in `docs/assets/decision-dossier-example.pdf`.
+- **PDF kit unit tests** (`tests/print-kit.test.mjs`, `node --test`), run in CI.
+
+### Changed
+- **PDF kit downloads nothing without consent**: a remote image, font or stylesheet in the page or in a linked local stylesheet stops `print-pdf.mjs` with the list (exit code 3) unless `--allow-network` is given, and the browser runs with remote requests blocked. Pages that loaded web fonts from a CDN now need local font files (token `font-css`) or that flag.
+- **PDF kit robustness**: the DevTools port file is read with retries (it could still be locked on Windows), and a Gantt syntax error is reported before the browser starts.
+- **PM playbook §15**: accuracy at scoping is -25 % / +35 % once a bottom-up estimate exists (-30 % / +50 % on analogy only); contingency is set per phase.
+- **Risk briefing**: its effort and run figures come from the cost estimate, and a decision dossier follows when the committee must choose and commit a budget.
+- **Mission §8**: a scoping that ends on a go decision also delivers a decision dossier and its cost estimate.
+
 ## [1.6.0] - 2026-11-06
 
 Lessons from a full mission on network access control (802.1X on Cisco Meraki) for a French finance company: the team had no knowledge of the topic, no way to check current facts, and no way to deliver a document a committee could read.

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 56" role="img" aria-label="Nordelle, fictitious company">
+  <rect x="0" y="4" width="48" height="48" rx="10" fill="#0E4D5C"/>
+  <path d="M13 41V15h6.5l9.5 14V15H35v26h-6.5L19 27v14z" fill="#FFFFFF"/>
+  <circle cx="40" cy="12" r="3.6" fill="#E0A126"/>
+  <text x="60" y="38" font-family="Bahnschrift, 'Segoe UI', Arial, sans-serif" font-size="29" font-weight="600" fill="#0E3B47">nordelle</text>
+</svg>

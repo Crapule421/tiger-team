@@ -1,6 +1,8 @@
 /* Print stylesheet for Tiger Team deliverables rendered with print-pdf.mjs.
-   Set the brand variables from the organization's public charter or the user's instructions.
-   Structure: <section class="cover">, then <main> with one <section> per chapter. */
+   The brand variables come from the organization's public charter or the user's instructions; print-pdf.mjs
+   overrides them with the tokens of the environment sheet (section 12) when it finds one.
+   Structure: <section class="cover">, then <main> with one <section> per chapter (a page each), or chapters
+   straight in <main> to let them flow. */
 :root {
   --brand: #1F3A5F;        /* cover panel, chapter numbers, accountable "A" in a RACI */
   --heading: #1F3A5F;      /* headings, table headers, decision nodes */
@@ -14,6 +16,8 @@
   --ok: #2C6B47;   --ok-tint: #E5F2EA;   --ok-line: #B9DCC7;
   --sans: system-ui, "Segoe UI", Arial, sans-serif;  /* load the brand font with a <link> in the page */
   --mono: Consolas, "Courier New", monospace;         /* code and identifiers only */
+  --head: var(--sans);                                /* heading font */
+  --gantt-bar: #6F93BC; --gantt-crit: var(--crit);    /* Gantt steps and critical path */
 }
 @page { size: A4; margin: 16mm 15mm 18mm 15mm; }
 @page wide { size: A4 landscape; margin: 13mm 15mm 15mm 15mm; }
@@ -23,8 +27,10 @@ body { font-family: var(--sans); color: var(--ink); font-size: 9.5pt; line-heigh
   -webkit-print-color-adjust: exact; print-color-adjust: exact; font-variant-numeric: tabular-nums; }
 p, ul, ol { margin: 0 0 6px; max-width: 168mm; }
 ul, ol { padding-left: 5mm; }
-h1, h2, h3, h4 { color: var(--heading); margin: 0; line-height: 1.2; text-wrap: balance; }
-h2 { font-size: 17pt; font-weight: 800; margin-bottom: 8px; }
+h1, h2, h3, h4 { font-family: var(--head); color: var(--heading); margin: 0; line-height: 1.2; text-wrap: balance; }
+h2 { font-size: 17pt; font-weight: 800; margin-bottom: 8px; break-after: avoid; }
+main > h2 { margin-top: 18px; }
+main > h2:first-child, .landscape > :first-child { margin-top: 0; }
 h2 .n { color: var(--brand); margin-right: 2mm; }
 h3 { font-size: 11.5pt; margin: 14px 0 6px; break-after: avoid; }
 h4 { font-size: 10pt; margin: 10px 0 4px; break-after: avoid; }
@@ -40,6 +46,10 @@ th { text-align: left; vertical-align: bottom; color: var(--heading); background
 td { vertical-align: top; padding: 4px 6px; border-bottom: 1px solid var(--line); }
 tr { break-inside: avoid; }
 td.num, th.num { text-align: right; white-space: nowrap; }
+table.dense { font-size: 7.2pt; }   /* eight columns or more */
+table.dense th, table.dense td { padding: 3px 4px; }
+.keep { break-inside: avoid; }      /* a short table or block that must stay on one page */
+.page-break { break-after: page; }
 
 /* Status chips and fact notation */
 .chip { display: inline-block; font-size: 7.4pt; font-weight: 600; padding: 0 5px; border: 1px solid; border-radius: 3px; white-space: nowrap; }
@@ -72,3 +82,32 @@ figcaption { font-size: 8pt; color: var(--ink-2); margin-top: 4px; }
 .cover table { margin-top: 10mm; }
 .cover table td:first-child { width: 42mm; font-weight: 700; color: var(--heading); }
 .cover .disclaimer { margin-top: auto; font-size: 8pt; color: var(--ink-2); max-width: 170mm; }
+
+/* Gantt in weeks relative to the decision: print-pdf.mjs replaces each <pre class="gantt-weeks"> by a chart */
+pre.gantt-weeks { font-family: var(--mono); font-size: 7.5pt; background: var(--surface); padding: 6px 8px; white-space: pre-wrap; }
+.gantt-figure { margin: 6px 0 10px; }
+.gantt { font-size: 7.3pt; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
+.g-row { display: grid; grid-template-columns: var(--lw, 33%) 1fr; min-height: 13pt; break-inside: avoid; }
+.g-label { padding: 1.5pt 7pt 1.5pt 0; display: flex; justify-content: space-between; gap: 6pt; align-items: center; line-height: 1.15; }
+.g-when { color: var(--ink-2); white-space: nowrap; font-size: 6.8pt; }
+.g-track { position: relative; border-left: .6pt solid var(--line); }
+.g-sep { position: absolute; top: 0; bottom: 0; border-left: .5pt solid var(--line); }
+.g-sep.y { border-left: .8pt solid var(--ink-2); }
+.g-head .g-track { height: 12pt; }
+.g-band, .g-tick { position: absolute; top: 0; height: 100%; display: flex; align-items: center; justify-content: center;
+  white-space: nowrap; overflow: hidden; border-left: .5pt solid var(--line); color: var(--ink-2); font-size: 6.6pt; }
+.g-band { font-family: var(--head); font-weight: 700; font-size: 8pt; color: var(--ink); }
+.g-ticks { border-bottom: .6pt solid var(--line); }
+.g-section { background: var(--surface); min-height: 12pt; }
+.g-section .g-label { font-family: var(--head); font-weight: 700; font-size: 8.2pt; color: var(--heading); }
+.g-ms-row .g-label > span:first-child { font-weight: 600; }
+.g-bar { position: absolute; top: 50%; height: 6.5pt; transform: translateY(-50%); background: var(--gantt-bar); border-radius: 3.5pt; }
+.g-bar.crit, .lg-bar.crit { background: var(--gantt-crit); }
+.g-ms { position: absolute; top: 50%; width: 7pt; height: 7pt; background: var(--ink); transform: translate(-50%, -50%) rotate(45deg); outline: 1.2pt solid #fff; }
+.g-ms.crit { background: var(--gantt-crit); }
+.g-ms-label { position: absolute; top: 50%; transform: translateY(-50%); font-size: 6.7pt; color: var(--ink-2); white-space: nowrap; }
+.g-legend { display: flex; flex-wrap: wrap; gap: 4pt 16pt; font-size: 7.4pt; color: var(--ink-2); margin-top: 8pt; }
+.g-legend span { display: inline-flex; align-items: center; gap: 5pt; }
+.g-legend i { display: inline-block; }
+.lg-bar { width: 15pt; height: 6.5pt; border-radius: 3.5pt; background: var(--gantt-bar); }
+.lg-ms { width: 6.5pt; height: 6.5pt; background: var(--ink); transform: rotate(45deg); margin: 0 2pt; }

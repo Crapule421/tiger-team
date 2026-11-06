@@ -9,7 +9,7 @@ user-invocable: false
 Senior PM reference for technical and application integration projects in regulated French/EU contexts (banking, healthcare, defense). Rules of thumb are starting points: calibrate them with the organisation's own history before committing numbers.
 
 ## Templates (reference, do not re-invent)
-Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/` (index, ID conventions and writing rules in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/SKILL.md`): `raci.md`, `raid.md`, `release-sheet.md` (fiche MEP and run sheet), `uat-signoff.md` (PV de recette with réserves), `dat.md`, `dex.md`, `interface-contract.md`, `flow-matrix.md`. Read the one you need; if it is missing, follow the structure given here.
+Fill-in templates live in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/templates/` (index, ID conventions and writing rules in `${CLAUDE_PLUGIN_ROOT}/skills/deliverables/SKILL.md`): `raci.md`, `raid.md`, `release-sheet.md` (fiche MEP and run sheet), `uat-signoff.md` (PV de recette with réserves), `dat.md`, `dex.md`, `interface-contract.md`, `flow-matrix.md`, `decision-dossier.md` (dossier de décision, business case), `cost-estimate.md` (chiffrage, §15b). Read the one you need; if it is missing, follow the structure given here.
 
 ## 1. Vocabulary (FR → EN)
 | FR | EN / meaning |
@@ -235,13 +235,28 @@ Patterns: "compliant minimum now, target later" with ADR + debt register + dated
 | Project management | 10-15 % of total effort |
 | Architecture / design authority | 5-10 % |
 | Data migration | Underestimated by default: plan ≥ 3 mock loads; business data cleansing is extra effort |
-| Contingency at scoping | 15-25 %, more with legacy unknowns or new vendors |
-| Estimate accuracy at scoping | Present a range (e.g., -30 % / +50 %), never a single number |
+| Contingency at scoping | 15-25 % on average, more with legacy unknowns or new vendors; set it per phase (§15b) |
+| Estimate accuracy at scoping | A range on totals, never a single number: -25 % / +35 % once a bottom-up estimate exists (§15b), -30 % / +50 % when only an analogy is available |
 | Hypercare | 2-6 weeks, ≥ 1 business cycle |
 | Infrastructure rollout by site (network access control, segmentation, PKI) | Fixed lots (inventory, design, hygiene, engine build, pilot) plus a per-site cost: rule of thumb from one scoping, 3-6 person-days per additional site for the low-impact wave and the lock-down; derive the per-site figure from the pilot before committing |
-| Run cost of each option | Yearly FTE, licences and support, estimated per option and fed into the TCO criterion of the ADR; for an on-premises NAC engine, a scoping estimate of 0.3-0.8 FTE per year (exceptions, certificate incidents, upgrades, reviews) to calibrate |
+| Run cost of each option | Yearly FTE, licences and support, estimated per option and fed into the TCO criterion of the ADR; for an on-premises NAC engine, a scoping estimate of 0.3-0.8 FTE per year (exceptions, certificate incidents, upgrades, reviews) to calibrate. Costed with §15b: FTE × loaded cost as valued internal time, licences and support as cash-out, from the go-live week |
 
 Method: bottom-up from the interface inventory (count × complexity) cross-checked top-down by analogy; make drivers explicit (flows, systems, environments, partners, migration volume, regulatory deliverables).
+
+## 15b. Costing model (chiffrage)
+The cost estimate (`cost-estimate.md`) is the single source of every figure a decision body sees; the decision dossier (`decision-dossier.md`), risk briefing and slides quote its totals unchanged. Seen in a real mission: three capacity bases in one dossier understated the cash-out, and only the coherence review caught it.
+
+| Rule | How |
+|---|---|
+| One capacity basis | Working days per FTE per year × availability = productive days per FTE, written once in the parameter table and used everywhere: internal load, FTE needed, run cost. Internal day cost = loaded annual cost ÷ working days, from the same table. An overstated capacity hides vendor days, so the error lands on the cash-out |
+| Internal time apart from vendor work | Internal person-days × internal day cost = valued internal time. Vendor days × day rate (TJM) = cash-out. Check each phase's internal load against the people actually available; above 100 %, add vendor days or extend the phase, never raise the availability |
+| Cash-out apart from full cost | Cash-out (décaissé): vendor, licences and subscriptions, cloud and hardware, purchases. Full cost (coût complet): cash-out + valued internal time. The budget approves cash-out; full cost compares options. Separate columns, every amount labelled, k€ excl. VAT |
+| Steering as a percentage | Project management and steering 10-15 % of each phase's effort (§15), on internal and vendor days separately: vendor steering is cash-out |
+| Contingency per phase | From each phase's uncertainty: about 10 % for preparation and known work, 15-25 % for build with legacy unknowns or a new vendor, 20-30 % for a pilot or a roll-out on production. Applied once, on cash-out and on internal time; never a global line at the end, never also hidden in unit estimates |
+| Range at scoping | -25 % / +35 % on totals (overruns are more frequent than savings), ±15 % after a POC or detailed design. Apply it to totals, not line by line |
+| Three-year cost by year after the decision | Year 1 = S1 to S52 after the decision, not the calendar year. Split a phase across years in proportion to its weeks; run starts at the go-live week. Lines: project cash-out, run cash-out, valued internal time (project, run = FTE × loaded cost), full cost; avoided costs on their own line. The run lines are the run cost of each option (§15), and the three-year full cost is the TCO figure the ADR scores |
+| Savings levers | Each lever with its effect on cash-out and on full cost over three years, its condition and who decides. The two often move apart: internalising lowers cash-out and can raise full cost |
+| Recompute, never retype | One spreadsheet or script produces every table. Before publishing, search the documents for "days", "jours", "FTE", "ETP" and check that each hit uses the parameter table |
 
 ## 16. Typical failure modes
 | Failure mode | Early signal | Prevention |
